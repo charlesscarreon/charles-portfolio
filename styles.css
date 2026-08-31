@@ -18,6 +18,17 @@
     --link: #2dd4a7;
     --hover: #5eead4;
     --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+
+    /* Skill proficiency level colors (dark theme) */
+    --familiar-bg: rgba(138, 180, 248, 0.14);
+    --familiar-border: rgba(138, 180, 248, 0.5);
+    --familiar-text: #8ab4f8;
+    --proficient-bg: rgba(255, 209, 102, 0.14);
+    --proficient-border: rgba(255, 209, 102, 0.5);
+    --proficient-text: #ffd166;
+    --advanced-bg: rgba(116, 209, 160, 0.14);
+    --advanced-border: rgba(116, 209, 160, 0.5);
+    --advanced-text: #74d1a0;
 }
 
 [data-theme="light"] {
@@ -34,6 +45,17 @@
     --link: #0d9488;
     --hover: #0f766e;
     --shadow: 0 4px 20px rgba(20, 30, 40, 0.08);
+
+    /* Skill proficiency level colors (light theme) */
+    --familiar-bg: rgba(10, 88, 202, 0.22);
+    --familiar-border: rgba(10, 88, 202, 0.6);
+    --familiar-text: #0842a0;
+    --proficient-bg: rgba(180, 83, 9, 0.22);
+    --proficient-border: rgba(180, 83, 9, 0.6);
+    --proficient-text: #9a3f00;
+    --advanced-bg: rgba(21, 115, 71, 0.22);
+    --advanced-border: rgba(21, 115, 71, 0.6);
+    --advanced-text: #0f5c39;
 }
 
 /* ---------- Base ---------- */
@@ -615,6 +637,24 @@ main > .card {
     padding: 0.18rem 0.7rem;
     font-size: 0.8rem;
     font-weight: 600;
+}
+
+.skill-level--familiar {
+    background-color: var(--familiar-bg);
+    border-color: var(--familiar-border);
+    color: var(--familiar-text);
+}
+
+.skill-level--proficient {
+    background-color: var(--proficient-bg);
+    border-color: var(--proficient-border);
+    color: var(--proficient-text);
+}
+
+.skill-level--advanced {
+    background-color: var(--advanced-bg);
+    border-color: var(--advanced-border);
+    color: var(--advanced-text);
 }
 
 /* ---------- Footer ---------- */
