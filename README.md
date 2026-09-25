@@ -1,4 +1,4 @@
-# Charles Serrano Carreon · Portfolio
+# Charles S. Carreon · Portfolio
 
 [![Live](https://img.shields.io/badge/live-charlescarreon.vercel.app-2dd4a7)](https://charlescarreon.vercel.app/)
 ![HTML](https://img.shields.io/badge/HTML-CSS-orange)

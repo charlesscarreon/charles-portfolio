@@ -4,11 +4,11 @@ This document provides context about the portfolio project for human readers and
 
 ## Last Updated
 
-September 6, 2026
+September 25, 2026
 
 ## Project Summary
 
-Personal portfolio website for Charles Serrano Carreon, a Computer Science student at Pamantasan ng Cabuyao, Philippines.
+Personal portfolio website for Charles S. Carreon (full name Charles Serrano Carreon), a Computer Science student at Pamantasan ng Cabuyao, Philippines.
 
 The site has three pages:
 
@@ -32,7 +32,7 @@ The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public 
 - The `dev/` folder is excluded from production deploys via `.vercelignore`.
 - Keep accessibility features: skip links, semantic HTML, `aria` attributes, `:focus-visible`, `prefers-reduced-motion`.
 - Dark theme is the default; light theme is applied via a `data-theme` attribute and persisted in `localStorage`.
-- Maintain the existing SEO setup: per-page metadata, canonical URLs, Open Graph, Twitter Card, and JSON-LD structured data, plus `sitemap.xml` and `robots.txt`.
+- Maintain the existing SEO setup: per-page metadata, canonical URLs, Open Graph, Twitter Card, and JSON-LD structured data, plus `sitemap.xml` and `robots.txt`. As a standing maintenance habit, periodically review and refresh content (education, projects, skills, achievements) and update `sitemap.xml` lastmod dates when pages meaningfully change.
 - Content must remain readable even without CSS: if a visitor's browser fails to load or apply the stylesheet, the raw HTML should still present the information in a way human eyes can read.
 
 ## Important Links
@@ -56,7 +56,7 @@ Contains local development tooling and documentation only. It is never deployed.
 - `serve.bat` — Windows batch launcher. Changes to the project root, opens http://localhost:8123 in the browser, then runs `node dev/serve.js`.
 - `test-fallback.js` — Zero-dependency fallback-testing server for verifying the site's no-CSS and no-JS views. Serves on port 8124 (or the `PORT` environment variable), reusing the same static-serving and clean-URL logic as `serve.js`. For HTML responses it strips tags based on query-string flags; JSON-LD structured data is always preserved. Usage: `?css=0` removes the stylesheet, `?js=0` removes the external script, and `?css=0&js=0` removes both (full fallback view). `?redirect=0` strips the automatic redirect mechanisms (any `<meta http-equiv="refresh">` and inline `window.location.replace` scripts) so the manual fallback content of a redirect stub can be viewed in-browser. Set the `ROOT` environment variable to serve a different folder (e.g., the old website repo).
 - `test-fallback.bat` — Windows batch launcher. Changes to the project root, opens http://localhost:8124 in the browser, then runs `node dev/test-fallback.js`.
-- `test-fallback-old.bat` — Windows batch launcher for previewing the old website's redirect stubs. Sets `ROOT` to `C:\Projects\personal\charles-old-portfolio`, opens http://localhost:8124/?redirect=0 in the browser (so the stub renders its manual fallback instead of auto-redirecting), then runs `node dev/test-fallback.js`. Preview the other pages at `/suggestionBox?redirect=0` and `/suggestionBoxRedirect?redirect=0`. Useful because a browser always honors `<meta http-equiv="refresh">`, so the fallback state can only be seen this way.
+- `test-fallback-old.bat` — Windows batch launcher for previewing the old website's redirect stubs. Sets `ROOT` to `C:\Projects\personal\charles-old-portfolio`, opens http://localhost:8124/?redirect=0 in the browser (so the stub renders its manual fallback instead of auto-redirecting), then runs `node dev/test-fallback.js`. `?redirect=0` is needed because a browser always honors `<meta http-equiv="refresh">`. Useful because the fallback state can only be seen this way.
 - `seo-audit-260904/` — A three-stage SEO audit with a consolidated report. The documents are:
   - `personal-website-seo-audit-stage-1.md` — Technical SEO foundation audit.
   - `personal-website-seo-audit-stage-2.md` — Name search and identity discoverability audit.
@@ -66,29 +66,17 @@ Contains local development tooling and documentation only. It is never deployed.
 
 ## Current Objectives
 
-Work that is in progress or planned to be done immediately.
+Work in progress or planned to be done immediately.
 
-### Consolidate the old website (`csselrahc.github.io`)
+### Establish "Charles S. Carreon" as the main identity
 
-All changes are scoped to the old site only; the current website is not touched by this task.
+Display-first approach: the visible identity on every page becomes "Charles S. Carreon", while structured data keeps the full name canonical for disambiguation. This intentionally deviates from the audit docs' "keep the full name primary everywhere" advice; the SEO audit files stay as the historical record. Background: `/dev/seo-audit-260904/` covers the name-ambiguity problem this addresses.
 
-- Constraint #1: reroute all traffic to the current website automatically (meta refresh + `window.location.replace`).
-- Constraint #2: include a visible manual fallback link to the current website, so visitors can reach it even if the automatic reroute fails (also works with CSS/JS disabled).
-- Constraint #3: no personal data remains in the fallback (no-CSS/no-JS) view of the old site.
-- Chosen approach: Option A — the old pages contain zero content beyond a minimal redirect stub (title with the name, a "portfolio moved" message, and the fallback link).
-- Removed from the old site (not present on the current website): home address, phone number, birthday, age, sex, nickname.
-- Kept unchanged on the current website: full name, the education section (all 4 schools), portrait, email, GitHub/LinkedIn/social links.
-- Certificates are NOT being discarded as credentials — they are planned to be added to the current site later (see Planned Changes).
-- Steps:
-  1. Replace `index.html`, `suggestionBox.html`, and `suggestionBoxRedirect.html` in the old repo with the redirect stub.
-  2. Replace the old repo's `README.md` with a short notice that the repo redirects to the current website.
-  3. Keep the old repo's asset folders (`css/`, `js/`, `images/`, `.gitignore`) untouched.
-  4. Commit and push to `main`; GitHub Pages redeploys automatically.
-  5. Verify old URLs land on the current website and that raw sources contain no sensitive strings.
-
-### Fallback-testing helper (built)
-
-`dev/test-fallback.js` + `dev/test-fallback.bat` are in place and verified. Launched via `dev/test-fallback.bat` (serves on port 8124). Add `?css=0`, `?js=0`, or `?css=0&js=0` to a URL to witness the no-CSS, no-JS, and full-fallback views in-browser. JSON-LD structured data is preserved in all views. `?redirect=0` strips automatic redirects so a redirect stub's manual fallback can be previewed; `dev/test-fallback-old.bat` serves the old website repo (`ROOT` env override) and opens that preview. Future expansion (e.g., additional simulated problems) can be planned under this note when needed.
+- Step 1 — `Person` structured data in `index.html`: keep `"name": "Charles Serrano Carreon"`; set `"alternateName": ["Charles S. Carreon", "Charles Carreon"]`.
+- Step 2 — Swap the visible identity to "Charles S. Carreon" across all three pages: `<title>`, `meta name="author"`, `og:` and `twitter:` tags, brand links, the `<h1>`, hero intro, footer, and copyright line. Exception: the About Me intro paragraph on the homepage intentionally uses the full name "Charles Serrano Carreon".
+- Step 3 — Page titles use a uniform "Charles S. Carreon | <section>" pattern (Home has the role suffix "Computer Science Student & Software Developer" instead of a location).
+- Step 4 — Update `README.md` and the header comments in `script.js` / `styles.css` to match.
+- Step 5 — Verify with the fallback helper (`?css=0`, `?js=0`, `?css=0&js=0`) that identity is still conveyed in all views and JSON-LD survives intact.
 
 ## Planned Changes
 
@@ -96,13 +84,33 @@ Changes to be done in the future, not immediately. The bullets below are NOT ord
 
 ### Content additions
 
-- Add a Certifications section to the current website using the certificate scans and links from the old site (EF SET English C2, DICT Programming for Beginners Using Python, DICT-WD001 Principles of Web Development). Display format (scan images vs. text links) to be decided when this task is planned out.
+- Add a Certifications section to the current website using the certificate scans and links from the old site (EF SET English C2, DICT Programming for Beginners Using Python, DICT-WD001 Principles of Web Development). The certificate scans are preserved in the old repo at `images/cert01-03.png` (reachable at https://csselrahc.github.io/images/cert0X.png). Display format (scan images vs. text links) to be decided when this task is planned out.
 
 ### SEO and identity (from audit)
 
-- Implement the changes recommended in the SEO audit (see `/dev/seo-audit-260904/`) at a future time.
-- Add `alternateName` values for "Charles Carreon" and "Charles S. Carreon" to the `Person` structured data in `index.html`, keeping "Charles Serrano Carreon" as the primary name.
-- Consider adding a natural homepage statement connecting the full and shorter name forms.
-- Consider dedicated pages for major projects once they have enough meaningful content (for example, MUTED).
-- Periodically review and refresh content (education, projects, skills, achievements) and update `sitemap.xml` lastmod dates when pages meaningfully change.
-- Optionally consider a custom domain later as a branding improvement.
+- Consider dedicated pages for major projects once they have enough meaningful content (for example, MUTED) — deferred until projects have enough content to justify them.
+
+## Completed Changes
+
+Work that has been finished. Kept as a record for continuity.
+
+### Consolidate the old website (`csselrahc.github.io`)
+
+All changes were scoped to the old site only; the current website was not touched.
+
+COMPLETED 2026-09-25. The commits `ad065a9` + `544f6b5` belong to the old website repo's history (`CSselrahC/CSselrahC.github.io`), pushed to its `main` branch — they are not part of this repo's history.
+
+- Constraint #1 (auto-reroute): done — `index.html` is a minimal redirect stub (meta refresh + `window.location.replace`).
+- Constraint #2 (manual fallback link): done — a visible link to the current website works even if auto-reroute fails or CSS/JS is disabled.
+- Constraint #3 (no personal data in the fallback view): done — verified zero PII in the remaining old-site files.
+- Final approach: Option A stub for `index.html`; `suggestionBox.html` / `suggestionBoxRedirect.html` were DELETED (their URLs now 404).
+- Final repo footprint: `index.html` (stub), `README.md`, `.gitignore`, `images/cert01-03.png`. The `css/` and `js/` folders and all other images were deleted.
+- Removed personal data: home address, phone number, full birthdate (September 6, 2004), age, sex, nickname.
+- Kept unchanged on the current website: full name, the education section (all 4 schools), portrait, email, GitHub/LinkedIn/social links.
+- Certificate scans preserved at `images/cert01-03.png` (served at https://csselrahc.github.io/images/cert0X.png) for the planned Certifications section (see Planned Changes).
+- Verified live: `/` redirects to https://charlescarreon.vercel.app/; deleted URLs 404; cert scans return 200; served pages contain no sensitive strings.
+- Note: the Road to Rich Farming game stays live at https://csselrahc.github.io/road-to-rich-farming/ — a separate repo's GitHub Pages project site, unaffected by this consolidation, still referenced from the current site's `projects.html`.
+
+### Fallback-testing helper
+
+`dev/test-fallback.js` + `dev/test-fallback.bat` are in place and verified. Launched via `dev/test-fallback.bat` (serves on port 8124). Add `?css=0`, `?js=0`, or `?css=0&js=0` to a URL to witness the no-CSS, no-JS, and full-fallback views in-browser. JSON-LD structured data is preserved in all views. `?redirect=0` strips automatic redirects so a redirect stub's manual fallback can be previewed; `dev/test-fallback-old.bat` serves the old website repo (`ROOT` env override) and opens that preview. Future expansion (e.g., additional simulated problems) can be planned under this note when needed.

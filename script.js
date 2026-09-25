@@ -1,4 +1,4 @@
-/* Charles Serrano Carreon — portfolio enhancements.
+/* Charles S. Carreon — portfolio enhancements.
    Pure progressive enhancement: the site is fully usable without this file. */
 (function () {
     "use strict";
