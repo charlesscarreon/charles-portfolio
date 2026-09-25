@@ -68,15 +68,7 @@ Contains local development tooling and documentation only. It is never deployed.
 
 Work in progress or planned to be done immediately.
 
-### Establish "Charles S. Carreon" as the main identity
-
-Display-first approach: the visible identity on every page becomes "Charles S. Carreon", while structured data keeps the full name canonical for disambiguation. This intentionally deviates from the audit docs' "keep the full name primary everywhere" advice; the SEO audit files stay as the historical record. Background: `/dev/seo-audit-260904/` covers the name-ambiguity problem this addresses.
-
-- Step 1 — `Person` structured data in `index.html`: keep `"name": "Charles Serrano Carreon"`; set `"alternateName": ["Charles S. Carreon", "Charles Carreon"]`.
-- Step 2 — Swap the visible identity to "Charles S. Carreon" across all three pages: `<title>`, `meta name="author"`, `og:` and `twitter:` tags, brand links, the `<h1>`, hero intro, footer, and copyright line. Exception: the About Me intro paragraph on the homepage intentionally uses the full name "Charles Serrano Carreon".
-- Step 3 — Page titles use a uniform "Charles S. Carreon | <section>" pattern (Home has the role suffix "Computer Science Student & Software Developer" instead of a location).
-- Step 4 — Update `README.md` and the header comments in `script.js` / `styles.css` to match.
-- Step 5 — Verify with the fallback helper (`?css=0`, `?js=0`, `?css=0&js=0`) that identity is still conveyed in all views and JSON-LD survives intact.
+None currently — see Completed Changes and Planned Changes.
 
 ## Planned Changes
 
@@ -114,3 +106,17 @@ COMPLETED 2026-09-25. The commits `ad065a9` + `544f6b5` belong to the old websit
 ### Fallback-testing helper
 
 `dev/test-fallback.js` + `dev/test-fallback.bat` are in place and verified. Launched via `dev/test-fallback.bat` (serves on port 8124). Add `?css=0`, `?js=0`, or `?css=0&js=0` to a URL to witness the no-CSS, no-JS, and full-fallback views in-browser. JSON-LD structured data is preserved in all views. `?redirect=0` strips automatic redirects so a redirect stub's manual fallback can be previewed; `dev/test-fallback-old.bat` serves the old website repo (`ROOT` env override) and opens that preview. Future expansion (e.g., additional simulated problems) can be planned under this note when needed.
+
+### Establish "Charles S. Carreon" as the main identity
+
+COMPLETED 2026-09-25. Local commit `3dcea29` ("feat: rebrand the site under the main identity Charles S. Carreon"). Along with `d5f3620` (dev tooling + audit), these two commits are currently UNPUSHED — Vercel auto-deploys on push.
+
+Final decisions (where they deviate from the audit docs' "keep the full name primary everywhere" advice, the deviation is intentional; the SEO audit files stay as the historical record):
+- Display-first: the visible identity on every page is "Charles S. Carreon" (brand, `h1`, hero, footer, copyright, `<title>`, `meta name="author"`, `og:`/`twitter:` titles).
+- Structured data keeps the full name canonical: `Person.name` = "Charles Serrano Carreon", `alternateName` = ["Charles S. Carreon", "Charles Carreon"]; project `author` and `ItemList` blocks unchanged.
+- Uniform page titles: "Charles S. Carreon | <section>" (Home = "Charles S. Carreon | Computer Science Student & Software Developer"; the location suffix is gone).
+- The homepage About Me intro and the meta/og/twitter descriptions intentionally use the full name "Charles Serrano Carreon".
+- No homepage identity statement connecting the name forms (Option E decision).
+- `README.md` heading and `script.js`/`styles.css` header comments updated.
+- Verified with the fallback helper (`?css=0`, `?js=0`, `?css=0&js=0`): identity renders in all views, JSON-LD survives intact.
+- Remaining audit gap (off-site): the GitHub display name still reads "Charles Carreon" — should be changed to "Charles S. Carreon" in GitHub settings.
