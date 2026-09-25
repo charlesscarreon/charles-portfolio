@@ -171,7 +171,7 @@ iframe {
 .site-nav {
     max-width: 1040px;
     margin: 0 auto;
-    padding: 0.75rem 1.25rem;
+    padding: 0.75rem clamp(1rem, 4vw, 1.25rem);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -276,12 +276,31 @@ html.no-js .theme-switch svg {
     display: none;
 }
 
+/* Larger tap target on touch devices (~44px) */
+@media (pointer: coarse) {
+    html.js .theme-switch {
+        width: 2.75rem;
+        height: 1.5rem;
+    }
+
+    html.js .theme-switch .theme-icon {
+        width: 1.05rem;
+        height: 1.05rem;
+        left: 0.25rem;
+    }
+
+    html.js[data-theme="light"] .theme-switch .theme-icon {
+        left: calc(100% - 0.25rem - 1.05rem);
+    }
+}
+
 /* ---------- Main layout ---------- */
 
 main {
     max-width: 1040px;
     margin: 0 auto;
-    padding: 2.5rem 1.25rem 3rem;
+    padding: 2.5rem clamp(1rem, 4vw, 1.25rem) 3rem;
+    overflow-wrap: anywhere;
 }
 
 .section,
@@ -309,12 +328,26 @@ main > .card {
     margin-bottom: 1.25rem;
 }
 
-.hero .contact {
+.contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 0.75rem;
+    row-gap: 0.25rem;
     margin-top: 1.5rem;
 }
 
 .contact a {
     white-space: nowrap;
+}
+
+/* Footer link groups: flex-gap spacing instead of literal separators */
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 0.75rem;
+    row-gap: 0.25rem;
 }
 
 /* ---------- Cards ---------- */
@@ -664,7 +697,7 @@ main > .card {
     background-color: var(--surface);
     border-top: 1px solid var(--border);
     text-align: center;
-    padding: 2rem 1.25rem;
+    padding: 2rem clamp(1rem, 4vw, 1.25rem);
     color: var(--muted);
 }
 
@@ -683,6 +716,28 @@ main > .card {
 
 /* ---------- Responsive tweaks ---------- */
 
+/* Tablet portrait / small tablets: collapse two-column data grids when space is tight */
+@media (max-width: 760px) {
+    .entry-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .entry-grid time,
+    .entry-grid .location {
+        grid-column: 1;
+        justify-self: start;
+    }
+
+    .meta {
+        grid-template-columns: 1fr;
+        row-gap: 0.15rem;
+    }
+
+    .meta dd {
+        margin-bottom: 0.5rem;
+    }
+}
+
 @media (max-width: 620px) {
     .site-nav {
         gap: 0.5rem;
@@ -694,6 +749,21 @@ main > .card {
 
     .hero {
         text-align: left;
+    }
+
+    .contact,
+    .footer-links {
+        flex-direction: column;
+        row-gap: 0.35rem;
+    }
+
+    .contact {
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .footer-links {
+        align-items: center;
     }
 
     .contact a {
@@ -711,22 +781,24 @@ main > .card {
         gap: 0.15rem;
     }
 
-    .entry-grid {
-        grid-template-columns: 1fr;
+    .gallery img {
+        aspect-ratio: auto;
+        height: auto;
+    }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+    main {
+        padding-top: 1.75rem;
     }
 
-    .entry-grid time,
-    .entry-grid .location {
-        justify-self: start;
+    .hero {
+        margin-bottom: 2.25rem;
     }
 
-    .meta {
-        grid-template-columns: 1fr;
-        row-gap: 0.15rem;
-    }
-
-    .meta dd {
-        margin-bottom: 0.5rem;
+    .hero .tagline {
+        font-size: 1.05rem;
     }
 }
 

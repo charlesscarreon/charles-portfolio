@@ -70,7 +70,7 @@ Contains local development tooling and documentation only. It is never deployed.
 
 Work in progress or planned to be done immediately.
 
-None currently — see Completed Changes and Planned Changes.
+- Accessibility audit (current objective, started 2026-09-25): verify WCAG AA color contrast in both dark and light themes, confirm layouts hold at 200% zoom and text-only resizing, and run a keyboard-only + screen-reader walkthrough of all three pages. Include the bare-HTML polish in this round: clean up semantic structure so the no-CSS / no-JS view reads well and add a small color-agnostic inline `<style>` fallback in each page's `<head>` (covers container width, vertical rhythm, and list/table spacing without relying on CSS custom properties or colors).
 
 ## Planned Changes
 
@@ -111,7 +111,7 @@ COMPLETED 2026-09-25. The commits `ad065a9` + `544f6b5` belong to the old websit
 
 ### Establish "Charles S. Carreon" as the main identity
 
-COMPLETED 2026-09-25. Local commits `d5f3620` (dev tooling + audit) and `3dcea29` (identity rebrand), followed by `411b250` (sitemap lastmod refresh + CONTEXT close-out) and the current head commit (share-image handling, Google Developer `sameAs`, link-styling update). The branch is UNPUSHED ahead of `origin/main`; Vercel auto-deploys on push. Use `git log --oneline origin/main..HEAD` for the live count.
+COMPLETED 2026-09-25. Local commits `d5f3620` (dev tooling + audit), `3dcea29` (identity rebrand), `411b250` (sitemap lastmod refresh + CONTEXT close-out), and `6632594` (share-image handling, Google Developer `sameAs`, link-styling update). All pushed to `origin/main` and live on Vercel (2026-09-25).
 
 Final decisions (where they deviate from the audit docs' "keep the full name primary everywhere" advice, the deviation is intentional; the SEO audit files stay as the historical record):
 - Display-first: the visible identity on every page is "Charles S. Carreon" (brand, `h1`, hero, footer, copyright, `<title>`, `meta name="author"`, `og:`/`twitter:` titles).
@@ -124,3 +124,15 @@ Final decisions (where they deviate from the audit docs' "keep the full name pri
 - Off-site identity gap closed 2026-09-25: the GitHub display name was changed from "Charles Carreon" to "Charles S. Carreon" in GitHub settings — profile name, bio, and website link now all match the site's identity.
 - `sameAs` in the Person structured data also now includes the Google Developer profile (https://g.dev/CharlesCarreon), matching the GitHub profile README's contact list. It is intentionally NOT offered as a visible contact channel on the site: g.dev has no contact feature and is not actively used, so it stays a machine-readable identity link only.
 - Social share images (`og:image` / `twitter:image`): `/projects` defaults to `images/projects/kotsell-1.png`; `/` and `/skills` use `images/charles-portrait.png`. Each page carries an HTML comment above its OG metas documenting the swap convention (candidate list + restore-the-portrait fallback rule).
+
+### Responsive layout improvements
+
+COMPLETED 2026-09-25. Local work included in the next commit of this round.
+
+- Fluid side padding via `clamp(1rem, 4vw, 1.25rem)` for `main`, `.site-nav`, and `.site-footer`.
+- Breakpoint ladder: 760px (`.entry-grid` / `.meta` collapse to one column), 620px (nav stacks, hero left-aligns, contact/footer link groups stack into one column, gallery thumbnails revert to natural ratios), 400px (small-phone spacing tightening).
+- Contact and footer link groups are flex-gap spaced with no literal separators, so wrapped lines never start with a stray dot.
+- `overflow-wrap` guard on `main` prevents any token from causing horizontal overflow.
+- Theme switch tap target enlarged (~44px) on `pointer: coarse` devices.
+- Verified: no horizontal scroll at 320 / 375 / 414 / 480 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, both themes.
+- Explicitly skipped: short/landscape-viewport spacing trim (cosmetic) and carousel fill-width on portrait phones (`contain` is acceptable). The WCAG AA contrast + 200% zoom audit is now the Current Objective (see above).
