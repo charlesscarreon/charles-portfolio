@@ -96,12 +96,13 @@ p {
 
 a {
     color: var(--link);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 2px;
+    text-decoration: none;
 }
 
 a:hover {
     color: var(--hover);
+    text-decoration: underline;
+    text-underline-offset: 2px;
 }
 
 strong { color: var(--text-strong); }
@@ -563,6 +564,7 @@ main > .card {
 .btn:hover {
     background-color: var(--accent-strong);
     color: var(--accent-contrast);
+    text-decoration: none;
 }
 
 .btn {
@@ -594,8 +596,7 @@ main > .card {
 .scratch-embed figcaption a {
     display: inline-block;
     color: var(--link);
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    text-decoration: none;
 }
 
 /* ---------- Skills ---------- */

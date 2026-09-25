@@ -32,6 +32,7 @@ The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public 
 - The `dev/` folder is excluded from production deploys via `.vercelignore`.
 - Keep accessibility features: skip links, semantic HTML, `aria` attributes, `:focus-visible`, `prefers-reduced-motion`.
 - Dark theme is the default; light theme is applied via a `data-theme` attribute and persisted in `localStorage`.
+- Link styling: no persistent underlines; the underline appears on hover only. Pill/button links (`.links a`, `.btn`) stay underline-free even on hover.
 - Maintain the existing SEO setup: per-page metadata, canonical URLs, Open Graph, Twitter Card, and JSON-LD structured data, plus `sitemap.xml` and `robots.txt`. As a standing maintenance habit, periodically review and refresh content (education, projects, skills, achievements) and update `sitemap.xml` lastmod dates when pages meaningfully change.
 - Content must remain readable even without CSS: if a visitor's browser fails to load or apply the stylesheet, the raw HTML should still present the information in a way human eyes can read.
 
@@ -45,6 +46,7 @@ The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public 
 - Fallback-testing server: http://localhost:8124
 - GitHub profile: https://github.com/CSselrahC
 - LinkedIn: https://www.linkedin.com/in/charlesscarreon
+- Google Developer profile: https://g.dev/CharlesCarreon
 
 ## The `/dev` Folder
 
@@ -109,7 +111,7 @@ COMPLETED 2026-09-25. The commits `ad065a9` + `544f6b5` belong to the old websit
 
 ### Establish "Charles S. Carreon" as the main identity
 
-COMPLETED 2026-09-25. Local commit `3dcea29` ("feat: rebrand the site under the main identity Charles S. Carreon"). Along with `d5f3620` (dev tooling + audit), these two commits are currently UNPUSHED — Vercel auto-deploys on push.
+COMPLETED 2026-09-25. Local commits `d5f3620` (dev tooling + audit) and `3dcea29` (identity rebrand), followed by `411b250` (sitemap lastmod refresh + CONTEXT close-out) and the current head commit (share-image handling, Google Developer `sameAs`, link-styling update). The branch is UNPUSHED ahead of `origin/main`; Vercel auto-deploys on push. Use `git log --oneline origin/main..HEAD` for the live count.
 
 Final decisions (where they deviate from the audit docs' "keep the full name primary everywhere" advice, the deviation is intentional; the SEO audit files stay as the historical record):
 - Display-first: the visible identity on every page is "Charles S. Carreon" (brand, `h1`, hero, footer, copyright, `<title>`, `meta name="author"`, `og:`/`twitter:` titles).
@@ -119,4 +121,6 @@ Final decisions (where they deviate from the audit docs' "keep the full name pri
 - No homepage identity statement connecting the name forms (Option E decision).
 - `README.md` heading and `script.js`/`styles.css` header comments updated.
 - Verified with the fallback helper (`?css=0`, `?js=0`, `?css=0&js=0`): identity renders in all views, JSON-LD survives intact.
-- Remaining audit gap (off-site): the GitHub display name still reads "Charles Carreon" — should be changed to "Charles S. Carreon" in GitHub settings.
+- Off-site identity gap closed 2026-09-25: the GitHub display name was changed from "Charles Carreon" to "Charles S. Carreon" in GitHub settings — profile name, bio, and website link now all match the site's identity.
+- `sameAs` in the Person structured data also now includes the Google Developer profile (https://g.dev/CharlesCarreon), matching the GitHub profile README's contact list. It is intentionally NOT offered as a visible contact channel on the site: g.dev has no contact feature and is not actively used, so it stays a machine-readable identity link only.
+- Social share images (`og:image` / `twitter:image`): `/projects` defaults to `images/projects/kotsell-1.png`; `/` and `/skills` use `images/charles-portrait.png`. Each page carries an HTML comment above its OG metas documenting the swap convention (candidate list + restore-the-portrait fallback rule).
