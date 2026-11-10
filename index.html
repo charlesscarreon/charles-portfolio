@@ -12,6 +12,16 @@
     <meta name="theme-color" content="#0f1115">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="canonical" href="https://charlescarreon.vercel.app/">
+    <!-- Color-agnostic no-CSS fallback (only matters when styles.css fails to
+         load). No colors or CSS custom properties, so it survives an empty
+         stylesheet. Every selector below is redefined by styles.css, which is
+         linked right after this, so nothing here leaks into the styled page. -->
+    <style>
+        main { max-width: 56rem; margin: 0 auto; padding: 0 1rem 1rem; }
+        h1, h2, h3 { line-height: 1.25; margin: 1.5rem 0 0.5rem; }
+        p { margin: 0.75rem 0; }
+        img, iframe { max-width: 100%; }
+    </style>
     <link rel="stylesheet" href="styles.css">
 
     <!-- Open Graph -->

@@ -39,10 +39,10 @@
     --text-strong: #000000;
     --muted: #5b6470;
     --border: #dde1e7;
-    --accent: #0d9488;
+    --accent: #0e7a70;
     --accent-strong: #0f766e;
     --accent-contrast: #ffffff;
-    --link: #0d9488;
+    --link: #0e7a70;
     --hover: #0f766e;
     --shadow: 0 4px 20px rgba(20, 30, 40, 0.08);
 
@@ -180,7 +180,7 @@ iframe {
 
 .brand {
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 1.2rem;
     color: var(--text-strong);
     text-decoration: none;
     margin-right: auto;
@@ -230,6 +230,7 @@ html.js .theme-switch {
     border-radius: 999px;
     cursor: pointer;
     padding: 0;
+    margin-left: 1rem;
     transition: background 0.2s ease, border-color 0.2s ease;
 }
 
@@ -291,6 +292,29 @@ html.no-js .theme-switch svg {
 
     html.js[data-theme="light"] .theme-switch .theme-icon {
         left: calc(100% - 0.25rem - 1.05rem);
+    }
+
+    /* Expand the theme switch's touch area to ~44x44px without changing its
+       compact look: a transparent, centered hit zone on top of the pill. */
+    html.js .theme-switch::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 2.75rem;
+        height: 2.75rem;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    /* 44px-tall touch targets for gallery controls and pill links */
+    .gallery-nav button,
+    .links a,
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.75rem;
     }
 }
 
@@ -747,8 +771,8 @@ main > .card {
         flex-basis: 100%;
     }
 
-    .hero {
-        text-align: left;
+    .nav-list {
+        margin-right: auto;
     }
 
     .contact,
@@ -758,8 +782,8 @@ main > .card {
     }
 
     .contact {
-        justify-content: flex-start;
-        align-items: flex-start;
+        justify-content: center;
+        align-items: center;
     }
 
     .footer-links {
@@ -768,6 +792,18 @@ main > .card {
 
     .contact a {
         white-space: normal;
+    }
+
+    .hero {
+        margin-bottom: 2rem;
+    }
+
+    .hero .tagline {
+        margin-bottom: 0.75rem;
+    }
+
+    .section h2 {
+        text-align: center;
     }
 
     .about-card {
@@ -794,11 +830,42 @@ main > .card {
     }
 
     .hero {
-        margin-bottom: 2.25rem;
+        margin-bottom: 1.5rem;
     }
 
     .hero .tagline {
         font-size: 1.05rem;
+    }
+}
+
+/* Very small phones: drop the hero contact group below 360px so it doesn't
+   render as a cramped column; the footer link group still shows all contacts
+   on every width, so contact access is preserved. */
+@media (max-width: 360px) {
+    .hero .contact {
+        display: none;
+    }
+}
+
+/* Short / landscape viewports: trim vertical spacing so content stays
+   above the fold without a tall empty hero. */
+@media (orientation: landscape) and (max-height: 520px) {
+    main {
+        padding-top: 1.25rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .hero {
+        margin-bottom: 1.5rem;
+    }
+
+    .hero .tagline {
+        margin-bottom: 0.75rem;
+    }
+
+    .section,
+    main > .card {
+        margin-bottom: 1.5rem;
     }
 }
 

@@ -34,7 +34,7 @@ The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public 
 - Dark theme is the default; light theme is applied via a `data-theme` attribute and persisted in `localStorage`.
 - Link styling: no persistent underlines; the underline appears on hover only. Pill/button links (`.links a`, `.btn`) stay underline-free even on hover.
 - Maintain the existing SEO setup: per-page metadata, canonical URLs, Open Graph, Twitter Card, and JSON-LD structured data, plus `sitemap.xml` and `robots.txt`. As a standing maintenance habit, periodically review and refresh content (education, projects, skills, achievements) and update `sitemap.xml` lastmod dates when pages meaningfully change.
-- Content must remain readable even without CSS: if a visitor's browser fails to load or apply the stylesheet, the raw HTML should still present the information in a way human eyes can read.
+- Content must remain readable even without CSS: if a visitor's browser fails to load or apply the stylesheet, the raw HTML should still present the information in a way human eyes can read. Each page ships a small color-agnostic inline `<style>` fallback in its `<head>` (placed before the `styles.css` link) that applies container width on `main` (56rem), heading/paragraph vertical rhythm, and `img`/`iframe` width limits — it uses no colors and no CSS custom properties (both die with a failed stylesheet). Every fallback selector is also redefined by `styles.css`, which is linked directly after it, so the fallback cannot leak into the fully styled page.
 
 ## Important Links
 
@@ -70,7 +70,7 @@ Contains local development tooling and documentation only. It is never deployed.
 
 Work in progress or planned to be done immediately.
 
-- Accessibility audit (current objective, started 2026-09-25): verify WCAG AA color contrast in both dark and light themes, confirm layouts hold at 200% zoom and text-only resizing, and run a keyboard-only + screen-reader walkthrough of all three pages. Include the bare-HTML polish in this round: clean up semantic structure so the no-CSS / no-JS view reads well and add a small color-agnostic inline `<style>` fallback in each page's `<head>` (covers container width, vertical rhythm, and list/table spacing without relying on CSS custom properties or colors).
+- Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
 
 ## Planned Changes
 
@@ -130,9 +130,30 @@ Final decisions (where they deviate from the audit docs' "keep the full name pri
 COMPLETED 2026-09-25. Local work included in the next commit of this round.
 
 - Fluid side padding via `clamp(1rem, 4vw, 1.25rem)` for `main`, `.site-nav`, and `.site-footer`.
-- Breakpoint ladder: 760px (`.entry-grid` / `.meta` collapse to one column), 620px (nav stacks, hero left-aligns, contact/footer link groups stack into one column, gallery thumbnails revert to natural ratios), 400px (small-phone spacing tightening).
+- Breakpoint ladder: 760px (`.entry-grid` / `.meta` collapse to one column), 620px (nav stacks, contact/footer link groups stack into one column, gallery thumbnails revert to natural ratios), 400px (small-phone spacing tightening).
 - Contact and footer link groups are flex-gap spaced with no literal separators, so wrapped lines never start with a stray dot.
 - `overflow-wrap` guard on `main` prevents any token from causing horizontal overflow.
 - Theme switch tap target enlarged (~44px) on `pointer: coarse` devices.
 - Verified: no horizontal scroll at 320 / 375 / 414 / 480 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, both themes.
 - Explicitly skipped: short/landscape-viewport spacing trim (cosmetic) and carousel fill-width on portrait phones (`contain` is acceptable). The WCAG AA contrast + 200% zoom audit is now the Current Objective (see above).
+
+### Accessibility audit (WCAG AA) and bare-HTML fallback
+
+COMPLETED 2026-09-25 (code portion). Local work for this round; user verification of zoom/keyboard/screen-reader still pending (see Current Objectives).
+
+- Light-theme contrast fix: `--accent` and `--link` changed `#0d9488` → `#0e7a70`. Previously the light-theme teal failed WCAG AA for text — inline links were 3.52:1 on the page background and 3.74:1 on white, and white text on the `--accent` pill/button background was 3.74:1 (all need ≥4.5:1). Verified after the change: links 4.90–5.20:1, white-on-accent button/skip-link labels 5.20:1, hover `#0f766e` 5.15–5.47:1, focus/border/non-text uses ≥4.9:1. Dark theme untouched and still passes everywhere (lowest pair is 6.3:1 on muted small text).
+- All 15 images already carry descriptive `alt` text (portrait + 14 project screenshots, each varied per image) — no changes needed.
+- Markup and landmarks audited, already compliant — no HTML changes: single `<h1>` per page, ordered `<h2>`/`<h3>` hierarchy, `<main id="main">` skip-link target on every page, `<header>`/`<nav aria-label="Primary">`/`<footer>`/`<address>`/`<figure>`/`<figcaption>`/`<article>`, `lang="en"`, `aria-label` + `aria-current`, theme icons `aria-hidden`, `:focus-visible` ring, `prefers-reduced-motion` handled.
+- Bare-HTML fallback added: a small color-agnostic inline `<style>` in each page's `<head>` (placed before the `styles.css` link) applying `max-width: 56rem` on `main`, heading/paragraph vertical rhythm, and `img`/`iframe` `max-width: 100%`. No colors, no CSS custom properties. Every fallback selector is also redefined by `styles.css` (linked after it), so the fallback never affects the fully styled page. Verified via the fallback server: `?css=0` strips the `<link rel="stylesheet">` while keeping the inline `<style>`. (Revised after the first version leaked a `body { max-width: 56rem }` rule into the styled page, which collapsed the layout into a centered column on wide screens; the leak was removed by dropping every fallback rule the stylesheet does not also define — `body`, `ul`, `ol`, `dd`, and `time`.)
+- Explicitly skipped / accepted: `color-mix` accent-tinted pill borders measure ~1.6:1 (below the 3:1 non-text guideline), accepted because the pill label text (which passes at ≥4.5:1) conveys the component's identity — the border is decorative reinforcement. Landscape/short-viewport spacing trim is now done (see Mobile and touch polish below).
+
+### Mobile and touch polish
+
+COMPLETED 2026-09-25. Local work for this round, driven by an in-depth look at the phone experience.
+
+- Header balance: `.brand` bumped 1.05rem → 1.2rem; the theme switch is spaced from the tabs with `margin-left: 1rem`; at ≤620px `.nav-list` gets `margin-right: auto` so the toggle sits at the far right of its row instead of hugging the tabs.
+- Mobile hero re-centered: the previous responsive round's ≤620px `text-align: left` override was removed, so the name, tagline, intro, and contact return to centered on phones (matching the desktop hero). Top-level `.section` headings (About Me, Experience, Education, Achievements) are also centered at ≤620px for cohesion; project and skill card headings stay left-aligned.
+- Hero contact group hidden below 360px (`@media (max-width: 360px)`): the stacked contact column looked cramped on phones ≤360px and is now omitted there. The footer link group still shows all five contacts on every width, so contact access is preserved for small-screen visitors.
+- Reduced hero bulk on mobile: ≤620px hero bottom margin 3rem → 2rem and tagline margin 1.25rem → 0.75rem; ≤400px hero margin-bottom 1.5rem. This pulls the profile section up a meaningful amount on phones.
+- Touch targets (44px): inside `@media (pointer: coarse)`, `.gallery-nav button` and `.links a` / `.btn` get `min-height: 2.75rem` with inline-flex centering; the theme switch gets a transparent 44×44 `::after` hit area (its compact visual pill is unchanged). Theme switch width was already ~44px wide from the earlier coarse-pointer bump.
+- Short/landscape-viewport trim (previously deferred): `@media (orientation: landscape) and (max-height: 520px)` tightens `main` / `.hero` / `.section` vertical spacing so content stays above the fold. The carousel `contain` decision for portrait phones still stands.
