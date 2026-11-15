@@ -782,13 +782,6 @@ main > .card {
     white-space: nowrap;
 }
 
-/* Build line: small enough to read as metadata, present enough to show the
-   site is maintained. */
-.site-footer__build {
-    margin-bottom: 0.35rem;
-    font-size: 0.8rem;
-}
-
 /* ---------- Responsive tweaks ---------- */
 
 /* Tablet portrait / small tablets: collapse two-column data grids when space is tight */

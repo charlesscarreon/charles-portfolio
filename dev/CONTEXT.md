@@ -71,7 +71,7 @@ Contains local development tooling and documentation only. It is never deployed.
 Work in progress or planned to be done immediately.
 
 - Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
-- Phase 1 homepage rework — in progress on `feature/homepage-rework`. Rounds 2–6 still open: outcome-first copy rewrite, featured project block, stat tiles and quick facts, certifications, numbered section markers and table of contents. Nothing merges until the whole branch has been reviewed on the Vercel preview.
+- Phase 1 homepage rework — in progress on `feature/homepage-rework`. The featured project block was dropped for lack of a screenshot. Rounds still open: stat tiles and quick facts, certifications, numbered section markers and table of contents. Nothing merges until the whole branch has been reviewed on the Vercel preview.
 
 ## Planned Changes
 
@@ -173,9 +173,11 @@ COMPLETED 2026-11-15. Local work for this round.
 
 ### Phase 1: homepage rework (`feature/homepage-rework`)
 
-Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The plan of record is kept outside the repo; this section records what actually landed, round by round, one commit per round.
+Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The plan of record is kept outside the repo; this section records what actually landed, round by round, one commit per round. Five of the six were kept.
 
-#### Round 1 — hero availability, calls to action, footer build line
+The featured project block was dropped before it was built. Its purpose was visual proof, and Lunas has no screenshot available: the repo ships none, its README lists hosting as planned, and the only way to capture the patient page is to run the stack locally. A text-only version would have repeated the achievement entry without adding evidence. The slot stays open for the game project, which will have a page and captures.
+
+#### Round 1 — hero availability and a contact button
 
 COMPLETED 2026-11-15.
 
@@ -184,6 +186,17 @@ COMPLETED 2026-11-15.
 - The button's link uses the subaddress `charlesserranocarreon+portfolio@gmail.com`. Gmail delivers it to the same inbox, and the tag survives in the envelope, so mail arriving that way can only have come from this button. A Gmail filter on `deliveredto:` with "Never send it to Spam" keeps first-contact mail out of spam, which is where collaboration enquiries had been landing. Every other email link on the site stays on the plain address so the tag keeps its meaning.
 - No public CV PDF and no CV request button. A CV goes out by reply when someone asks.
 - The five-link contact row stays in the hero but is demoted to muted, smaller text so the button is the only prominent action. Every link is still present and still hidden below 360px, where the footer carries them.
-- Footer gains a build line after the address block: `Static HTML · CSS · Vanilla JS — updated November 2026`. It is on all three pages, so the footer reads the same wherever a visitor lands.
-- New CSS: `.hero-availability`, `.hero-cta`, `.btn--lg`, `.btn--quiet`, `.site-footer__build`. The tagline's bottom margin is tightened with `.hero .tagline:has(+ .hero-availability)`; browsers without `:has()` keep the previous spacing, so the fallback is a larger gap rather than a broken layout.
+- New CSS: `.hero-availability`, `.hero-cta`, `.btn--lg`. The tagline's bottom margin is tightened with `.hero .tagline:has(+ .hero-availability)`; browsers without `:has()` keep the previous spacing, so the fallback is a larger gap rather than a broken layout. The `.btn--quiet` style written for the dropped second button was removed along with it.
 - `sitemap.xml` needed no change: its lastmod was already 2026-11-15.
+
+#### Round 2 — achievements and About copy
+
+COMPLETED 2026-11-15.
+
+- Both achievement entries now lead with what was built and what role was held, instead of opening with "I participated". Course and event names stay; the phrasing that read like a submission to a professor is gone.
+- Lunas: `Built the patient-facing page of Lunas, a QR-based emergency medical information system, as front-end developer on an eight-person team that reached the Top 8 nationally at SIKAPTala 2026.` The team name Otso-Otso was dropped; a recruiter cannot evaluate a nickname, and the sentence already states the team size. The description paragraph below still explains what Lunas does.
+- iSITE: `Represented Pamantasan ng Cabuyao in the C# Programming category at the iSITE National IT Skills Competition 2025.` Category and institution keep their `<strong>`.
+- About: the "currently seeking opportunities" paragraph and the "browse my projects" paragraph merged into one, so availability is stated once on the page rather than twice (the hero now carries it). Both outbound links survive.
+- `projects.html` was deliberately left alone. The project list is being curated, and rewriting copy for cards that may be removed is wasted work.
+- The footer build line added in the previous round was removed. Listing the font stack and the fact that the site has no build step is detail the site already demonstrates, and it repeated on every page.
+- No JS, no new files.
