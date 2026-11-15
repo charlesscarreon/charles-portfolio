@@ -4,7 +4,7 @@ This document provides context about the portfolio project for human readers and
 
 ## Last Updated
 
-September 25, 2026
+November 15, 2026
 
 ## Project Summary
 
@@ -39,12 +39,12 @@ The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public 
 ## Important Links
 
 - Current website: https://charlescarreon.vercel.app/
-- GitHub link of current website: https://github.com/CSselrahC/charles-portfolio
-- Old website: https://csselrahc.github.io/
-- GitHub link of old website: https://github.com/CSselrahC/CSselrahC.github.io
+- GitHub link of current website: https://github.com/charlesscarreon/charles-portfolio
+- Old website: https://charlesscarreon.github.io/
+- GitHub link of old website: https://github.com/charlesscarreon/charlesscarreon.github.io
 - Local dev server: http://localhost:8123
 - Fallback-testing server: http://localhost:8124
-- GitHub profile: https://github.com/CSselrahC
+- GitHub profile: https://github.com/charlesscarreon
 - LinkedIn: https://www.linkedin.com/in/charlesscarreon
 - Google Developer profile: https://g.dev/CharlesCarreon
 
@@ -78,7 +78,7 @@ Changes to be done in the future, not immediately. The bullets below are NOT ord
 
 ### Content additions
 
-- Add a Certifications section to the current website using the certificate scans and links from the old site (EF SET English C2, DICT Programming for Beginners Using Python, DICT-WD001 Principles of Web Development). The certificate scans are preserved in the old repo at `images/cert01-03.png` (reachable at https://csselrahc.github.io/images/cert0X.png). Display format (scan images vs. text links) to be decided when this task is planned out.
+- Add a Certifications section to the current website using the certificate scans and links from the old site (EF SET English C2, DICT Programming for Beginners Using Python, DICT-WD001 Principles of Web Development). The certificate scans are preserved in the old repo at `images/cert01-03.png` (reachable at https://charlesscarreon.github.io/images/cert0X.png). Display format (scan images vs. text links) to be decided when this task is planned out.
 
 ### SEO and identity (from audit)
 
@@ -92,7 +92,7 @@ Work that has been finished. Kept as a record for continuity.
 
 All changes were scoped to the old site only; the current website was not touched.
 
-COMPLETED 2026-09-25. The commits `ad065a9` + `544f6b5` belong to the old website repo's history (`CSselrahC/CSselrahC.github.io`), pushed to its `main` branch — they are not part of this repo's history.
+COMPLETED 2026-09-25. The commits `ad065a9` + `544f6b5` belong to the old website repo's history (`charlesscarreon/charlesscarreon.github.io`), pushed to its `main` branch — they are not part of this repo's history.
 
 - Constraint #1 (auto-reroute): done — `index.html` is a minimal redirect stub (meta refresh + `window.location.replace`).
 - Constraint #2 (manual fallback link): done — a visible link to the current website works even if auto-reroute fails or CSS/JS is disabled.
@@ -101,9 +101,10 @@ COMPLETED 2026-09-25. The commits `ad065a9` + `544f6b5` belong to the old websit
 - Final repo footprint: `index.html` (stub), `README.md`, `.gitignore`, `images/cert01-03.png`. The `css/` and `js/` folders and all other images were deleted.
 - Removed personal data: home address, phone number, full birthdate (September 6, 2004), age, sex, nickname.
 - Kept unchanged on the current website: full name, the education section (all 4 schools), portrait, email, GitHub/LinkedIn/social links.
-- Certificate scans preserved at `images/cert01-03.png` (served at https://csselrahc.github.io/images/cert0X.png) for the planned Certifications section (see Planned Changes).
+- Certificate scans preserved at `images/cert01-03.png` (served at https://charlesscarreon.github.io/images/cert0X.png) for the planned Certifications section (see Planned Changes).
 - Verified live: `/` redirects to https://charlescarreon.vercel.app/; deleted URLs 404; cert scans return 200; served pages contain no sensitive strings.
-- Note: the Road to Rich Farming game stays live at https://csselrahc.github.io/road-to-rich-farming/ — a separate repo's GitHub Pages project site, unaffected by this consolidation, still referenced from the current site's `projects.html`.
+- Note: the Road to Rich Farming game stays live at https://charlesscarreon.github.io/road-to-rich-farming/ — a separate repo's GitHub Pages project site, unaffected by this consolidation, still referenced from the current site's `projects.html`.
+- Note: the GitHub account was renamed from `CSselrahC` to `charlesscarreon` in November 2026. GitHub redirects repository URLs, but GitHub Pages URLs do not follow the rename, so the old `csselrahc.github.io` host now returns 404 while the redirect stub, the certificate scans and the Road to Rich Farming game all keep serving at `charlesscarreon.github.io`.
 
 ### Fallback-testing helper
 
@@ -157,3 +158,14 @@ COMPLETED 2026-09-25. Local work for this round, driven by an in-depth look at t
 - Reduced hero bulk on mobile: ≤620px hero bottom margin 3rem → 2rem and tagline margin 1.25rem → 0.75rem; ≤400px hero margin-bottom 1.5rem. This pulls the profile section up a meaningful amount on phones.
 - Touch targets (44px): inside `@media (pointer: coarse)`, `.gallery-nav button` and `.links a` / `.btn` get `min-height: 2.75rem` with inline-flex centering; the theme switch gets a transparent 44×44 `::after` hit area (its compact visual pill is unchanged). Theme switch width was already ~44px wide from the earlier coarse-pointer bump.
 - Short/landscape-viewport trim (previously deferred): `@media (orientation: landscape) and (max-height: 520px)` tightens `main` / `.hero` / `.section` vertical spacing so content stays above the fold. The carousel `contain` decision for portrait phones still stands.
+
+### Polish round: carousel counter, pre-paint theme, renamed-account links
+
+COMPLETED 2026-11-15. Local work for this round.
+
+- Carousel counter: `script.js` queried `.gallery-count` inside the gallery, but the element is a sibling of it (inside the generated `.gallery-nav`), so the "1 / 3" indicator never rendered on any multi-image gallery. It is now queried from `nav`.
+- Pre-paint theme: each page's `<head>` now carries a small inline script that applies the stored `charles-portfolio-theme` value before first paint, removing the dark flash light-theme visitors saw. Dark stays the default and the no-JS view is unchanged.
+- Renamed account: 34 references to `CSselrahC` / `csselrahc.github.io` updated to `charlesscarreon` across the three pages and this document, including three dead URLs (the Road to Rich Farming Pages link, its JSON-LD `url`, and the certificate-scan URLs).
+- `sitemap.xml`: lastmod refreshed to 2026-11-15 for all three pages.
+- `vercel.json`: added `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Permissions-Policy` limiting geolocation, camera and microphone. Image caching was deliberately not added because the project screenshots are being reviewed for removal or replacement.
+- Deliberately skipped: image compression. The three heaviest images (portrait, two Road to Rich Farming captures) are PNG exports of photo-like content, and local PNG re-encoding inflates one of them, so any real gain would need a lossy re-encode or an external tool. Deferred while the project list is being curated.

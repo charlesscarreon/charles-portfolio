@@ -12,6 +12,17 @@
     <meta name="theme-color" content="#0f1115">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="canonical" href="https://charlescarreon.vercel.app/">
+    <!-- Apply a saved theme before first paint so light-theme visitors don't
+         see a dark flash. Mirrors the storage key in script.js; without JS the
+         page keeps the dark default set on the html element above. -->
+    <script>
+        try {
+            var savedTheme = localStorage.getItem("charles-portfolio-theme");
+            if (savedTheme === "light" || savedTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", savedTheme);
+            }
+        } catch (error) { /* storage blocked: keep the dark default */ }
+    </script>
     <!-- Color-agnostic no-CSS fallback (only matters when styles.css fails to
          load). No colors or CSS custom properties, so it survives an empty
          stylesheet. Every selector below is redefined by styles.css, which is
@@ -34,7 +45,7 @@
     <meta property="og:locale" content="en_PH">
     <meta property="profile:first_name" content="Charles">
     <meta property="profile:last_name" content="Carreon">
-    <meta property="profile:username" content="CSselrahC">
+    <meta property="profile:username" content="charlesscarreon">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
@@ -150,7 +161,7 @@
             "https://www.facebook.com/csharlec/",
             "https://www.instagram.com/csharlec/",
             "https://www.linkedin.com/in/charlesscarreon/",
-            "https://github.com/CSselrahC",
+            "https://github.com/charlesscarreon",
             "https://g.dev/CharlesCarreon"
         ]
     }
@@ -207,7 +218,7 @@
                 <a href="https://www.facebook.com/csharlec" target="_blank" rel="noreferrer">Facebook</a>
                 <a href="https://www.instagram.com/csharlec" target="_blank" rel="noreferrer">Instagram</a>
                 <a href="https://www.linkedin.com/in/charlesscarreon/" target="_blank" rel="noreferrer">LinkedIn</a>
-                <a href="https://github.com/CSselrahC" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://github.com/charlesscarreon" target="_blank" rel="noreferrer">GitHub</a>
             </p>
         </section>
 
@@ -377,7 +388,7 @@
                 <a href="https://www.facebook.com/csharlec" target="_blank" rel="noreferrer">Facebook</a>
                 <a href="https://www.instagram.com/csharlec" target="_blank" rel="noreferrer">Instagram</a>
                 <a href="https://www.linkedin.com/in/charlesscarreon/" target="_blank" rel="noreferrer">LinkedIn</a>
-                <a href="https://github.com/CSselrahC" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://github.com/charlesscarreon" target="_blank" rel="noreferrer">GitHub</a>
             </p>
         </address>
         <p>&copy; 2026 Charles S. Carreon. All rights reserved.</p>

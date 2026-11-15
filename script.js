@@ -56,7 +56,9 @@
                 Array.prototype.forEach.call(images, function (img, n) {
                     img.classList.toggle("is-active", n === i);
                 });
-                var count = gallery.querySelector(".gallery-count");
+                /* The counter is a sibling of the gallery (inside nav), not a
+                   descendant of it, so it must be queried from nav. */
+                var count = nav.querySelector(".gallery-count");
                 if (count) {
                     count.textContent = (i + 1) + " / " + images.length;
                 }

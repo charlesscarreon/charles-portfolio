@@ -10,6 +10,17 @@
     <meta name="theme-color" content="#0f1115">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="canonical" href="https://charlescarreon.vercel.app/projects">
+    <!-- Apply a saved theme before first paint so light-theme visitors don't
+         see a dark flash. Mirrors the storage key in script.js; without JS the
+         page keeps the dark default set on the html element above. -->
+    <script>
+        try {
+            var savedTheme = localStorage.getItem("charles-portfolio-theme");
+            if (savedTheme === "light" || savedTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", savedTheme);
+            }
+        } catch (error) { /* storage blocked: keep the dark default */ }
+    </script>
     <!-- Color-agnostic no-CSS fallback (only matters when styles.css fails to
          load). No colors or CSS custom properties, so it survives an empty
          stylesheet. Every selector below is redefined by styles.css, which is
@@ -70,8 +81,8 @@
                         "https://charlescarreon.vercel.app/images/projects/kotsell-3.png"
                     ],
                     "codeRepository": [
-                        "https://github.com/CSselrahC/kotsell-frontend",
-                        "https://github.com/CSselrahC/kotsell-backend"
+                        "https://github.com/charlesscarreon/kotsell-frontend",
+                        "https://github.com/charlesscarreon/kotsell-backend"
                     ],
                     "creativeWorkStatus": "Finished"
                 }
@@ -92,8 +103,8 @@
                         "https://charlescarreon.vercel.app/images/projects/forecast-3.png"
                     ],
                     "codeRepository": [
-                        "https://github.com/CSselrahC/forecast-frontend",
-                        "https://github.com/CSselrahC/forecast-backend"
+                        "https://github.com/charlesscarreon/forecast-frontend",
+                        "https://github.com/charlesscarreon/forecast-backend"
                     ],
                     "creativeWorkStatus": "Finished"
                 }
@@ -112,8 +123,8 @@
                         "https://charlescarreon.vercel.app/images/projects/road-to-rich-farming-1.png",
                         "https://charlescarreon.vercel.app/images/projects/road-to-rich-farming-2.png"
                     ],
-                    "url": "https://csselrahc.github.io/road-to-rich-farming/",
-                    "codeRepository": "https://github.com/CSselrahC/road-to-rich-farming",
+                    "url": "https://charlesscarreon.github.io/road-to-rich-farming/",
+                    "codeRepository": "https://github.com/charlesscarreon/road-to-rich-farming",
                     "creativeWorkStatus": "Finished"
                 }
             },
@@ -150,7 +161,7 @@
                         "https://charlescarreon.vercel.app/images/projects/library-ms-2.png",
                         "https://charlescarreon.vercel.app/images/projects/library-ms-3.png"
                     ],
-                    "codeRepository": "https://github.com/CSselrahC/library-ms",
+                    "codeRepository": "https://github.com/charlesscarreon/library-ms",
                     "creativeWorkStatus": "Finished"
                 }
             },
@@ -167,7 +178,7 @@
                     "image": [
                         "https://charlescarreon.vercel.app/images/projects/jmusicplayer-1.png"
                     ],
-                    "codeRepository": "https://github.com/CSselrahC/JMusicPlayer",
+                    "codeRepository": "https://github.com/charlesscarreon/JMusicPlayer",
                     "creativeWorkStatus": "Finished"
                 }
             },
@@ -271,9 +282,9 @@
                 <dt>Role</dt><dd>Project Leader</dd>
             </dl>
             <p class="links">
-                <a href="https://github.com/CSselrahC/kotsell-frontend" target="_blank" rel="noreferrer">Front-end Source Code</a>
-                <a href="https://github.com/CSselrahC/kotsell-backend" target="_blank" rel="noreferrer">Back-end Source Code</a>
-                <a href="https://github.com/CSselrahC/kotsell-old" target="_blank" rel="noreferrer">Old Source Code</a>
+                <a href="https://github.com/charlesscarreon/kotsell-frontend" target="_blank" rel="noreferrer">Front-end Source Code</a>
+                <a href="https://github.com/charlesscarreon/kotsell-backend" target="_blank" rel="noreferrer">Back-end Source Code</a>
+                <a href="https://github.com/charlesscarreon/kotsell-old" target="_blank" rel="noreferrer">Old Source Code</a>
             </p>
         </article>
 
@@ -296,8 +307,8 @@
                 <dt>Role</dt><dd>Developer</dd>
             </dl>
             <p class="links">
-                <a href="https://github.com/CSselrahC/forecast-frontend" target="_blank" rel="noreferrer">Front-end Source Code</a>
-                <a href="https://github.com/CSselrahC/forecast-backend" target="_blank" rel="noreferrer">Back-end Source Code</a>
+                <a href="https://github.com/charlesscarreon/forecast-frontend" target="_blank" rel="noreferrer">Front-end Source Code</a>
+                <a href="https://github.com/charlesscarreon/forecast-backend" target="_blank" rel="noreferrer">Back-end Source Code</a>
             </p>
         </article>
 
@@ -319,8 +330,8 @@
                 <dt>Role</dt><dd>Developer</dd>
             </dl>
             <p class="links">
-                <a href="https://csselrahc.github.io/road-to-rich-farming/" target="_blank" rel="noreferrer">Deployed Game</a>
-                <a href="https://github.com/CSselrahC/road-to-rich-farming" target="_blank" rel="noreferrer">Source Code</a>
+                <a href="https://charlesscarreon.github.io/road-to-rich-farming/" target="_blank" rel="noreferrer">Deployed Game</a>
+                <a href="https://github.com/charlesscarreon/road-to-rich-farming" target="_blank" rel="noreferrer">Source Code</a>
             </p>
         </article>
 
@@ -365,7 +376,7 @@
                 <dt>Role</dt><dd>Project Leader</dd>
             </dl>
             <p class="links">
-                <a href="https://github.com/CSselrahC/library-ms" target="_blank" rel="noreferrer">Source Code</a>
+                <a href="https://github.com/charlesscarreon/library-ms" target="_blank" rel="noreferrer">Source Code</a>
             </p>
         </article>
 
@@ -386,7 +397,7 @@
                 <dt>Role</dt><dd>Co-developer</dd>
             </dl>
             <p class="links">
-                <a href="https://github.com/CSselrahC/JMusicPlayer" target="_blank" rel="noreferrer">Source Code</a>
+                <a href="https://github.com/charlesscarreon/JMusicPlayer" target="_blank" rel="noreferrer">Source Code</a>
                 <a href="https://www.facebook.com/csharlec/videos/2193928587632408" target="_blank" rel="noreferrer">Video Presentation</a>
             </p>
         </article>
@@ -458,7 +469,7 @@
                 <a href="https://www.facebook.com/csharlec" target="_blank" rel="noreferrer">Facebook</a>
                 <a href="https://www.instagram.com/csharlec" target="_blank" rel="noreferrer">Instagram</a>
                 <a href="https://www.linkedin.com/in/charlesscarreon/" target="_blank" rel="noreferrer">LinkedIn</a>
-                <a href="https://github.com/CSselrahC" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://github.com/charlesscarreon" target="_blank" rel="noreferrer">GitHub</a>
             </p>
         </address>
         <p>&copy; 2026 Charles S. Carreon. All rights reserved.</p>
