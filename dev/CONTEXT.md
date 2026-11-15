@@ -71,7 +71,7 @@ Contains local development tooling and documentation only. It is never deployed.
 Work in progress or planned to be done immediately.
 
 - Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
-- Phase 1 homepage rework — in progress on `feature/homepage-rework`. The featured project block was dropped for lack of a screenshot. Rounds still open: stat tiles and quick facts, certifications, numbered section markers and table of contents. Nothing merges until the whole branch has been reviewed on the Vercel preview.
+- Phase 1 homepage rework — in progress on `feature/homepage-rework`. The featured project block was dropped for lack of a screenshot. Rounds still open: certifications, numbered section markers and table of contents. Nothing merges until the whole branch has been reviewed on the Vercel preview.
 
 ## Planned Changes
 
@@ -200,3 +200,16 @@ COMPLETED 2026-11-15.
 - `projects.html` was deliberately left alone. The project list is being curated, and rewriting copy for cards that may be removed is wasted work.
 - The footer build line added in the previous round was removed. Listing the font stack and the fact that the site has no build step is detail the site already demonstrates, and it repeated on every page.
 - No JS, no new files.
+
+#### Round 4 — quick facts and stat tiles in the About card
+
+COMPLETED 2026-11-15.
+
+- A `<dl class="quick-facts">` sits between the headline and the prose: Studying / Focus / Based in. It comes before the bio because the bio restates what the hero already says, while the facts are what a reader scans for.
+- A `<ol class="stat-row" role="list">` spans the width under the portrait and the text: `Top 8` (SIKAPTala 2026 national finalist), `2` (national competitions), `3` (certifications). `role="list"` is there because `list-style: none` strips list semantics in Safari with VoiceOver.
+- The numbers are text, not `::before` content, so a screen reader announces "Top 8, SIKAPTala 2026 national finalist". With CSS off, both elements still read as lists of facts.
+- Project count was deliberately not used as a tile. It read `8 projects shipped` in the plan, but the project list is being curated and the tile would go stale the moment a card is removed. `3` and `2` cannot change without a new credential or competition.
+- `Top 8` is a rank band, not eighth place; the label carries "finalist" so it cannot be misread.
+- Narrow screens: the facts collapse to one label per line, left-aligned, inside the otherwise centred card. The stat row centres its text and wraps at nine rem.
+- Contrast, computed from the tokens: tile number 8.51:1 dark / 4.64:1 light, tile label 6.30:1 / 5.35:1, fact label 7.39:1 / 5.64:1. All pass AA.
+- No JS, no new images, `sitemap.xml` unchanged.
