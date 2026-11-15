@@ -352,6 +352,43 @@ main > .card {
     margin-bottom: 1.25rem;
 }
 
+/* The availability line belongs to the tagline as one thought, so it closes the
+   gap the tagline leaves instead of opening a new block. Browsers without
+   :has() simply keep the normal tagline spacing. */
+.hero .tagline:has(+ .hero-availability) {
+    margin-bottom: 0.4rem;
+}
+
+.hero-availability {
+    margin: 0 0 1.25rem;
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0 0;
+}
+
+/* The primary contact row outranks the social links, so the social links are
+   muted rather than removed. Every one of them is still reachable. */
+.hero .contact {
+    margin-top: 1.25rem;
+    font-size: 0.88rem;
+}
+
+.hero .contact a {
+    color: var(--muted);
+}
+
+.hero .contact a:hover {
+    color: var(--hover);
+}
+
 .contact {
     display: flex;
     flex-wrap: wrap;
@@ -629,6 +666,13 @@ main > .card {
     cursor: pointer;
 }
 
+/* Hero call to action: a single primary button, sized up so it reads as the
+   main action rather than one of the inline project pills. */
+.btn--lg {
+    padding: 0.6rem 1.4rem;
+    font-size: 0.95rem;
+}
+
 /* ---------- Scratch embeds ---------- */
 
 .scratch-embed {
@@ -736,6 +780,13 @@ main > .card {
 
 .site-footer a {
     white-space: nowrap;
+}
+
+/* Build line: small enough to read as metadata, present enough to show the
+   site is maintained. */
+.site-footer__build {
+    margin-bottom: 0.35rem;
+    font-size: 0.8rem;
 }
 
 /* ---------- Responsive tweaks ---------- */

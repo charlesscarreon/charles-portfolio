@@ -71,6 +71,7 @@ Contains local development tooling and documentation only. It is never deployed.
 Work in progress or planned to be done immediately.
 
 - Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
+- Phase 1 homepage rework — in progress on `feature/homepage-rework`. Rounds 2–6 still open: outcome-first copy rewrite, featured project block, stat tiles and quick facts, certifications, numbered section markers and table of contents. Nothing merges until the whole branch has been reviewed on the Vercel preview.
 
 ## Planned Changes
 
@@ -169,3 +170,20 @@ COMPLETED 2026-11-15. Local work for this round.
 - `sitemap.xml`: lastmod refreshed to 2026-11-15 for all three pages.
 - `vercel.json`: added `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Permissions-Policy` limiting geolocation, camera and microphone. Image caching was deliberately not added because the project screenshots are being reviewed for removal or replacement.
 - Deliberately skipped: image compression. The three heaviest images (portrait, two Road to Rich Farming captures) are PNG exports of photo-like content, and local PNG re-encoding inflates one of them, so any real gain would need a lossy re-encode or an external tool. Deferred while the project list is being curated.
+
+### Phase 1: homepage rework (`feature/homepage-rework`)
+
+Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The plan of record is kept outside the repo; this section records what actually landed, round by round, one commit per round.
+
+#### Round 1 — hero availability, calls to action, footer build line
+
+COMPLETED 2026-11-15.
+
+- Availability line added under the tagline: `Open to internship and junior developer roles`. Deliberately dateless — it cannot go stale, and the graduation year stays in the About and Education sections.
+- Hero call to action: a single `Get in touch` button, sized above the project pills. It opens a compose window with the subject `Portfolio inquiry` and the body `Hi Charles,` plus a blank line, so a first reply starts with a greeting instead of an empty page.
+- The button's link uses the subaddress `charlesserranocarreon+portfolio@gmail.com`. Gmail delivers it to the same inbox, and the tag survives in the envelope, so mail arriving that way can only have come from this button. A Gmail filter on `deliveredto:` with "Never send it to Spam" keeps first-contact mail out of spam, which is where collaboration enquiries had been landing. Every other email link on the site stays on the plain address so the tag keeps its meaning.
+- No public CV PDF and no CV request button. A CV goes out by reply when someone asks.
+- The five-link contact row stays in the hero but is demoted to muted, smaller text so the button is the only prominent action. Every link is still present and still hidden below 360px, where the footer carries them.
+- Footer gains a build line after the address block: `Static HTML · CSS · Vanilla JS — updated November 2026`. It is on all three pages, so the footer reads the same wherever a visitor lands.
+- New CSS: `.hero-availability`, `.hero-cta`, `.btn--lg`, `.btn--quiet`, `.site-footer__build`. The tagline's bottom margin is tightened with `.hero .tagline:has(+ .hero-availability)`; browsers without `:has()` keep the previous spacing, so the fallback is a larger gap rather than a broken layout.
+- `sitemap.xml` needed no change: its lastmod was already 2026-11-15.
