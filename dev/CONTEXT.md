@@ -4,7 +4,7 @@ This document provides context about the portfolio project for human readers and
 
 ## Last Updated
 
-November 15, 2026
+November 16, 2026
 
 ## Project Summary
 
@@ -13,7 +13,7 @@ Personal portfolio website for Charles S. Carreon (full name Charles Serrano Car
 The site has three pages:
 
 - `/` — About, experience, achievements, education
-- `/projects` — 8 software, web, and game projects
+- `/projects` — 4 software and game projects
 - `/skills` — skills and tools across 5 categories
 
 It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement); JavaScript only adds the theme toggle and image carousels.
@@ -104,7 +104,7 @@ COMPLETED 2026-09-25. The commits `ad065a9` + `544f6b5` belong to the old websit
 - Kept unchanged on the current website: full name, the education section (all 4 schools), portrait, email, GitHub/LinkedIn/social links.
 - Certificate scans preserved at `images/cert01-03.png` (served at https://charlesscarreon.github.io/images/cert0X.png) for the planned Certifications section (see Planned Changes).
 - Verified live: `/` redirects to https://charlescarreon.vercel.app/; deleted URLs 404; cert scans return 200; served pages contain no sensitive strings.
-- Note: the Road to Rich Farming game stays live at https://charlesscarreon.github.io/road-to-rich-farming/ — a separate repo's GitHub Pages project site, unaffected by this consolidation, still referenced from the current site's `projects.html`.
+- Note: the Road to Rich Farming game stays live at https://charlesscarreon.github.io/road-to-rich-farming/ — a separate repo's GitHub Pages project site, unaffected by this consolidation. It is no longer referenced from `projects.html` (Round 7 removed the card), but the deployment remains live.
 - Note: the GitHub account was renamed from `CSselrahC` to `charlesscarreon` in November 2026. GitHub redirects repository URLs, but GitHub Pages URLs do not follow the rename, so the old `csselrahc.github.io` host now returns 404 while the redirect stub, the certificate scans and the Road to Rich Farming game all keep serving at `charlesscarreon.github.io`.
 
 ### Fallback-testing helper
@@ -125,7 +125,7 @@ Final decisions (where they deviate from the audit docs' "keep the full name pri
 - Verified with the fallback helper (`?css=0`, `?js=0`, `?css=0&js=0`): identity renders in all views, JSON-LD survives intact.
 - Off-site identity gap closed 2026-09-25: the GitHub display name was changed from "Charles Carreon" to "Charles S. Carreon" in GitHub settings — profile name, bio, and website link now all match the site's identity.
 - `sameAs` in the Person structured data also now includes the Google Developer profile (https://g.dev/CharlesCarreon), matching the GitHub profile README's contact list. It is intentionally NOT offered as a visible contact channel on the site: g.dev has no contact feature and is not actively used, so it stays a machine-readable identity link only.
-- Social share images (`og:image` / `twitter:image`): `/projects` defaults to `images/projects/kotsell-1.png`; `/` and `/skills` use `images/charles-portrait.png`. Each page carries an HTML comment above its OG metas documenting the swap convention (candidate list + restore-the-portrait fallback rule).
+- Social share images (`og:image` / `twitter:image`): all three pages now use `images/charles-portrait.png`. `/projects` used to default to `images/projects/kotsell-1.png`, which Round 7 deleted along with the rest of the project screenshots. Each page carries an HTML comment above its OG metas documenting the swap convention.
 
 ### Responsive layout improvements
 
@@ -239,3 +239,28 @@ COMPLETED 2026-11-16.
 - The first attempt used an `IntersectionObserver` with `rootMargin: "-5rem 0px -55% 0px"`. `rootMargin` accepts **only `px` and `%`**, so the `rem` value made the constructor throw a `SyntaxError`; `initToc()` died on its first statement and no entry was ever marked. The only evidence was a console error, and `node --check` could not catch it because it is a valid string. The scroll calculation replaces it: no `rootMargin`, no feature guard, and the failure mode is arithmetic that a headless harness can assert.
 - `sitemap.xml`: homepage lastmod to 2026-11-16.
 - Not verifiable without a browser: the sticky rail, the moving highlight, and the 1160px breakpoint itself. Those need the preview.
+
+#### Round 7 — the project list replaced with four current projects
+
+COMPLETED 2026-11-16.
+
+- All eight coursework cards are gone from `projects.html`, replaced by four projects chosen for what they can carry in an interview: OUTRUN, MUTED, 964's C# Game Development Toolkit, and Lunas. Three of the old eight were variations on the same coursework brief, and every card opened with a course code rather than with the thing that was built.
+- Each card opens its detail in a native `<dialog>` modal: the page dims behind a `::backdrop`, the panel renders in the top layer, and the card list does not move when a panel opens. `showModal()` supplies focus containment, `Escape`, background inertness and focus return; closing is a `<form method="dialog">`, so no handler is needed for it. The trigger is an outlined pill beside the solid project links, drawn with an inset shadow rather than a border so the row keeps exactly its previous height.
+- The panels are hidden only under `html.dialog-capable`, a class `script.js` adds after confirming `showModal()` exists. Without JavaScript the four panels stay visible inline and still read as ordinary sections; with JavaScript but without CSS they open natively. The first attempt used `<details>`, which was replaced because an inline disclosure that later grows to hold screenshots pushes every card below it down.
+- `images/projects/` was deleted outright: 14 files, 3.6 MB, of which 2.4 MB was two Road to Rich Farming screenshots. No card carries a screenshot this round, so the directory had no remaining referent. Everything is recoverable from git history, and the deletion retires the compression question for project images — only the three certificate scans remain heavy.
+- `Status` now distinguishes something. It previously read `Finished` on all eight cards; it now reads `In development (v0.3.3)`, `Defended`, `Ongoing (v0.1.0)` and `Prototype`.
+- OUTRUN follows the itch.io page rather than the author's memory: the game is published as in development, not finished. The card and the store page cannot disagree, because a reader can see both.
+- MUTED has no external link, and the panel says so in one line rather than leaving the reader to guess. The study's gesture set, evaluation metric and sample size were not available at build time, so the panel carries only what is known — the question, the training and deployment path, and the retained input data. An empty sub-heading was deliberately not shipped.
+- The Lunas card links the deployed site **and** the team repository, and labels the repository as the team's. This is the fix for the problem the old TaskFlow card had: it claimed `Project Leader` and linked a repository under someone else's account with no explanation. Lunas states the scope instead — patient client, both registration flows — which is what the card can defend.
+- Copy rule applied throughout: every sentence describes the project, not the process, not the developer's feelings, and not what was rejected. No mention of the MUTED name's history, no "still in progress" asides, no disclaimers about how the code was written. Detail that is worth reading but not worth leading with lives in the panel.
+- One new CSS block for `.project-dialog`, its head, close button, body and `h4`/list children, plus the outlined trigger pill. Below 620px the dialog fills the viewport using `100dvh`, so the mobile URL bar cannot clip the close button. `@media print` reveals every panel and hides the triggers, so a printout is not missing the detail that was behind a click.
+- `script.js` gains `initProjectDialogs()`: it opens the named dialog from `[data-dialog]`, closes on a backdrop click, and records the open panel in the URL with `replaceState` — so `/projects#outrun-detail` opens it, and open/close does not fill the back button. Inline `code` in card copy gets a small rule so the package name and target framework do not fall back to the browser's monospace size. No new tokens, no new files, no library.
+- `sitemap.xml`: `/projects` lastmod to 2026-11-16. The homepage was not touched — its stat tiles deliberately avoid a project count, which is why this round could not invalidate them.
+- Not yet verified: the four cards have no screenshots, and Lunas cannot be walked end to end because login on the deployed site returns an internal server error. The modal behaviour itself — backdrop click, focus return to the trigger, the 320px full-screen sheet — needs a browser pass.
+
+#### Revision — the project detail is a modal, not a disclosure
+
+COMPLETED 2026-11-16.
+
+- `<details class="project-more">` was replaced by a native `<dialog>` before the round was committed: the disclosure grew the card and pushed every card below it down, and the panels are about to hold screenshots.
+- Nothing else about the round changed. Same four projects, same copy, same order, same deleted images, same `sitemap.xml` date.

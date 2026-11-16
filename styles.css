@@ -695,6 +695,167 @@ main > .card {
     margin: 0;
 }
 
+/* Per-project detail: a native modal dialog. The page dims, the card list stays
+   where it is, and focus containment, Escape and background inertness are the
+   browser's job rather than ours. The panel stays visible inline by default;
+   script.js adds `dialog-capable` only after it confirms showModal() exists, so
+   a reader without JavaScript still gets the text. */
+.project-dialog {
+    display: block;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    background-color: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+}
+
+/* Inline fallback only: the panel reads as a section under the links row.
+   Nothing here applies once the dialog can actually be modal, because the
+   margin would displace the browser's own centring. */
+html:not(.dialog-capable) .project-dialog {
+    margin: 1.25rem 0 0;
+}
+
+/* `margin: auto` is load-bearing: the card list's `.card > :last-child` rule
+   zeroes the bottom margin this dialog is the last child of, and without it the
+   UA's centring collapses and the panel hangs off the bottom of the viewport. */
+.project-dialog[open] {
+    margin: auto;
+    width: min(42rem, calc(100vw - 2rem));
+    max-height: min(85dvh, 44rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted) transparent;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.project-dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="light"] .project-dialog::backdrop {
+    background-color: rgba(20, 30, 40, 0.45);
+}
+
+html.dialog-capable .project-dialog:not([open]) {
+    display: none;
+}
+
+.project-dialog-body {
+    padding: clamp(1.25rem, 4vw, 1.75rem);
+}
+
+.project-dialog-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+}
+
+.project-dialog-head h3 {
+    margin: 0;
+}
+
+.project-dialog-close {
+    background-color: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--link);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.35rem 1rem;
+    cursor: pointer;
+}
+
+.project-dialog-close:hover {
+    background-color: var(--surface-2);
+    border-color: var(--link);
+    color: var(--hover);
+}
+
+.project-dialog h4 {
+    margin: 1.25rem 0 0.25rem;
+    font-size: 1rem;
+}
+
+.project-dialog ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.15rem;
+}
+
+.project-dialog li {
+    margin-bottom: 0.35rem;
+}
+
+.project-dialog li:last-child {
+    margin-bottom: 0;
+}
+
+/* Screenshots: 1200px assets shown in a ~600px column, so they are exactly 2x
+   at the largest size the panel reaches. The width/height attributes on each
+   image carry the same ratio, so the panel does not jump as they decode. */
+.project-dialog figure {
+    margin: 1.25rem 0 0;
+}
+
+.project-dialog img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background-color: var(--surface-2);
+}
+
+.project-dialog figcaption {
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+/* The trigger sits beside the solid project links, so it is drawn with an
+   inset shadow rather than a border: the row keeps exactly the same height. */
+.links a.project-detail-open {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 1px var(--border);
+    color: var(--link);
+}
+
+.links a.project-detail-open:hover {
+    background-color: var(--surface-2);
+    box-shadow: inset 0 0 0 1px var(--link);
+    color: var(--hover);
+}
+
+/* Phones: the panel becomes the screen instead of a card with a scrollbar
+   inside it. dvh, so the mobile URL bar cannot clip the close button. */
+@media (max-width: 620px) {
+    .project-dialog[open] {
+        width: 100%;
+        max-width: none;
+        height: 100dvh;
+        max-height: 100dvh;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+    }
+}
+
+/* Inline code in card copy: a package name and a target framework. Monospace
+   is right here, but the browser default sits a size below the body text and
+   clashes with the system stack, so it is pulled in line. */
+.card code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    padding: 0.1em 0.35em;
+    border-radius: 0.3rem;
+    background-color: var(--surface-2);
+}
+
 .links {
     display: flex;
     flex-wrap: wrap;
@@ -1095,7 +1256,8 @@ main > .card {
     .theme-switch,
     .skip-link,
     .gallery-nav,
-    .toc {
+    .toc,
+    .project-detail-open {
         display: none !important;
     }
 
@@ -1106,5 +1268,12 @@ main > .card {
 
     main {
         max-width: none;
+    }
+
+    /* Every project's detail is in the printout, not only the panel that
+       happened to be open on screen. */
+    html.dialog-capable .project-dialog:not([open]) {
+        display: block;
+        margin: 1.25rem 0 0;
     }
 }

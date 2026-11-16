@@ -181,6 +181,79 @@
         update();
     }
 
+    /* ---------- Project detail dialogs ---------- */
+    function initProjectDialogs() {
+        var dialogs = document.querySelectorAll(".project-dialog");
+        if (!dialogs.length) {
+            return;
+        }
+
+        /* Without showModal() the panels simply stay visible inline, which is
+           the same state as having no JavaScript at all. */
+        if (typeof document.createElement("dialog").showModal !== "function") {
+            return;
+        }
+
+        doc.classList.add("dialog-capable");
+
+        function setHash(id) {
+            try {
+                var url = id ? "#" + id : window.location.pathname + window.location.search;
+                window.history.replaceState(null, "", url);
+            } catch (e) { /* file:// or blocked history: the dialog still works */ }
+        }
+
+        function open(dialog) {
+            if (dialog.open) {
+                return;
+            }
+            dialog.showModal();
+            setHash(dialog.id);
+        }
+
+        Array.prototype.forEach.call(document.querySelectorAll("[data-dialog]"), function (trigger) {
+            trigger.addEventListener("click", function (event) {
+                var dialog = document.getElementById(trigger.getAttribute("data-dialog"));
+                if (!dialog) {
+                    return;
+                }
+                event.preventDefault();
+                open(dialog);
+            });
+        });
+
+        Array.prototype.forEach.call(dialogs, function (dialog) {
+            /* The dialog itself has no padding, so any click that targets it is
+               a click on the backdrop rather than on its contents. */
+            dialog.addEventListener("click", function (event) {
+                if (event.target === dialog) {
+                    dialog.close();
+                }
+            });
+
+            dialog.addEventListener("close", function () {
+                setHash(null);
+            });
+        });
+
+        /* Print reveals every panel, so a screenshot that was never opened —
+           and therefore never lazily loaded — is fetched before the printout
+           rather than printed as an empty box. */
+        window.addEventListener("beforeprint", function () {
+            Array.prototype.forEach.call(document.querySelectorAll(".project-dialog img[loading]"), function (img) {
+                img.loading = "eager";
+            });
+        });
+
+        /* A shared link: /projects#outrun-detail opens that panel. */
+        if (window.location.hash) {
+            var linked = document.getElementById(window.location.hash.slice(1));
+            if (linked && linked.classList.contains("project-dialog")) {
+                open(linked);
+            }
+        }
+    }
+
     /* Enable JS-specific UI (theme toggle visibility, etc.) */
     doc.classList.remove("no-js");
     doc.classList.add("js");
@@ -189,4 +262,5 @@
     initSkipLink();
     initGalleries();
     initToc();
+    initProjectDialogs();
 })();
