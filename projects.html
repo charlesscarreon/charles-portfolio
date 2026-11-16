@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Charles S. Carreon | Projects</title>
-    <meta name="description" content="A showcase of software development projects by Charles Serrano Carreon, Computer Science student at Pamantasan ng Cabuyao: web applications, games, and software built with React, JavaScript, PHP, Laravel, Java, C#, Scratch, and TensorFlow.js.">
+    <meta name="description" content="Four project case studies by Charles S. Carreon, Computer Science student: a Unity chase game, a gesture-controlled thesis, a C# toolkit, and a medical QR web app.">
     <meta name="author" content="Charles S. Carreon">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#0f1115">
@@ -33,29 +33,35 @@
     </style>
     <link rel="stylesheet" href="styles.css">
 
+    <!-- Without JavaScript a dialog element can never be opened, and the UA
+         stylesheet hides it while closed. So the no-JS state shows the panels
+         inline, and this does not depend on styles.css having loaded. -->
+    <noscript>
+        <style>
+            .project-dialog { display: block; margin: 1.25rem 0 0; }
+        </style>
+    </noscript>
+
     <!--
-        SOCIAL SHARE IMAGE for this page — change og:image AND twitter:image
-        below to point at a different screenshot when you want to feature
-        another project. Candidates in images/projects/:
-          kotsell-1.png   forecast-1.png     taskflow-1.png
-          library-ms-1.png  jmusicplayer-1.png
-        The URL must be absolute. Restore the portrait
-        (images/charles-portrait.png) if a chosen screenshot is ever removed.
+        SOCIAL SHARE IMAGE — the portrait, because the project screenshots were
+        removed in Round 7 and no card carries an image. If a project capture is
+        added later, point og:image AND twitter:image at it. The URL must be
+        absolute.
     -->
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Charles S. Carreon | Projects">
-    <meta property="og:description" content="A showcase of works by Charles Serrano Carreon: web applications, games, and software built with React, JavaScript, PHP, Laravel, Java, C#, and more.">
+    <meta property="og:description" content="Four projects by Charles S. Carreon: a Unity chase game, a gesture-controlled thesis, a C# game development toolkit, and a QR-based medical information web application.">
     <meta property="og:url" content="https://charlescarreon.vercel.app/projects">
-    <meta property="og:image" content="https://charlescarreon.vercel.app/images/projects/kotsell-1.png">
+    <meta property="og:image" content="https://charlescarreon.vercel.app/images/charles-portrait.png">
     <meta property="og:locale" content="en_PH">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Charles S. Carreon | Projects">
-    <meta name="twitter:description" content="Web applications, games, and software by Charles Serrano Carreon, Computer Science student at Pamantasan ng Cabuyao.">
-    <meta name="twitter:image" content="https://charlescarreon.vercel.app/images/projects/kotsell-1.png">
+    <meta name="twitter:description" content="Four projects by Charles S. Carreon: a Unity chase game, a gesture-controlled thesis, a C# toolkit, and a medical QR web application.">
+    <meta name="twitter:image" content="https://charlescarreon.vercel.app/images/charles-portrait.png">
 
     <!-- Structured data for search engines and AI assistants -->
     <script type="application/ld+json">
@@ -63,69 +69,49 @@
         "@context": "https://schema.org",
         "@type": "ItemList",
         "name": "Projects of Charles Serrano Carreon",
-        "description": "Software development projects by Charles Serrano Carreon, a Computer Science student at Pamantasan ng Cabuyao.",
+        "description": "Software and game development projects by Charles Serrano Carreon, a Computer Science student at Pamantasan ng Cabuyao.",
         "itemListElement": [
             {
                 "@type": "ListItem",
                 "position": 1,
                 "item": {
-                    "@type": "WebApplication",
-                    "name": "KOTSELL",
-                    "description": "An e-commerce web application created for the course CCS112 Applications Development and Emerging Technologies for the 1st Semester of the 3rd Year of Computer Science studies. It integrates React.js for the front-end and Laravel for the back-end.",
-                    "dateCreated": "2025-12-10",
-                    "author": { "@type": "Person", "name": "Charles Serrano Carreon" },
-                    "programmingLanguage": ["React.js", "Bootstrap", "Laravel", "PHP", "MySQL"],
-                    "image": [
-                        "https://charlescarreon.vercel.app/images/projects/kotsell-1.png",
-                        "https://charlescarreon.vercel.app/images/projects/kotsell-2.png",
-                        "https://charlescarreon.vercel.app/images/projects/kotsell-3.png"
-                    ],
-                    "codeRepository": [
-                        "https://github.com/charlesscarreon/kotsell-frontend",
-                        "https://github.com/charlesscarreon/kotsell-backend"
-                    ],
-                    "creativeWorkStatus": "Finished"
+                    "@type": "VideoGame",
+                    "name": "OUTRUN",
+                    "description": "A 2.5D isometric chase game. The player rides an e-bike through city traffic while a police pursuit escalates, managing battery charge and durability, and spending Meter Points on additional rides and upgrades.",
+                    "dateCreated": "2026-10",
+                    "contributor": { "@type": "Person", "name": "Charles Serrano Carreon" },
+                    "programmingLanguage": ["C#"],
+                    "operatingSystem": ["Windows", "Android"],
+                    "url": "https://ninesixfour.itch.io/outrun",
+                    "creativeWorkStatus": "In development"
                 }
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "item": {
-                    "@type": "WebApplication",
-                    "name": "Forecast",
-                    "description": "A React project integrating TensorFlow.js, created for the course CCS112 Applications Development and Emerging Technologies for the 1st Semester of the 3rd Year of Computer Science studies.",
-                    "dateCreated": "2025-11-23",
-                    "author": { "@type": "Person", "name": "Charles Serrano Carreon" },
-                    "programmingLanguage": ["HTML", "CSS", "JavaScript", "React.js", "TensorFlow.js"],
-                    "image": [
-                        "https://charlescarreon.vercel.app/images/projects/forecast-1.png",
-                        "https://charlescarreon.vercel.app/images/projects/forecast-2.png",
-                        "https://charlescarreon.vercel.app/images/projects/forecast-3.png"
-                    ],
-                    "codeRepository": [
-                        "https://github.com/charlesscarreon/forecast-frontend",
-                        "https://github.com/charlesscarreon/forecast-backend"
-                    ],
-                    "creativeWorkStatus": "Finished"
+                    "@type": "CreativeWork",
+                    "name": "MUTED",
+                    "description": "A webcam-controlled game driven by hand gestures, built as a thesis. It compares CNN and CNN+GRU pipelines to test whether temporal modelling is necessary for real-time gesture-driven control.",
+                    "dateCreated": "2026-10",
+                    "contributor": { "@type": "Person", "name": "Charles Serrano Carreon" },
+                    "programmingLanguage": ["C#", "Python"],
+                    "creativeWorkStatus": "Defended"
                 }
             },
             {
                 "@type": "ListItem",
                 "position": 3,
                 "item": {
-                    "@type": "VideoGame",
-                    "name": "Road to Rich Farming",
-                    "description": "A visual novel game created for the laboratory exam of the course CSEG1 Game Concepts and Production for the 1st Semester of the 3rd Year of Computer Science studies.",
-                    "dateCreated": "2025-11-17",
+                    "@type": "SoftwareSourceCode",
+                    "name": "964's C# Game Development Toolkit",
+                    "description": "A set of reusable C# game modules covering display names, timers, settings, save slots and music playback, packaged for Unity and built against netstandard2.0.",
+                    "dateCreated": "2026",
                     "author": { "@type": "Person", "name": "Charles Serrano Carreon" },
-                    "programmingLanguage": ["HTML", "CSS", "JavaScript"],
-                    "image": [
-                        "https://charlescarreon.vercel.app/images/projects/road-to-rich-farming-1.png",
-                        "https://charlescarreon.vercel.app/images/projects/road-to-rich-farming-2.png"
-                    ],
-                    "url": "https://charlesscarreon.github.io/road-to-rich-farming/",
-                    "codeRepository": "https://github.com/charlesscarreon/road-to-rich-farming",
-                    "creativeWorkStatus": "Finished"
+                    "programmingLanguage": ["C#"],
+                    "codeRepository": "https://github.com/charlesscarreon/964s-csharp-game-development-toolkit",
+                    "license": "https://opensource.org/licenses/MIT",
+                    "creativeWorkStatus": "Ongoing"
                 }
             },
             {
@@ -133,81 +119,15 @@
                 "position": 4,
                 "item": {
                     "@type": "WebApplication",
-                    "name": "TaskFlow",
-                    "description": "A task manager web application created for the course CCS112 Applications Development and Emerging Technologies for the 1st Semester of the 3rd Year of Computer Science studies.",
-                    "dateCreated": "2025-10-12",
-                    "author": { "@type": "Person", "name": "Charles Serrano Carreon" },
-                    "programmingLanguage": ["HTML", "CSS", "JavaScript", "React.js", "Bootstrap"],
-                    "image": [
-                        "https://charlescarreon.vercel.app/images/projects/taskflow-1.png",
-                        "https://charlescarreon.vercel.app/images/projects/taskflow-2.png"
-                    ],
-                    "codeRepository": "https://github.com/cntaxc/ReactGroupProject_TaskFlow",
-                    "creativeWorkStatus": "Finished"
-                }
-            },
-            {
-                "@type": "ListItem",
-                "position": 5,
-                "item": {
-                    "@type": "WebApplication",
-                    "name": "Library Management System",
-                    "description": "A library management system created for the course CCS112 Applications Development and Emerging Technologies for the 1st Semester of the 3rd Year of Computer Science studies.",
-                    "dateCreated": "2025-10-12",
-                    "author": { "@type": "Person", "name": "Charles Serrano Carreon" },
-                    "programmingLanguage": ["HTML", "CSS", "JavaScript", "PHP"],
-                    "image": [
-                        "https://charlescarreon.vercel.app/images/projects/library-ms-1.png",
-                        "https://charlescarreon.vercel.app/images/projects/library-ms-2.png",
-                        "https://charlescarreon.vercel.app/images/projects/library-ms-3.png"
-                    ],
-                    "codeRepository": "https://github.com/charlesscarreon/library-ms",
-                    "creativeWorkStatus": "Finished"
-                }
-            },
-            {
-                "@type": "ListItem",
-                "position": 6,
-                "item": {
-                    "@type": "SoftwareApplication",
-                    "name": "JMusicPlayer",
-                    "description": "JMusicPlayer is a music player that can play WAV files. It uses Java Swing. The project was done as part of the Computer Programming 2 class.",
-                    "dateCreated": "2024-06",
-                    "author": { "@type": "Person", "name": "Charles Serrano Carreon" },
-                    "programmingLanguage": ["Java", "Java Swing"],
-                    "image": [
-                        "https://charlescarreon.vercel.app/images/projects/jmusicplayer-1.png"
-                    ],
-                    "codeRepository": "https://github.com/charlesscarreon/JMusicPlayer",
-                    "creativeWorkStatus": "Finished"
-                }
-            },
-            {
-                "@type": "ListItem",
-                "position": 7,
-                "item": {
-                    "@type": "CreativeWork",
-                    "name": "Rockat's Adventure",
-                    "description": "An animation created using Scratch. The project was done in 2024, during the first year of college.",
-                    "dateCreated": "2024-04",
-                    "author": { "@type": "Person", "name": "Charles Serrano Carreon" },
-                    "programmingLanguage": ["Scratch"],
-                    "url": "https://scratch.mit.edu/projects/999094164",
-                    "creativeWorkStatus": "Finished"
-                }
-            },
-            {
-                "@type": "ListItem",
-                "position": 8,
-                "item": {
-                    "@type": "VideoGame",
-                    "name": "Catching Game",
-                    "description": "A game created using Scratch. The project was done in 2024, during the first year of college.",
-                    "dateCreated": "2024-04",
-                    "author": { "@type": "Person", "name": "Charles Serrano Carreon" },
-                    "programmingLanguage": ["Scratch"],
-                    "url": "https://scratch.mit.edu/projects/1006137077",
-                    "creativeWorkStatus": "Finished"
+                    "name": "Lunas",
+                    "description": "A web-based emergency medical information system. A patient's medical history is reached by scanning a unique QR code, so responders can read allergies, medication, blood type and conditions immediately.",
+                    "dateCreated": "2026",
+                    "contributor": { "@type": "Person", "name": "Charles Serrano Carreon" },
+                    "applicationCategory": "HealthApplication",
+                    "programmingLanguage": ["TypeScript"],
+                    "url": "https://lunas.software/",
+                    "codeRepository": "https://github.com/razielsevilla/Lunas",
+                    "creativeWorkStatus": "Prototype"
                 }
             }
         ]
@@ -260,202 +180,285 @@
             </p>
         </section>
 
-        <article class="card project" id="kotsell">
-            <h2>KOTSELL</h2>
-            <figure class="gallery" data-gallery>
-                <img src="images/projects/kotsell-1.png" alt="KOTSELL e-commerce web application screenshot" width="1075" height="595">
-                <img src="images/projects/kotsell-2.png" alt="KOTSELL e-commerce web application interface screenshot" width="1902" height="896">
-                <img src="images/projects/kotsell-3.png" alt="KOTSELL e-commerce web application product page screenshot" width="1871" height="893">
-            </figure>
+        <article class="card project" id="outrun">
+            <h2>OUTRUN</h2>
             <p>
-                An e-commerce web application created for our course CCS112 Applications Development and
-                Emerging Technologies for the 1st Semester of the 3rd Year of our Computer Science studies.
+                A 2.5D isometric chase game. You ride an e-bike through city traffic while a police pursuit
+                escalates — patrol cars, motorcycles, roadblocks, spike strips, and officers on foot close in
+                as your heat rises.
             </p>
             <p>
-                It integrates <strong>React.js</strong> for the front-end and <strong>Laravel</strong> for the back-end.
+                Battery charge limits sprint speed, crashes wear down durability, and a failed durability ends
+                the run. Meter Points earned from distance and heat unlock six additional rides and motor,
+                battery and durability upgrades.
             </p>
             <dl class="meta">
-                <dt>Date</dt><dd>2025 December 10</dd>
-                <dt>Technologies</dt><dd>HTML, CSS, JavaScript, React.js, Bootstrap, Laravel, PHP, MySQL</dd>
-                <dt>Type</dt><dd>Web Application</dd>
-                <dt>Status</dt><dd>Finished</dd>
-                <dt>Role</dt><dd>Project Leader</dd>
-            </dl>
-            <p class="links">
-                <a href="https://github.com/charlesscarreon/kotsell-frontend" target="_blank" rel="noreferrer">Front-end Source Code</a>
-                <a href="https://github.com/charlesscarreon/kotsell-backend" target="_blank" rel="noreferrer">Back-end Source Code</a>
-                <a href="https://github.com/charlesscarreon/kotsell-old" target="_blank" rel="noreferrer">Old Source Code</a>
-            </p>
-        </article>
-
-        <article class="card project" id="forecast">
-            <h2>Forecast</h2>
-            <figure class="gallery" data-gallery>
-                <img src="images/projects/forecast-1.png" alt="Forecast TensorFlow.js web application screenshot" width="1803" height="839">
-                <img src="images/projects/forecast-2.png" alt="Forecast TensorFlow.js predictions screenshot" width="1829" height="857">
-                <img src="images/projects/forecast-3.png" alt="Forecast TensorFlow.js charts screenshot" width="1911" height="899">
-            </figure>
-            <p>
-                This is a React project with integrated TensorFlow.js created for our course CCS112 Applications
-                Development and Emerging Technologies for the 1st Semester of the 3rd Year of our Computer Science studies.
-            </p>
-            <dl class="meta">
-                <dt>Date</dt><dd>2025 November 23</dd>
-                <dt>Technologies</dt><dd>HTML, CSS, JavaScript, React.js, TensorFlow.js</dd>
-                <dt>Type</dt><dd>Web Application</dd>
-                <dt>Status</dt><dd>Finished</dd>
-                <dt>Role</dt><dd>Developer</dd>
-            </dl>
-            <p class="links">
-                <a href="https://github.com/charlesscarreon/forecast-frontend" target="_blank" rel="noreferrer">Front-end Source Code</a>
-                <a href="https://github.com/charlesscarreon/forecast-backend" target="_blank" rel="noreferrer">Back-end Source Code</a>
-            </p>
-        </article>
-
-        <article class="card project" id="road-to-rich-farming">
-            <h2>Road to Rich Farming</h2>
-            <figure class="gallery" data-gallery>
-                <img src="images/projects/road-to-rich-farming-1.png" alt="Road to Rich Farming visual novel game screenshot" width="1586" height="886">
-                <img src="images/projects/road-to-rich-farming-2.png" alt="Road to Rich Farming visual novel game scene screenshot" width="1020" height="767">
-            </figure>
-            <p>
-                This is a visual novel game created for the laboratory exam of our course CSEG1 Game Concepts and
-                Production for the 1st Semester of the 3rd Year of our Computer Science studies.
-            </p>
-            <dl class="meta">
-                <dt>Date</dt><dd>2025 November 17</dd>
-                <dt>Technologies</dt><dd>HTML, CSS, JavaScript</dd>
+                <dt>Date</dt><dd>2026 October</dd>
+                <dt>Technologies</dt><dd>Unity, C#</dd>
                 <dt>Type</dt><dd>Game</dd>
-                <dt>Status</dt><dd>Finished</dd>
-                <dt>Role</dt><dd>Developer</dd>
+                <dt>Status</dt><dd>In development (v0.3.3)</dd>
+                <dt>Role</dt><dd>Game designer and lead developer</dd>
+                <dt>Platforms</dt><dd>Windows, Android</dd>
             </dl>
             <p class="links">
-                <a href="https://charlesscarreon.github.io/road-to-rich-farming/" target="_blank" rel="noreferrer">Deployed Game</a>
-                <a href="https://github.com/charlesscarreon/road-to-rich-farming" target="_blank" rel="noreferrer">Source Code</a>
+                <a href="https://ninesixfour.itch.io/outrun" target="_blank" rel="noreferrer">Play on itch.io</a>
+                <a class="project-detail-open" href="#outrun-detail" data-dialog="outrun-detail">More about OUTRUN</a>
             </p>
+
+            <dialog class="project-dialog" id="outrun-detail" aria-labelledby="outrun-detail-title">
+                <div class="project-dialog-body">
+                    <div class="project-dialog-head">
+                        <h3 id="outrun-detail-title">More about OUTRUN</h3>
+                        <form method="dialog">
+                            <button type="submit" class="project-dialog-close">Close</button>
+                        </form>
+                    </div>
+                    <figure>
+                        <img src="images/projects/outrun/outrun-key-art.webp" width="1200" height="675"
+                             alt="OUTRUN key art." loading="lazy" decoding="async">
+                        <figcaption>Promotional still.</figcaption>
+                    </figure>
+                    <h4>The pursuit</h4>
+                    <p>
+                        Heat rises the longer a run survives, and the police response scales with it: patrol
+                        cars, motorcycles, roadblocks, spike strips, and officers on foot. Breaking line of
+                        sight cools the search and opens another route.
+                    </p>
+                    <figure>
+                        <img src="images/projects/outrun/outrun-roadblock.webp" width="1200" height="675"
+                             alt="OUTRUN gameplay: a police roadblock ahead of the rider." loading="lazy"
+                             decoding="async">
+                        <figcaption>Police roadblock.</figcaption>
+                    </figure>
+                    <h4>The ride</h4>
+                    <p>
+                        Sprinting drains the battery faster, low charge lowers top speed, and crashes wear down
+                        durability. Spare batteries are scattered across the city, and a failed durability ends
+                        the run.
+                    </p>
+                    <figure>
+                        <img src="images/projects/outrun/outrun-regular-play.webp" width="1200" height="675"
+                             alt="OUTRUN gameplay: a run in progress through city traffic." loading="lazy"
+                             decoding="async">
+                        <figcaption>A run in progress.</figcaption>
+                    </figure>
+                    <h4>The garage</h4>
+                    <p>
+                        A run starts on an e-bike. Six further rides unlock with Meter Points — including a
+                        wheelchair and a shopping cart — alongside motor, battery and durability upgrades. Runs
+                        are scored on a local scoreboard.
+                    </p>
+                    <h4>Controls</h4>
+                    <ul>
+                        <li>Windows: keyboard.</li>
+                        <li>Android: touch.</li>
+                    </ul>
+                    <h4>Team</h4>
+                    <p>
+                        Kamote Studios: Charles S. Carreon (game designer and lead developer),
+                        Christian Raphael A. Carandang, Emiel James M. Escuzar, Kurt Joshua P. Cayaga, and
+                        Rosebelle B. Egagamao.
+                    </p>
+                </div>
+            </dialog>
         </article>
 
-        <article class="card project" id="taskflow">
-            <h2>TaskFlow</h2>
-            <figure class="gallery" data-gallery>
-                <img src="images/projects/taskflow-1.png" alt="TaskFlow task manager web application screenshot" width="1890" height="901">
-                <img src="images/projects/taskflow-2.png" alt="TaskFlow task manager task board screenshot" width="1833" height="861">
-            </figure>
+        <article class="card project" id="muted">
+            <h2>MUTED</h2>
             <p>
-                A task manager web application created for our course CCS112 Applications Development and
-                Emerging Technologies for the 1st Semester of the 3rd Year of our Computer Science studies.
+                A webcam-controlled game driven by hand gestures, built as a thesis. It compares two model
+                pipelines, CNN and CNN+GRU, to test whether temporal modelling is necessary for real-time
+                gesture-driven control.
+            </p>
+            <p>
+                Models were trained in Python and run in Unity through ONNX Runtime. Recorded input data was
+                retained so both pipelines could be evaluated on the same material after the fact.
             </p>
             <dl class="meta">
-                <dt>Date</dt><dd>2025 October 12</dd>
-                <dt>Technologies</dt><dd>HTML, CSS, JavaScript, React.js, Bootstrap</dd>
-                <dt>Type</dt><dd>Web Application</dd>
-                <dt>Status</dt><dd>Finished</dd>
-                <dt>Role</dt><dd>Project Leader</dd>
+                <dt>Date</dt><dd>2026 October</dd>
+                <dt>Technologies</dt><dd>Unity, C#, Python, ONNX Runtime</dd>
+                <dt>Type</dt><dd>Thesis</dd>
+                <dt>Status</dt><dd>Defended</dd>
+                <dt>Role</dt><dd>Lead developer</dd>
             </dl>
             <p class="links">
-                <a href="https://github.com/cntaxc/ReactGroupProject_TaskFlow" target="_blank" rel="noreferrer">Source Code</a>
+                <a class="project-detail-open" href="#muted-detail" data-dialog="muted-detail">More about MUTED</a>
             </p>
+
+            <dialog class="project-dialog" id="muted-detail" aria-labelledby="muted-detail-title">
+                <div class="project-dialog-body">
+                    <div class="project-dialog-head">
+                        <h3 id="muted-detail-title">More about MUTED</h3>
+                        <form method="dialog">
+                            <button type="submit" class="project-dialog-close">Close</button>
+                        </form>
+                    </div>
+                    <figure>
+                        <img src="images/projects/muted/muted-gameplay.webp" width="1200" height="667"
+                             alt="MUTED gameplay." loading="lazy" decoding="async">
+                        <figcaption>Gesture-driven play.</figcaption>
+                    </figure>
+                    <h4>The question</h4>
+                    <p>
+                        Whether a temporal model earns its cost over a static one for real-time gesture-driven
+                        control: the same preprocessing, the same recorded input, two pipelines scored against
+                        each other.
+                    </p>
+                    <h4>Training and deployment</h4>
+                    <p>
+                        Models were trained in Python and run in Unity through ONNX Runtime. Unity's Barracuda
+                        runtime could not execute the GRU layer set, which is what forced the switch.
+                    </p>
+                    <h4>The material</h4>
+                    <p>
+                        Recorded gesture input was kept rather than discarded, so both pipelines could be scored
+                        on the same sessions after the fact.
+                    </p>
+                    <p>
+                        Not publicly available: the build was never uploaded and the paper is not published.
+                    </p>
+                    <figure>
+                        <img src="images/projects/muted/muted-mainmenu.webp" width="1200" height="668"
+                             alt="MUTED main menu." loading="lazy" decoding="async">
+                        <figcaption>Main menu.</figcaption>
+                    </figure>
+                </div>
+            </dialog>
         </article>
 
-        <article class="card project" id="library-ms">
-            <h2>Library Management System</h2>
-            <figure class="gallery" data-gallery>
-                <img src="images/projects/library-ms-1.png" alt="Library Management System web application screenshot" width="1908" height="901">
-                <img src="images/projects/library-ms-2.png" alt="Library Management System books catalog screenshot" width="1881" height="893">
-                <img src="images/projects/library-ms-3.png" alt="Library Management System borrowing records screenshot" width="1888" height="901">
-            </figure>
+        <article class="card project" id="toolkit">
+            <h2>964's C# Game Development Toolkit</h2>
             <p>
-                A library management system created for our course CCS112 Applications Development and
-                Emerging Technologies for the 1st Semester of the 3rd Year of our Computer Science studies.
+                A set of five reusable modules for C# game projects: display names, timers, settings, save
+                slots, and a music player. Packaged as a Unity package and built against
+                <code>netstandard2.0</code>, so the modules work in Unity and any other C# environment.
+            </p>
+            <p>
+                Display Name validates Unicode-aware usernames, NPC names and item names. Save Data handles
+                save slots and metadata. Each module ships with automated and manual testers. MIT licensed.
             </p>
             <dl class="meta">
-                <dt>Date</dt><dd>2025 October 12</dd>
-                <dt>Technologies</dt><dd>HTML, CSS, JavaScript, PHP</dd>
-                <dt>Type</dt><dd>Web Application</dd>
-                <dt>Status</dt><dd>Finished</dd>
-                <dt>Role</dt><dd>Project Leader</dd>
+                <dt>Date</dt><dd>2026</dd>
+                <dt>Technologies</dt><dd>C#, .NET, Unity</dd>
+                <dt>Type</dt><dd>Library</dd>
+                <dt>Status</dt><dd>Ongoing (v0.1.0)</dd>
+                <dt>Role</dt><dd>Owner and maintainer</dd>
             </dl>
             <p class="links">
-                <a href="https://github.com/charlesscarreon/library-ms" target="_blank" rel="noreferrer">Source Code</a>
+                <a href="https://github.com/charlesscarreon/964s-csharp-game-development-toolkit" target="_blank" rel="noreferrer">Source on GitHub</a>
+                <a class="project-detail-open" href="#toolkit-detail" data-dialog="toolkit-detail">More about the toolkit</a>
             </p>
+
+            <dialog class="project-dialog" id="toolkit-detail" aria-labelledby="toolkit-detail-title">
+                <div class="project-dialog-body">
+                    <div class="project-dialog-head">
+                        <h3 id="toolkit-detail-title">More about the toolkit</h3>
+                        <form method="dialog">
+                            <button type="submit" class="project-dialog-close">Close</button>
+                        </form>
+                    </div>
+                    <h4>Modules</h4>
+                    <ul>
+                        <li>
+                            <strong>Display Name</strong> — format, script and length validation for usernames,
+                            NPC names and item names, with no moderation, uniqueness or confusable-character
+                            checks.
+                        </li>
+                        <li>
+                            <strong>Timer</strong> — <code>Update()</code>-driven countdown and count-up timers,
+                            with stopwatch helpers, adjustments, events and a pluggable time provider.
+                        </li>
+                        <li>
+                            <strong>Settings</strong> — a typed key-value store.
+                        </li>
+                        <li>
+                            <strong>Save Data</strong> — slot mechanics: metadata envelope, limits, rename and
+                            delete, over storage and serialization the consumer supplies.
+                        </li>
+                        <li>
+                            <strong>CSMusicPlayer</strong> — playback and playlist state over an audio backend
+                            the consumer supplies, with no decoding or output of its own.
+                        </li>
+                    </ul>
+                    <h4>Design principles</h4>
+                    <p>
+                        No UI or presentation logic. Behaviour is configured through options objects rather than
+                        hardcoded rules. Storage, serialization, time and audio are injected through interfaces,
+                        and engine-specific adapters stay out of the core.
+                    </p>
+                    <h4>Distribution</h4>
+                    <p>
+                        UPM package <code>com.964.gamedevelopmenttoolkit</code> v0.1.0, MIT licensed, with
+                        automated and manual testers per module.
+                    </p>
+                </div>
+            </dialog>
         </article>
 
-        <article class="card project" id="jmusicplayer">
-            <h2>JMusicPlayer</h2>
-            <figure class="gallery" data-gallery>
-                <img src="images/projects/jmusicplayer-1.png" alt="JMusicPlayer Java Swing music player screenshot" width="1500" height="1000">
-            </figure>
+        <article class="card project" id="lunas">
+            <h2>Lunas</h2>
             <p>
-                JMusicPlayer is a music player that can play WAV files. It uses Java Swing. The project was done
-                as part of our Computer Programming 2 class.
+                A web-based emergency medical information system. A patient's medical history is reached by
+                scanning a unique QR code, so responders get allergies, medication, blood type and conditions
+                when the patient can't speak for themselves.
+            </p>
+            <p>
+                Built in a hackathon with an eight-person team that placed Top 8 nationally at
+                SIKAPTala 2026. My part was the patient client — dashboard, medical profile, QR code and
+                access logs — and both registration flows.
             </p>
             <dl class="meta">
-                <dt>Date</dt><dd>2024 June</dd>
-                <dt>Technologies</dt><dd>Java, Java Swing</dd>
-                <dt>Type</dt><dd>Software</dd>
-                <dt>Status</dt><dd>Finished</dd>
-                <dt>Role</dt><dd>Co-developer</dd>
+                <dt>Date</dt><dd>2026</dd>
+                <dt>Technologies</dt><dd>Next.js, Tailwind CSS, TypeScript</dd>
+                <dt>Type</dt><dd>Web application</dd>
+                <dt>Status</dt><dd>Prototype</dd>
+                <dt>Role</dt><dd>Front-end developer</dd>
             </dl>
             <p class="links">
-                <a href="https://github.com/charlesscarreon/JMusicPlayer" target="_blank" rel="noreferrer">Source Code</a>
-                <a href="https://www.facebook.com/csharlec/videos/2193928587632408" target="_blank" rel="noreferrer">Video Presentation</a>
+                <a href="https://lunas.software/" target="_blank" rel="noreferrer">lunas.software</a>
+                <a href="https://github.com/razielsevilla/Lunas" target="_blank" rel="noreferrer">Team repository</a>
+                <a class="project-detail-open" href="#lunas-detail" data-dialog="lunas-detail">More about Lunas</a>
             </p>
-        </article>
 
-        <article class="card project" id="rockats-adventure">
-            <h2>Rockat's Adventure</h2>
-            <figure class="scratch-embed">
-                <iframe
-                    src="https://scratch.mit.edu/projects/999094164/embed"
-                    title="Rockat's Adventure — Scratch animation"
-                    width="485" height="402"
-                    loading="lazy"></iframe>
-                <figcaption>
-                    <a href="https://scratch.mit.edu/projects/999094164" target="_blank" rel="noreferrer">View Rockat's Adventure on Scratch</a>
-                </figcaption>
-            </figure>
-            <p>
-                This is an example of an animation created using Scratch. The project was done in 2024, when I was
-                in my first year of college.
-            </p>
-            <dl class="meta">
-                <dt>Date</dt><dd>2024 April</dd>
-                <dt>Technologies</dt><dd>Scratch</dd>
-                <dt>Type</dt><dd>Animation</dd>
-                <dt>Status</dt><dd>Finished</dd>
-                <dt>Role</dt><dd>Developer</dd>
-            </dl>
-            <p class="links">
-                <a href="https://scratch.mit.edu/projects/999094164" target="_blank" rel="noreferrer">Animation</a>
-            </p>
-        </article>
-
-        <article class="card project" id="catching-game">
-            <h2>Catching Game</h2>
-            <figure class="scratch-embed">
-                <iframe
-                    src="https://scratch.mit.edu/projects/1006137077/embed"
-                    title="Catching Game — Scratch game"
-                    width="485" height="402"
-                    loading="lazy"></iframe>
-                <figcaption>
-                    <a href="https://scratch.mit.edu/projects/1006137077" target="_blank" rel="noreferrer">Play Catching Game on Scratch</a>
-                </figcaption>
-            </figure>
-            <p>
-                This is an example of a game created using Scratch. The project was done in 2024, when I was in my
-                first year of college.
-            </p>
-            <dl class="meta">
-                <dt>Date</dt><dd>2024 April</dd>
-                <dt>Technologies</dt><dd>Scratch</dd>
-                <dt>Type</dt><dd>Game</dd>
-                <dt>Status</dt><dd>Finished</dd>
-                <dt>Role</dt><dd>Developer</dd>
-            </dl>
-            <p class="links">
-                <a href="https://scratch.mit.edu/projects/1006137077" target="_blank" rel="noreferrer">Game</a>
-            </p>
+            <dialog class="project-dialog" id="lunas-detail" aria-labelledby="lunas-detail-title">
+                <div class="project-dialog-body">
+                    <div class="project-dialog-head">
+                        <h3 id="lunas-detail-title">More about Lunas</h3>
+                        <form method="dialog">
+                            <button type="submit" class="project-dialog-close">Close</button>
+                        </form>
+                    </div>
+                    <figure>
+                        <img src="images/projects/lunas/lunas-homepage.webp" width="1200" height="729"
+                             alt="The Lunas homepage." loading="lazy" decoding="async">
+                        <figcaption>The homepage.</figcaption>
+                    </figure>
+                    <h4>The patient client</h4>
+                    <p>
+                        A dashboard, a medical profile, the patient's QR code, and an access log, plus the
+                        registration flows for patients and for medical professionals. Built in under 24 hours.
+                    </p>
+                    <figure>
+                        <img src="images/projects/lunas/lunas-register.webp" width="1200" height="814"
+                             alt="The Lunas registration form." loading="lazy" decoding="async">
+                        <figcaption>Registration.</figcaption>
+                    </figure>
+                    <h4>What the code carries</h4>
+                    <p>
+                        A UUID rather than the record itself, so a scan resolves to the patient's current data
+                        and a printed code stays valid after an update.
+                    </p>
+                    <h4>What a scan records</h4>
+                    <p>
+                        Each scan is written to the patient's access log, and the emergency contact on file is
+                        notified.
+                    </p>
+                    <h4>Offline</h4>
+                    <p>
+                        A reduced profile for low-signal areas, alongside the live record.
+                    </p>
+                </div>
+            </dialog>
         </article>
     </main>
 
