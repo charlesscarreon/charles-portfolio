@@ -110,6 +110,77 @@
         }, true);
     }
 
+    /* ---------- Table of contents: mark the section you are reading ---------- */
+    function initToc() {
+        var toc = document.querySelector(".toc");
+        if (!toc) {
+            return;
+        }
+
+        var links = toc.querySelectorAll("a[href^='#']");
+        var items = [];
+
+        Array.prototype.forEach.call(links, function (link) {
+            var id = link.getAttribute("href").slice(1);
+            var section = id ? document.getElementById(id) : null;
+            if (section) {
+                items.push({ link: link, section: section });
+            }
+        });
+
+        if (!items.length) {
+            return;
+        }
+
+        /* A section counts as current once its top has passed this line: the
+           measured header plus a little slack, so the marker changes when the
+           heading is actually readable rather than while it is under the bar.
+           Measuring beats hardcoding, because scroll-padding-top and the
+           header height are free to drift apart. */
+        var header = document.querySelector(".site-header");
+        var ticking = false;
+
+        function mark(active) {
+            Array.prototype.forEach.call(links, function (link) {
+                if (active && link === active.link) {
+                    link.setAttribute("aria-current", "true");
+                } else {
+                    link.removeAttribute("aria-current");
+                }
+            });
+        }
+
+        function update() {
+            ticking = false;
+
+            var line = window.scrollY + (header ? header.offsetHeight : 0) + 24;
+            var active = null;
+
+            /* Last one past the line wins, so the marker only moves down. */
+            for (var i = 0; i < items.length; i++) {
+                var top = items[i].section.getBoundingClientRect().top + window.scrollY;
+                if (top <= line) {
+                    active = items[i];
+                }
+            }
+
+            mark(active);
+        }
+
+        function onScroll() {
+            if (!ticking) {
+                ticking = true;
+                window.requestAnimationFrame(update);
+            }
+        }
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll, { passive: true });
+        window.addEventListener("load", update);
+
+        update();
+    }
+
     /* Enable JS-specific UI (theme toggle visibility, etc.) */
     doc.classList.remove("no-js");
     doc.classList.add("js");
@@ -117,4 +188,5 @@
     initTheme();
     initSkipLink();
     initGalleries();
+    initToc();
 })();

@@ -71,7 +71,7 @@ Contains local development tooling and documentation only. It is never deployed.
 Work in progress or planned to be done immediately.
 
 - Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
-- Phase 1 homepage rework — in progress on `feature/homepage-rework`. The featured project block was dropped for lack of a screenshot. Rounds still open: certifications, numbered section markers and table of contents. Nothing merges until the whole branch has been reviewed on the Vercel preview.
+- Phase 1 homepage rework — all five planned rounds are written on `feature/homepage-rework` (1, 2, 4, 5, 6; the featured project block was dropped for lack of a screenshot, and section numbers were dropped after review). Nothing merges until the branch is pushed and reviewed on the Vercel preview; the rail and the sticky behaviour need a real browser.
 
 ## Planned Changes
 
@@ -213,3 +213,29 @@ COMPLETED 2026-11-15.
 - Narrow screens: the facts collapse to one label per line, left-aligned, inside the otherwise centred card. The stat row centres its text and wraps at nine rem.
 - Contrast, computed from the tokens: tile number 8.51:1 dark / 4.64:1 light, tile label 6.30:1 / 5.35:1, fact label 7.39:1 / 5.64:1. All pass AA.
 - No JS, no new images, `sitemap.xml` unchanged.
+
+#### Round 5 — certifications on the skills page
+
+COMPLETED 2026-11-16.
+
+- A `Certifications` card follows the five skill categories on `skills.html`: EF SET English Certificate (C2 Proficient), DICT Programming for Beginners Using Python, DICT-WD001 Principles of Web Development.
+- Each row is the title with the issuer underneath, and a `View certificate` link on the right. The rows reuse `.skill-list`, so they inherit the hairline dividers and the wrap behaviour; only `.cert-name` and `.cert-issuer` are new.
+- The scans stay on the old site (`charlesscarreon.github.io/images/cert01-03.png`, all 200, 577–606 KB each) and are linked, not copied in. Inline scans were rejected: they are the heavy photo-like PNGs that compression was deferred for, and a title plus a link carries the same information.
+- Years appear only where they are certain: both DICT courses are 2024. The EF SET row has no year because the issue date could not be confirmed, and a wrong date on a credential is checkable in one click.
+- The section carries `id="certifications"`, so a future table of contents or a stat tile can link straight to it.
+- `sitemap.xml`: `/skills` lastmod moved to 2026-11-16. The homepage keeps 2026-11-15 until the next round edits it.
+- No JS. `skills.html` gained one section; `styles.css` gained two rules.
+
+#### Round 6 — desktop table of contents
+
+COMPLETED 2026-11-16.
+
+- The four content sections now sit in a `.page-grid` wrapper with a `.page-main` column and a `<nav class="toc" aria-label="Sections">` rail beside it. The hero stays outside the wrapper: a rail beside a centred `h1` reads as a mistake rather than an index.
+- Section numbers were planned and dropped. They add visual orientation but no information, and the rail labels already carry the names.
+- The rail exists only from 1160px up: `grid-template-columns: minmax(0, 1fr) 11.5rem`, `gap: 3rem`, `position: sticky; top: 5rem` — the same offset `scroll-padding-top` uses, so anchors still land clear of the sticky header. Below that the wrapper is a plain block and the rail is `display: none`, which leaves tablet and phone layout byte-identical to before.
+- The content's left edge never moves; only its right edge narrows by the rail width. That is deliberate: `main` and `.site-nav` are both 1040px and centred, so pulling the rail out of that width keeps headings aligned with the brand and with the other two pages.
+- `.toc` was added to the existing `@media print` hide list, so a printed page carries no navigation rail.
+- `script.js` gains `initToc()`: on `scroll` and `resize` (passive, one `requestAnimationFrame` per frame) it marks the last section whose top has passed a line under the sticky header, using `aria-current="true"`. The line is the measured `.site-header` height plus 24px, not a hardcoded number, so it follows the header instead of duplicating `scroll-padding-top`. The `load` event re-runs it once, because image loading shifts the offsets. Above the first section (the hero) nothing is marked, and scrolling back up clears it.
+- The first attempt used an `IntersectionObserver` with `rootMargin: "-5rem 0px -55% 0px"`. `rootMargin` accepts **only `px` and `%`**, so the `rem` value made the constructor throw a `SyntaxError`; `initToc()` died on its first statement and no entry was ever marked. The only evidence was a console error, and `node --check` could not catch it because it is a valid string. The scroll calculation replaces it: no `rootMargin`, no feature guard, and the failure mode is arithmetic that a headless harness can assert.
+- `sitemap.xml`: homepage lastmod to 2026-11-16.
+- Not verifiable without a browser: the sticky rail, the moving highlight, and the 1160px breakpoint itself. Those need the preview.

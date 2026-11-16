@@ -819,6 +819,23 @@ main > .card {
     color: var(--advanced-text);
 }
 
+/* Certifications reuse the skill row shape: title and issuer on the left, the
+   scan link on the right. The issuer sits under the title so long names do not
+   push the link off the row. */
+.cert-name {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    font-weight: 600;
+    color: var(--text-strong);
+}
+
+.cert-issuer {
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
 /* ---------- Footer ---------- */
 
 .site-footer {
@@ -840,6 +857,65 @@ main > .card {
 
 .site-footer a {
     white-space: nowrap;
+}
+
+/* ---------- Table of contents ---------- */
+
+/* Hidden by default: below the breakpoint the header is already sticky and a
+   second sticky column would crowd the content. The markup is a plain list of
+   anchors, so the no-CSS view still navigates. */
+.toc {
+    display: none;
+}
+
+.toc__title {
+    margin: 0 0 0.75rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.toc ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-left: 1px solid var(--border);
+}
+
+.toc a {
+    display: block;
+    padding: 0.35rem 0 0.35rem 0.85rem;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.toc a:hover {
+    color: var(--text-strong);
+    text-decoration: none;
+}
+
+.toc a[aria-current="true"] {
+    color: var(--accent);
+    border-left-color: var(--accent);
+}
+
+@media (min-width: 1160px) {
+    .page-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 11.5rem;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    .toc {
+        display: block;
+        position: sticky;
+        top: 5rem;
+    }
 }
 
 /* ---------- Responsive tweaks ---------- */
@@ -1018,7 +1094,8 @@ main > .card {
     .site-header,
     .theme-switch,
     .skip-link,
-    .gallery-nav {
+    .gallery-nav,
+    .toc {
         display: none !important;
     }
 
