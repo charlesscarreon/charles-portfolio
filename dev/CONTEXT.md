@@ -71,6 +71,7 @@ Contains local development tooling and documentation only. It is never deployed.
 Work in progress or planned to be done immediately.
 
 - Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
+- Phase 1 homepage rework — all five planned rounds are written on `feature/homepage-rework` (1, 2, 4, 5, 6; the featured project block was dropped for lack of a screenshot, and section numbers were dropped after review). Nothing merges until the branch is pushed and reviewed on the Vercel preview; the rail and the sticky behaviour need a real browser.
 
 ## Planned Changes
 
@@ -169,3 +170,72 @@ COMPLETED 2026-11-15. Local work for this round.
 - `sitemap.xml`: lastmod refreshed to 2026-11-15 for all three pages.
 - `vercel.json`: added `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and a `Permissions-Policy` limiting geolocation, camera and microphone. Image caching was deliberately not added because the project screenshots are being reviewed for removal or replacement.
 - Deliberately skipped: image compression. The three heaviest images (portrait, two Road to Rich Farming captures) are PNG exports of photo-like content, and local PNG re-encoding inflates one of them, so any real gain would need a lossy re-encode or an external tool. Deferred while the project list is being curated.
+
+### Phase 1: homepage rework (`feature/homepage-rework`)
+
+Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The plan of record is kept outside the repo; this section records what actually landed, round by round, one commit per round. Five of the six were kept.
+
+The featured project block was dropped before it was built. Its purpose was visual proof, and Lunas has no screenshot available: the repo ships none, its README lists hosting as planned, and the only way to capture the patient page is to run the stack locally. A text-only version would have repeated the achievement entry without adding evidence. The slot stays open for the game project, which will have a page and captures.
+
+#### Round 1 — hero availability and a contact button
+
+COMPLETED 2026-11-15.
+
+- Availability line added under the tagline: `Open to internship and junior developer roles`. Deliberately dateless — it cannot go stale, and the graduation year stays in the About and Education sections.
+- Hero call to action: a single `Get in touch` button, sized above the project pills. It opens a compose window with the subject `Portfolio inquiry` and the body `Hi Charles,` plus a blank line, so a first reply starts with a greeting instead of an empty page.
+- The button's link uses the subaddress `charlesserranocarreon+portfolio@gmail.com`. Gmail delivers it to the same inbox, and the tag survives in the envelope, so mail arriving that way can only have come from this button. A Gmail filter on `deliveredto:` with "Never send it to Spam" keeps first-contact mail out of spam, which is where collaboration enquiries had been landing. Every other email link on the site stays on the plain address so the tag keeps its meaning.
+- No public CV PDF and no CV request button. A CV goes out by reply when someone asks.
+- The five-link contact row stays in the hero but is demoted to muted, smaller text so the button is the only prominent action. Every link is still present and still hidden below 360px, where the footer carries them.
+- New CSS: `.hero-availability`, `.hero-cta`, `.btn--lg`. The tagline's bottom margin is tightened with `.hero .tagline:has(+ .hero-availability)`; browsers without `:has()` keep the previous spacing, so the fallback is a larger gap rather than a broken layout. The `.btn--quiet` style written for the dropped second button was removed along with it.
+- `sitemap.xml` needed no change: its lastmod was already 2026-11-15.
+
+#### Round 2 — achievements and About copy
+
+COMPLETED 2026-11-15.
+
+- Both achievement entries now lead with what was built and what role was held, instead of opening with "I participated". Course and event names stay; the phrasing that read like a submission to a professor is gone.
+- Lunas: `Built the patient-facing page of Lunas, a QR-based emergency medical information system, as front-end developer on an eight-person team that reached the Top 8 nationally at SIKAPTala 2026.` The team name Otso-Otso was dropped; a recruiter cannot evaluate a nickname, and the sentence already states the team size. The description paragraph below still explains what Lunas does.
+- iSITE: `Represented Pamantasan ng Cabuyao in the C# Programming category at the iSITE National IT Skills Competition 2025.` Category and institution keep their `<strong>`.
+- About: the "currently seeking opportunities" paragraph and the "browse my projects" paragraph merged into one, so availability is stated once on the page rather than twice (the hero now carries it). Both outbound links survive.
+- `projects.html` was deliberately left alone. The project list is being curated, and rewriting copy for cards that may be removed is wasted work.
+- The footer build line added in the previous round was removed. Listing the font stack and the fact that the site has no build step is detail the site already demonstrates, and it repeated on every page.
+- No JS, no new files.
+
+#### Round 4 — quick facts and stat tiles in the About card
+
+COMPLETED 2026-11-15.
+
+- A `<dl class="quick-facts">` sits between the headline and the prose: Studying / Focus / Based in. It comes before the bio because the bio restates what the hero already says, while the facts are what a reader scans for.
+- A `<ol class="stat-row" role="list">` spans the width under the portrait and the text: `Top 8` (SIKAPTala 2026 national finalist), `2` (national competitions), `3` (certifications). `role="list"` is there because `list-style: none` strips list semantics in Safari with VoiceOver.
+- The numbers are text, not `::before` content, so a screen reader announces "Top 8, SIKAPTala 2026 national finalist". With CSS off, both elements still read as lists of facts.
+- Project count was deliberately not used as a tile. It read `8 projects shipped` in the plan, but the project list is being curated and the tile would go stale the moment a card is removed. `3` and `2` cannot change without a new credential or competition.
+- `Top 8` is a rank band, not eighth place; the label carries "finalist" so it cannot be misread.
+- Narrow screens: the facts collapse to one label per line, left-aligned, inside the otherwise centred card. The stat row centres its text and wraps at nine rem.
+- Contrast, computed from the tokens: tile number 8.51:1 dark / 4.64:1 light, tile label 6.30:1 / 5.35:1, fact label 7.39:1 / 5.64:1. All pass AA.
+- No JS, no new images, `sitemap.xml` unchanged.
+
+#### Round 5 — certifications on the skills page
+
+COMPLETED 2026-11-16.
+
+- A `Certifications` card follows the five skill categories on `skills.html`: EF SET English Certificate (C2 Proficient), DICT Programming for Beginners Using Python, DICT-WD001 Principles of Web Development.
+- Each row is the title with the issuer underneath, and a `View certificate` link on the right. The rows reuse `.skill-list`, so they inherit the hairline dividers and the wrap behaviour; only `.cert-name` and `.cert-issuer` are new.
+- The scans stay on the old site (`charlesscarreon.github.io/images/cert01-03.png`, all 200, 577–606 KB each) and are linked, not copied in. Inline scans were rejected: they are the heavy photo-like PNGs that compression was deferred for, and a title plus a link carries the same information.
+- Years appear only where they are certain: both DICT courses are 2024. The EF SET row has no year because the issue date could not be confirmed, and a wrong date on a credential is checkable in one click.
+- The section carries `id="certifications"`, so a future table of contents or a stat tile can link straight to it.
+- `sitemap.xml`: `/skills` lastmod moved to 2026-11-16. The homepage keeps 2026-11-15 until the next round edits it.
+- No JS. `skills.html` gained one section; `styles.css` gained two rules.
+
+#### Round 6 — desktop table of contents
+
+COMPLETED 2026-11-16.
+
+- The four content sections now sit in a `.page-grid` wrapper with a `.page-main` column and a `<nav class="toc" aria-label="Sections">` rail beside it. The hero stays outside the wrapper: a rail beside a centred `h1` reads as a mistake rather than an index.
+- Section numbers were planned and dropped. They add visual orientation but no information, and the rail labels already carry the names.
+- The rail exists only from 1160px up: `grid-template-columns: minmax(0, 1fr) 11.5rem`, `gap: 3rem`, `position: sticky; top: 5rem` — the same offset `scroll-padding-top` uses, so anchors still land clear of the sticky header. Below that the wrapper is a plain block and the rail is `display: none`, which leaves tablet and phone layout byte-identical to before.
+- The content's left edge never moves; only its right edge narrows by the rail width. That is deliberate: `main` and `.site-nav` are both 1040px and centred, so pulling the rail out of that width keeps headings aligned with the brand and with the other two pages.
+- `.toc` was added to the existing `@media print` hide list, so a printed page carries no navigation rail.
+- `script.js` gains `initToc()`: on `scroll` and `resize` (passive, one `requestAnimationFrame` per frame) it marks the last section whose top has passed a line under the sticky header, using `aria-current="true"`. The line is the measured `.site-header` height plus 24px, not a hardcoded number, so it follows the header instead of duplicating `scroll-padding-top`. The `load` event re-runs it once, because image loading shifts the offsets. Above the first section (the hero) nothing is marked, and scrolling back up clears it.
+- The first attempt used an `IntersectionObserver` with `rootMargin: "-5rem 0px -55% 0px"`. `rootMargin` accepts **only `px` and `%`**, so the `rem` value made the constructor throw a `SyntaxError`; `initToc()` died on its first statement and no entry was ever marked. The only evidence was a console error, and `node --check` could not catch it because it is a valid string. The scroll calculation replaces it: no `rootMargin`, no feature guard, and the failure mode is arithmetic that a headless harness can assert.
+- `sitemap.xml`: homepage lastmod to 2026-11-16.
+- Not verifiable without a browser: the sticky rail, the moving highlight, and the 1160px breakpoint itself. Those need the preview.
