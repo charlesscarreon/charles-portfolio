@@ -303,3 +303,13 @@ The hero paragraph on `/projects` is now consistently first person and no longer
 #### Revision — award badge over the Lunas thumbnail
 
 The badge was first modelled on the badge inside the `#projects` section of `https://emieljames.dev/#projects`, then changed to avoid copying it. It now sits at the thumbnail's top-left as a solid site-accent rectangle with an uppercase accent-contrast label and a teal trophy on an accent-contrast tile; there is no translucency, blur or amber left. The image and badge share a `.project-thumb-wrap` positioning context, so the badge overlaps the still instead of occupying a line above the title. The thumbnail selector changed from `.project > .project-thumb` to `.project .project-thumb` to survive the wrapper; its 16:9 ratio and `height: auto` are unchanged.
+
+#### Revision — homepage introduction copy
+
+BUILT 2026-11-17, uncommitted.
+
+- The hero paragraph no longer repeats the name from the `h1` or says "would love to use". It now reads "I build games, developer tools, and web apps while studying Computer Science at Pamantasan ng Cabuyao."
+- The About headline is "Games, Tools, and Web Apps".
+- The About Me intro keeps the full name "Charles Serrano Carreon" for searchability, as recorded in the identity decisions. It drops "Hi!", the long "currently studying" clause and the aspirational closing. It now states the degree, school, when the interest started and the work done now.
+- The About closing is "You can contact me, browse my projects, or review my skills and tools." The three links are unchanged.
+- New prose uses the Oxford comma and no em dashes. Meta descriptions, Open Graph, Twitter Card, JSON-LD, Experience, Achievements, Education and the light theme are untouched.
