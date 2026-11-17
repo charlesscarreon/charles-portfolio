@@ -136,7 +136,9 @@
            measured header plus a little slack, so the marker changes when the
            heading is actually readable rather than while it is under the bar.
            Measuring beats hardcoding, because scroll-padding-top and the
-           header height are free to drift apart. */
+           header height are free to drift apart. The final section has a
+           second, lower line because it sits near the end of the page and
+           cannot always reach the top one before scrolling stops. */
         var header = document.querySelector(".site-header");
         var ticking = false;
 
@@ -154,12 +156,13 @@
             ticking = false;
 
             var line = window.scrollY + (header ? header.offsetHeight : 0) + 24;
+            var lastLine = window.scrollY + window.innerHeight * 0.6;
             var active = null;
 
             /* Last one past the line wins, so the marker only moves down. */
             for (var i = 0; i < items.length; i++) {
                 var top = items[i].section.getBoundingClientRect().top + window.scrollY;
-                if (top <= line) {
+                if (top <= line || (i === items.length - 1 && top <= lastLine)) {
                     active = items[i];
                 }
             }
@@ -177,6 +180,115 @@
         window.addEventListener("scroll", onScroll, { passive: true });
         window.addEventListener("resize", onScroll, { passive: true });
         window.addEventListener("load", update);
+
+        update();
+    }
+
+    /* ---------- Homepage hero: scroll-linked shrink and down chevron ---------- */
+    function initHeroCollapse() {
+        var hero = document.querySelector(".hero");
+        if (!doc.classList.contains("home") || !hero) {
+            return;
+        }
+
+        var down = hero.querySelector(".scroll-cue--down");
+        var about = document.getElementById("about");
+        var main = document.getElementById("main");
+        var skip = document.querySelector(".skip-link");
+        var ticking = false;
+
+        function reduced() {
+            return window.matchMedia
+                && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        }
+
+        function update() {
+            ticking = false;
+            var progress = window.scrollY / (window.innerHeight * 0.45);
+            progress = Math.max(0, Math.min(1, progress));
+            doc.style.setProperty("--hero-progress", progress.toFixed(4));
+            if (down) {
+                down.hidden = progress >= 0.25;
+            }
+        }
+
+        function onScroll() {
+            if (!ticking) {
+                ticking = true;
+                window.requestAnimationFrame(update);
+            }
+        }
+
+        /* The About target moves while the cover shrinks, so this scroll is
+           stepped frame by frame instead of using a one-shot smooth scroll. */
+        function scrollToTarget(target, instant) {
+            if (instant) {
+                /* Reduced motion skips the animation, but the target still moves
+                   while the cover settles. A few instant corrections land it
+                   without a visible animation. */
+                var passes = 0;
+                function settle() {
+                    update();
+                    var next = Math.max(0, target());
+                    if (Math.abs(next - window.scrollY) <= 1 || passes >= 6) {
+                        return;
+                    }
+                    passes += 1;
+                    window.scrollTo({ top: next, behavior: "instant" });
+                    window.requestAnimationFrame(settle);
+                }
+                window.scrollTo({ top: Math.max(0, target()), behavior: "instant" });
+                window.requestAnimationFrame(settle);
+                return;
+            }
+            var start = window.scrollY;
+            var started = null;
+            var duration = 650;
+            function frame(now) {
+                if (started === null) {
+                    started = now;
+                }
+                var t = Math.min(1, (now - started) / duration);
+                var eased = 1 - Math.pow(1 - t, 3);
+                window.scrollTo({ top: start + (target() - start) * eased, behavior: "instant" });
+                if (t < 1) {
+                    window.requestAnimationFrame(frame);
+                }
+            }
+            window.requestAnimationFrame(frame);
+        }
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll, { passive: true });
+
+        if (down && about) {
+            down.addEventListener("click", function (event) {
+                event.preventDefault();
+                scrollToTarget(function () {
+                    return Math.max(0, about.getBoundingClientRect().top + window.scrollY - 16);
+                }, reduced());
+                try {
+                    window.history.replaceState(null, "", "#about");
+                } catch (e) { /* file:// or blocked history: the anchor still works without JS */ }
+            });
+        }
+
+        /* The main target moves while the cover shrinks, so the skip link uses
+           the same stepped scroll with only the normal 1rem padding. */
+        if (skip && main) {
+            skip.addEventListener("click", function (event) {
+                event.preventDefault();
+                if (main.focus) {
+                    main.focus({ preventScroll: true });
+                }
+                scrollToTarget(function () {
+                    return Math.max(0, main.getBoundingClientRect().top + window.scrollY - 16);
+                }, reduced());
+                try {
+                    window.history.replaceState(null, "", "#main");
+                } catch (e) { /* file:// or blocked history: the anchor still works without JS */ }
+            });
+        }
 
         update();
     }
@@ -261,6 +373,7 @@
     initTheme();
     initSkipLink();
     initGalleries();
+    initHeroCollapse();
     initToc();
     initProjectDialogs();
 })();

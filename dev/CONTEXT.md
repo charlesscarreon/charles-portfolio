@@ -4,7 +4,7 @@ This document provides context about the portfolio project for human readers and
 
 ## Last Updated
 
-November 16, 2026
+November 18, 2026
 
 ## Project Summary
 
@@ -16,7 +16,7 @@ The site has three pages:
 - `/projects` — 4 software and game projects
 - `/skills` — skills and tools across 5 categories
 
-It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement); JavaScript only adds the theme toggle and image carousels.
+It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement). JavaScript adds the theme toggle, image carousels, project dialogs, table-of-contents marker, and the scroll-linked homepage cover.
 
 The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public URLs have no `.html` extension.
 
@@ -71,15 +71,17 @@ Contains local development tooling and documentation only. It is never deployed.
 Work in progress or planned to be done immediately.
 
 - Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
-- Phase 1 homepage rework — all five planned rounds are written on `feature/homepage-rework` (1, 2, 4, 5, 6; the featured project block was dropped for lack of a screenshot, and section numbers were dropped after review). Nothing merges until the branch is pushed and reviewed on the Vercel preview; the rail and the sticky behaviour need a real browser.
+- Phase 1 homepage rework: built on `feature/homepage-rework` and ready to commit. The header removal, moving cover, visible TOC, featured projects, compact footer, and Education marker passed local browser checks. Nothing merges until the branch is reviewed and pushed.
 
 ## Planned Changes
 
 Changes to be done in the future, not immediately. The bullets below are NOT ordered — position in this list does not imply priority or sequence.
 
+Do not delete this section when the list is empty. An empty list means nothing is planned right now, not that the section is stale or finished.
+
 ### Content additions
 
-- Add a Certifications section to the current website using the certificate scans and links from the old site (EF SET English C2, DICT Programming for Beginners Using Python, DICT-WD001 Principles of Web Development). The certificate scans are preserved in the old repo at `images/cert01-03.png` (reachable at https://charlesscarreon.github.io/images/cert0X.png). Display format (scan images vs. text links) to be decided when this task is planned out.
+- No content additions are planned right now. Completed work stays under Completed Changes.
 
 ### SEO and identity (from audit)
 
@@ -132,7 +134,7 @@ Final decisions (where they deviate from the audit docs' "keep the full name pri
 COMPLETED 2026-09-25. Local work included in the next commit of this round.
 
 - Fluid side padding via `clamp(1rem, 4vw, 1.25rem)` for `main`, `.site-nav`, and `.site-footer`.
-- Breakpoint ladder: 760px (`.entry-grid` / `.meta` collapse to one column), 620px (nav stacks, contact/footer link groups stack into one column, gallery thumbnails revert to natural ratios), 400px (small-phone spacing tightening).
+- Breakpoint ladder: 760px (`.entry-grid` / `.meta` collapse to one column), 620px (nav stacks, the contact group stacks into one column while footer links wrap in a centred row, gallery thumbnails revert to natural ratios), 400px (small-phone spacing tightening).
 - Contact and footer link groups are flex-gap spaced with no literal separators, so wrapped lines never start with a stray dot.
 - `overflow-wrap` guard on `main` prevents any token from causing horizontal overflow.
 - Theme switch tap target enlarged (~44px) on `pointer: coarse` devices.
@@ -173,9 +175,9 @@ COMPLETED 2026-11-15. Local work for this round.
 
 ### Phase 1: homepage rework (`feature/homepage-rework`)
 
-Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The plan of record is kept outside the repo; this section records what actually landed, round by round, one commit per round. Five of the six were kept.
+Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The plan of record is kept outside the repo. This section records what actually landed by round, with related revisions folded into the same commit. Five of the six planned rounds were kept, followed by later rounds for the project list and the homepage closeout.
 
-The featured project block was dropped before it was built. Its purpose was visual proof, and Lunas has no screenshot available: the repo ships none, its README lists hosting as planned, and the only way to capture the patient page is to run the stack locally. A text-only version would have repeated the achievement entry without adding evidence. The slot stays open for the game project, which will have a page and captures.
+The featured project block was dropped early because Lunas had no screenshot and a text-only version would have repeated the achievements entry. It was later built with the existing project thumbnails from OUTRUN, MUTED, and Lunas. The homepage closeout revision below records the final layout.
 
 #### Round 1 — hero availability and a contact button
 
@@ -250,17 +252,114 @@ COMPLETED 2026-11-16.
 - `images/projects/` was deleted outright: 14 files, 3.6 MB, of which 2.4 MB was two Road to Rich Farming screenshots. No card carries a screenshot this round, so the directory had no remaining referent. Everything is recoverable from git history, and the deletion retires the compression question for project images — only the three certificate scans remain heavy.
 - `Status` now distinguishes something. It previously read `Finished` on all eight cards; it now reads `In development (v0.3.3)`, `Defended`, `Ongoing (v0.1.0)` and `Prototype`.
 - OUTRUN follows the itch.io page rather than the author's memory: the game is published as in development, not finished. The card and the store page cannot disagree, because a reader can see both.
-- MUTED has no external link, and the panel says so in one line rather than leaving the reader to guess. The study's gesture set, evaluation metric and sample size were not available at build time, so the panel carries only what is known — the question, the training and deployment path, and the retained input data. An empty sub-heading was deliberately not shipped.
+- MUTED has no external link, so the card offers only the detail panel. The study's gesture set, evaluation metric and sample size were not available at build time, so the panel carries only what is known — the question, the training and deployment path, and the recorded input. An empty sub-heading was deliberately not shipped.
 - The Lunas card links the deployed site **and** the team repository, and labels the repository as the team's. This is the fix for the problem the old TaskFlow card had: it claimed `Project Leader` and linked a repository under someone else's account with no explanation. Lunas states the scope instead — patient client, both registration flows — which is what the card can defend.
 - Copy rule applied throughout: every sentence describes the project, not the process, not the developer's feelings, and not what was rejected. No mention of the MUTED name's history, no "still in progress" asides, no disclaimers about how the code was written. Detail that is worth reading but not worth leading with lives in the panel.
 - One new CSS block for `.project-dialog`, its head, close button, body and `h4`/list children, plus the outlined trigger pill. Below 620px the dialog fills the viewport using `100dvh`, so the mobile URL bar cannot clip the close button. `@media print` reveals every panel and hides the triggers, so a printout is not missing the detail that was behind a click.
 - `script.js` gains `initProjectDialogs()`: it opens the named dialog from `[data-dialog]`, closes on a backdrop click, and records the open panel in the URL with `replaceState` — so `/projects#outrun-detail` opens it, and open/close does not fill the back button. Inline `code` in card copy gets a small rule so the package name and target framework do not fall back to the browser's monospace size. No new tokens, no new files, no library.
 - `sitemap.xml`: `/projects` lastmod to 2026-11-16. The homepage was not touched — its stat tiles deliberately avoid a project count, which is why this round could not invalidate them.
-- Not yet verified: the four cards have no screenshots, and Lunas cannot be walked end to end because login on the deployed site returns an internal server error. The modal behaviour itself — backdrop click, focus return to the trigger, the 320px full-screen sheet — needs a browser pass.
+- Verification of the modal behaviour — backdrop click, focus return, the 320px full-screen sheet — was still pending when the round was committed. Lunas cannot be walked end to end because login on the deployed site returns an internal server error.
 
 #### Revision — the project detail is a modal, not a disclosure
 
 COMPLETED 2026-11-16.
 
 - `<details class="project-more">` was replaced by a native `<dialog>` before the round was committed: the disclosure grew the card and pushed every card below it down, and the panels are about to hold screenshots.
-- Nothing else about the round changed. Same four projects, same copy, same order, same deleted images, same `sitemap.xml` date.
+- Nothing else about the round changed. Same four projects, same copy, same deleted images, same `sitemap.xml` date. The card order was later changed to newest first; see the closing revision.
+
+#### Round 8 — screenshots on the cards, and neutral copy
+
+BUILT 2026-11-17, uncommitted.
+
+- Each project with an image now carries one still on the card above its heading: OUTRUN official artwork, MUTED gameplay, Lunas homepage. The toolkit has no image and none was invented. The stills appear on the page before a reader opens a panel.
+- The seven PNGs supplied for the panels were resized to 1200px wide and encoded as WebP at quality 0.82 through Chrome's canvas encoder. Three megabytes became 283 KB. Originals were moved out of the repo to `C:\Users\charles\Pictures\portfolio-project-sources\` and are not tracked; only the WebPs are.
+- Cards and the project descriptions in panels use impersonal third person. OUTRUN's pursuit paragraph was rewritten flatly, MUTED's question without rhetorical framing, and Lunas no longer says "My part was..." — the client's scope and the Top 8 result are stated as facts. The closing first-person paragraphs are the only place the work is attributed.
+- Every panel ends with one plain first-person paragraph stating what the work covered. It has no name, class, heading, rule or colour change, so the voice shift is the only marker. The `Role` value in the metadata carries the attribution.
+- Roles use Pascal case and `&`: Game Designer & Lead Developer, Lead Developer, Owner & Maintainer, Frontend Developer. Only the role values were changed; prose keeps its normal "and".
+- Panel headings lost their leading "The". Image captions lost their trailing periods. No em dashes remain in the project copy.
+- Topic chips sit inside each panel, directly after the head, and the same topics are added as `keywords` to each JSON-LD item. They are plain text, not links. The toolkit's `license` field was removed from the structured data along with the UI mention.
+- OUTRUN's garage is now stated as nine vehicles including the starting e-bike, matching the store page. Its Controls and Team sections were removed. The itch.io link reads "Download on itch.io", and the same action is repeated as a button inside the panel. The toolkit and Lunas panels gained View on GitHub and Visit site buttons respectively; the Lunas card link now reads "Visit site".
+- MUTED's "kept rather than discarded" phrasing and the "Not publicly available" line are gone. The toolkit's five modules are presented as examples rather than the full set, with a concrete line each, and no fixed count or licence is claimed.
+- Modal geometry: `.card > :last-child` was zeroing the dialog's bottom margin, which cancelled the UA's auto centring and left the panel flush with the bottom of the viewport. `margin: auto` on `.project-dialog[open]` restores centring. `max-height` uses `dvh`, and the scrollbar is thin and theme-coloured with `overscroll-behavior: contain`.
+- Print reveals panels whose lazy screenshots were never opened, so `beforeprint` flips their `loading` to `eager`.
+- Still outstanding: a visual browser pass on the new card thumbnails and panel buttons, and a privacy check of the Lunas registration screenshot for real names or patient data.
+
+#### Revision — chips in the panels, first-person contributions, OUTRUN artwork
+
+The four topic chip lists moved from the cards into their dialogs, directly after each head. The closing paragraphs are plain first-person `<p>` elements: no `project-contribution` class, no muted colour, no heading, no name. OUTRUN's card uses `outrun-key-art.webp` with alt `OUTRUN official artwork`; the duplicate key-art figure was removed from its panel, leaving the roadblock and regular-play figures.
+
+#### Revision — compact card grid, award pill and dates
+
+The four cards are wrapped in `.project-grid`: one column by default, two from 820px up. Card padding, headings, body size and metadata gaps were tightened only for `.project`, so other cards elsewhere are untouched. The thumbnail keeps `aspect-ratio: 16 / 9` and gains `height: auto` so the HTML `height` attributes cannot stretch the box.
+
+Lunas carries a small `Top 8 National` pill over the top-right of its thumbnail. Card Dates are now 2026 Oct (OUTRUN and MUTED), 2026 Nov (toolkit) and 2026 May (Lunas), with `dateCreated` updated in the JSON-LD to `2026-10`, `2026-11` and `2026-05`.
+
+The dialog's generic `ul` and `li` rules were scoped with `:not(.tags)`. They had been overriding `.tags` with left padding and per-item margins; in the flex row only the last chip kept full height, which made it look taller than the rest. Print collapses the project grid to one column so the expanded panels are full width.
+
+#### Revision — newest-first order and a first-person intro
+
+The cards now run newest first: toolkit (2026 Nov), OUTRUN and MUTED (2026 Oct, keeping their original relative order), then Lunas (2026 May). The JSON-LD `itemListElement` array was reordered to match, with `position` reset to 1–4, and its list description no longer mentions the school.
+
+The hero paragraph on `/projects` is now consistently first person and no longer names the school or repeats the name: "A selection of software, web and game projects I worked on, with my role in each." The background and skills links stay.
+
+#### Revision — award badge over the Lunas thumbnail
+
+The badge was first modelled on the badge inside the `#projects` section of `https://emieljames.dev/#projects`, then changed to avoid copying it. It now sits at the thumbnail's top-left as a solid site-accent rectangle with an uppercase accent-contrast label and a teal trophy on an accent-contrast tile; there is no translucency, blur or amber left. The image and badge share a `.project-thumb-wrap` positioning context, so the badge overlaps the still instead of occupying a line above the title. The thumbnail selector changed from `.project > .project-thumb` to `.project .project-thumb` to survive the wrapper; its 16:9 ratio and `height: auto` are unchanged.
+
+#### Revision — homepage introduction copy
+
+COMPLETED 2026-11-17 as `3fb005b feat: tighten the homepage introduction`.
+
+- The hero paragraph no longer repeats the name from the `h1` or says "would love to use". It now reads "I build games, developer tools, and web apps while studying Computer Science at Pamantasan ng Cabuyao."
+- The About headline is "Games, Tools, and Web Apps".
+- The About Me intro keeps the full name "Charles Serrano Carreon" for searchability, as recorded in the identity decisions. It drops "Hi!", the long "currently studying" clause and the aspirational closing. It now states the degree, school, when the interest started and the work done now.
+- The About closing is "You can contact me, browse my projects, or review my skills and tools." The three links are unchanged.
+- New prose uses the Oxford comma and no em dashes. Meta descriptions, Open Graph, Twitter Card, JSON-LD, Experience, Achievements, Education and the light theme are untouched.
+
+#### Round — homepage cover and TOC theme switch
+
+BUILT 2026-11-17, uncommitted.
+
+- The site header is gone from the homepage only. The theme switch now sits in a `.toc-head` row beside the `On this page` title, and the TOC stays visible at every width: a compact wrapped row on small screens and a sticky sidebar from 1160px up. Projects and skills page links are not replaced yet; projects access will come from the planned feature section and skills links will be added gradually.
+- The hero is now outside `<main>`. The skip link still targets `#main`, and `<main>` starts at About Me with `tabindex="-1"`, so keyboard users land on the summary instead of the visual cover. `<html>` has a `home` class to scope the new rules.
+- The hero keeps its current copy and contact row. Inside `@supports (height: 100svh)` it becomes a full-screen flex-centered cover using `100vh` then `100svh`. Browsers without `svh` keep the compact single-page layout, and CSS-disabled visitors get the plain stacked document. Short landscape viewports drop the minimum height.
+- `html.home` keeps `scroll-padding-top: 1rem` because there is no sticky header on this page. The old header CSS stays for projects and skills, which are untouched this round.
+- System default was deliberately not added to the theme switch. It stays a two-state persisted choice, matching the earlier decision to leave `prefers-color-scheme` alone.
+
+#### Revision — scroll-linked cover in normal flow
+
+This is a correction inside the same homepage cover round, not a separate commit.
+
+- The hero shrinks continuously with scroll instead of toggling at a threshold, then scrolls away with the page like any other section. Script writes `--hero-progress` from 0 to 1 across the first 45% of the viewport height, and CSS interpolates height, padding, spacing, and type scale from it. `overflow-anchor: none` on `html.home` keeps the browser from moving scrollY while the cover changes height.
+- The cover stays in normal document flow. There is no fixed positioning, spacer, overlay background, or measured height offset. Anchors clear only the normal 1rem padding, and the skip link keeps a stepped scroll because the main target moves while the cover shrinks. The progress-driven rules are scoped to `html.home.js`, so the no-JS fallback stays a static cover. Short landscape viewports drop the minimum height.
+- One bare down chevron replaces the circular cue. It bobs and fades out early, and hover and keyboard focus turn it cyan. It is a real anchor, so it works without JavaScript. Scripted clicks step the scroll frame by frame because the About target moves while the cover shrinks.
+- The existing global reduced-motion rule disables the bob and smooth scrolling. Instant jumps still settle the moving target in a few frames, so they land with the same 1rem padding. Print hides the chevron and shows the static cover.
+
+#### Revision — footer contact icons
+
+This is a correction inside the same homepage closeout, not a separate commit.
+
+- The footer no longer repeats the name and location line on any page. Each contact route is an inline SVG beside a visible text label, and the SVGs are hidden from assistive technology.
+- Labels use handles where the route has one, plus the full email address. The row wraps instead of stacking at small widths, and reduced padding brings the footer to roughly half to three quarters of its former height.
+
+#### Revision — featured projects section
+
+This is a correction inside the same homepage closeout, not a separate commit.
+
+- A Featured Projects section follows About Me with OUTRUN, MUTED, and Lunas in that order. Each card has one factual line and a deep link to the matching detail panel on the projects page.
+- The section links to `/projects` with a View all projects button. The TOC gains a matching anchor, and the grid collapses to one column below 760px.
+- Each featured card now uses the same thumbnail as its project-list card. Lunas carries the final Top 8 National badge over the still. The More about links share a bottom alignment rule so they sit on one line across the grid.
+
+#### Revision — final section TOC marker
+
+This is a correction inside the same homepage closeout, not a separate commit.
+
+- The TOC keeps the existing activation line for the first four sections. Education also has a lower viewport line, because it sits too near the end of the page to reach the top line before scrolling stops. The marker now lights when the Education heading enters the upper part of the viewport.
+
+#### Verification — homepage closeout
+
+Checked 2026-11-18.
+
+- Static checks, hero scroll checks, TOC checks, and all four fallback variants pass. The footer and featured links are covered by the homepage checks.
+- At 200% zoom and 200% text resize there is no horizontal overflow and all hero content stays visible. Keyboard order starts with the skip link, and every control has an accessible name.
+- `sitemap.xml` now lists 2026-11-18 for the homepage, projects page, and skills page, matching their latest content dates.
