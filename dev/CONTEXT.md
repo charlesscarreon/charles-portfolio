@@ -4,7 +4,7 @@ This document provides context about the portfolio project for human readers and
 
 ## Last Updated
 
-November 16, 2026
+November 18, 2026
 
 ## Project Summary
 
@@ -16,7 +16,7 @@ The site has three pages:
 - `/projects` — 4 software and game projects
 - `/skills` — skills and tools across 5 categories
 
-It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement); JavaScript only adds the theme toggle and image carousels.
+It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement). JavaScript adds the theme toggle, image carousels, project dialogs, table-of-contents marker, and the scroll-linked homepage cover.
 
 The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public URLs have no `.html` extension.
 
@@ -71,15 +71,17 @@ Contains local development tooling and documentation only. It is never deployed.
 Work in progress or planned to be done immediately.
 
 - Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
-- Phase 1 homepage rework — all five planned rounds are written on `feature/homepage-rework` (1, 2, 4, 5, 6; the featured project block was dropped for lack of a screenshot, and section numbers were dropped after review). Nothing merges until the branch is pushed and reviewed on the Vercel preview; the rail and the sticky behaviour need a real browser.
+- Phase 1 homepage rework: built on `feature/homepage-rework` and ready to commit. The header removal, moving cover, visible TOC, featured projects, compact footer, and Education marker passed local browser checks. Nothing merges until the branch is reviewed and pushed.
 
 ## Planned Changes
 
 Changes to be done in the future, not immediately. The bullets below are NOT ordered — position in this list does not imply priority or sequence.
 
+Do not delete this section when the list is empty. An empty list means nothing is planned right now, not that the section is stale or finished.
+
 ### Content additions
 
-- Add a Certifications section to the current website using the certificate scans and links from the old site (EF SET English C2, DICT Programming for Beginners Using Python, DICT-WD001 Principles of Web Development). The certificate scans are preserved in the old repo at `images/cert01-03.png` (reachable at https://charlesscarreon.github.io/images/cert0X.png). Display format (scan images vs. text links) to be decided when this task is planned out.
+- No content additions are planned right now. Completed work stays under Completed Changes.
 
 ### SEO and identity (from audit)
 
@@ -132,7 +134,7 @@ Final decisions (where they deviate from the audit docs' "keep the full name pri
 COMPLETED 2026-09-25. Local work included in the next commit of this round.
 
 - Fluid side padding via `clamp(1rem, 4vw, 1.25rem)` for `main`, `.site-nav`, and `.site-footer`.
-- Breakpoint ladder: 760px (`.entry-grid` / `.meta` collapse to one column), 620px (nav stacks, contact/footer link groups stack into one column, gallery thumbnails revert to natural ratios), 400px (small-phone spacing tightening).
+- Breakpoint ladder: 760px (`.entry-grid` / `.meta` collapse to one column), 620px (nav stacks, the contact group stacks into one column while footer links wrap in a centred row, gallery thumbnails revert to natural ratios), 400px (small-phone spacing tightening).
 - Contact and footer link groups are flex-gap spaced with no literal separators, so wrapped lines never start with a stray dot.
 - `overflow-wrap` guard on `main` prevents any token from causing horizontal overflow.
 - Theme switch tap target enlarged (~44px) on `pointer: coarse` devices.
@@ -173,9 +175,9 @@ COMPLETED 2026-11-15. Local work for this round.
 
 ### Phase 1: homepage rework (`feature/homepage-rework`)
 
-Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The plan of record is kept outside the repo; this section records what actually landed, round by round, one commit per round. Five of the six were kept.
+Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The plan of record is kept outside the repo. This section records what actually landed by round, with related revisions folded into the same commit. Five of the six planned rounds were kept, followed by later rounds for the project list and the homepage closeout.
 
-The featured project block was dropped before it was built. Its purpose was visual proof, and Lunas has no screenshot available: the repo ships none, its README lists hosting as planned, and the only way to capture the patient page is to run the stack locally. A text-only version would have repeated the achievement entry without adding evidence. The slot stays open for the game project, which will have a page and captures.
+The featured project block was dropped early because Lunas had no screenshot and a text-only version would have repeated the achievements entry. It was later built with the existing project thumbnails from OUTRUN, MUTED, and Lunas. The homepage closeout revision below records the final layout.
 
 #### Round 1 — hero availability and a contact button
 
@@ -306,10 +308,58 @@ The badge was first modelled on the badge inside the `#projects` section of `htt
 
 #### Revision — homepage introduction copy
 
-BUILT 2026-11-17, uncommitted.
+COMPLETED 2026-11-17 as `3fb005b feat: tighten the homepage introduction`.
 
 - The hero paragraph no longer repeats the name from the `h1` or says "would love to use". It now reads "I build games, developer tools, and web apps while studying Computer Science at Pamantasan ng Cabuyao."
 - The About headline is "Games, Tools, and Web Apps".
 - The About Me intro keeps the full name "Charles Serrano Carreon" for searchability, as recorded in the identity decisions. It drops "Hi!", the long "currently studying" clause and the aspirational closing. It now states the degree, school, when the interest started and the work done now.
 - The About closing is "You can contact me, browse my projects, or review my skills and tools." The three links are unchanged.
 - New prose uses the Oxford comma and no em dashes. Meta descriptions, Open Graph, Twitter Card, JSON-LD, Experience, Achievements, Education and the light theme are untouched.
+
+#### Round — homepage cover and TOC theme switch
+
+BUILT 2026-11-17, uncommitted.
+
+- The site header is gone from the homepage only. The theme switch now sits in a `.toc-head` row beside the `On this page` title, and the TOC stays visible at every width: a compact wrapped row on small screens and a sticky sidebar from 1160px up. Projects and skills page links are not replaced yet; projects access will come from the planned feature section and skills links will be added gradually.
+- The hero is now outside `<main>`. The skip link still targets `#main`, and `<main>` starts at About Me with `tabindex="-1"`, so keyboard users land on the summary instead of the visual cover. `<html>` has a `home` class to scope the new rules.
+- The hero keeps its current copy and contact row. Inside `@supports (height: 100svh)` it becomes a full-screen flex-centered cover using `100vh` then `100svh`. Browsers without `svh` keep the compact single-page layout, and CSS-disabled visitors get the plain stacked document. Short landscape viewports drop the minimum height.
+- `html.home` keeps `scroll-padding-top: 1rem` because there is no sticky header on this page. The old header CSS stays for projects and skills, which are untouched this round.
+- System default was deliberately not added to the theme switch. It stays a two-state persisted choice, matching the earlier decision to leave `prefers-color-scheme` alone.
+
+#### Revision — scroll-linked cover in normal flow
+
+This is a correction inside the same homepage cover round, not a separate commit.
+
+- The hero shrinks continuously with scroll instead of toggling at a threshold, then scrolls away with the page like any other section. Script writes `--hero-progress` from 0 to 1 across the first 45% of the viewport height, and CSS interpolates height, padding, spacing, and type scale from it. `overflow-anchor: none` on `html.home` keeps the browser from moving scrollY while the cover changes height.
+- The cover stays in normal document flow. There is no fixed positioning, spacer, overlay background, or measured height offset. Anchors clear only the normal 1rem padding, and the skip link keeps a stepped scroll because the main target moves while the cover shrinks. The progress-driven rules are scoped to `html.home.js`, so the no-JS fallback stays a static cover. Short landscape viewports drop the minimum height.
+- One bare down chevron replaces the circular cue. It bobs and fades out early, and hover and keyboard focus turn it cyan. It is a real anchor, so it works without JavaScript. Scripted clicks step the scroll frame by frame because the About target moves while the cover shrinks.
+- The existing global reduced-motion rule disables the bob and smooth scrolling. Instant jumps still settle the moving target in a few frames, so they land with the same 1rem padding. Print hides the chevron and shows the static cover.
+
+#### Revision — footer contact icons
+
+This is a correction inside the same homepage closeout, not a separate commit.
+
+- The footer no longer repeats the name and location line on any page. Each contact route is an inline SVG beside a visible text label, and the SVGs are hidden from assistive technology.
+- Labels use handles where the route has one, plus the full email address. The row wraps instead of stacking at small widths, and reduced padding brings the footer to roughly half to three quarters of its former height.
+
+#### Revision — featured projects section
+
+This is a correction inside the same homepage closeout, not a separate commit.
+
+- A Featured Projects section follows About Me with OUTRUN, MUTED, and Lunas in that order. Each card has one factual line and a deep link to the matching detail panel on the projects page.
+- The section links to `/projects` with a View all projects button. The TOC gains a matching anchor, and the grid collapses to one column below 760px.
+- Each featured card now uses the same thumbnail as its project-list card. Lunas carries the final Top 8 National badge over the still. The More about links share a bottom alignment rule so they sit on one line across the grid.
+
+#### Revision — final section TOC marker
+
+This is a correction inside the same homepage closeout, not a separate commit.
+
+- The TOC keeps the existing activation line for the first four sections. Education also has a lower viewport line, because it sits too near the end of the page to reach the top line before scrolling stops. The marker now lights when the Education heading enters the upper part of the viewport.
+
+#### Verification — homepage closeout
+
+Checked 2026-11-18.
+
+- Static checks, hero scroll checks, TOC checks, and all four fallback variants pass. The footer and featured links are covered by the homepage checks.
+- At 200% zoom and 200% text resize there is no horizontal overflow and all hero content stays visible. Keyboard order starts with the skip link, and every control has an accessible name.
+- `sitemap.xml` now lists 2026-11-18 for the homepage, projects page, and skills page, matching their latest content dates.

@@ -318,6 +318,10 @@ html.no-js .theme-switch svg {
     }
 }
 
+html.home .theme-switch {
+    margin-left: 0;
+}
+
 /* ---------- Main layout ---------- */
 
 main {
@@ -325,6 +329,28 @@ main {
     margin: 0 auto;
     padding: 2.5rem clamp(1rem, 4vw, 1.25rem) 3rem;
     overflow-wrap: anywhere;
+}
+
+html.home {
+    /* Script.js writes progress from 0 at the top of the page to 1 at the end
+       of the shrink, so the cover follows the scroll instead of snapping. */
+    --hero-progress: 0;
+    --hero-viewport: 100vh;
+    --hero-min: 11rem;
+    --hero-height: calc(var(--hero-min) + (var(--hero-viewport) - var(--hero-min)) * (1 - var(--hero-progress)));
+    /* There is no sticky header to clear on the homepage. */
+    scroll-padding-top: 1rem;
+    /* Opting out of scroll anchoring keeps the browser from moving scrollY
+       while the cover changes height. */
+    overflow-anchor: none;
+}
+
+html.home main {
+    padding-top: 0;
+}
+
+main:focus {
+    outline: none;
 }
 
 .section,
@@ -337,11 +363,47 @@ main > .card {
     margin-bottom: 0;
 }
 
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.featured-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.featured-card h3 {
+    margin-top: 0;
+}
+
+.featured-card p {
+    margin-bottom: 0.75rem;
+}
+
+.featured-card__more {
+    margin-top: auto;
+    padding-top: 0.75rem;
+}
+
+.featured-more {
+    margin-top: 1.25rem;
+}
+
+@media (max-width: 760px) {
+    .featured-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
 /* ---------- Hero ---------- */
 
 .hero {
+    position: relative;
     max-width: 46rem;
     margin: 0 auto 3rem;
+    padding: 2.5rem clamp(1rem, 4vw, 1.25rem) 0;
     text-align: center;
 }
 
@@ -389,6 +451,104 @@ main > .card {
     color: var(--hover);
 }
 
+@supports (height: 100svh) {
+    html.home {
+        --hero-viewport: 100svh;
+    }
+
+    html.home.js .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: none;
+        min-height: var(--hero-height);
+        margin-bottom: 0;
+        padding: calc(2rem - 0.5rem * var(--hero-progress)) clamp(1rem, 4vw, 1.25rem);
+    }
+
+    html.home.js .hero > :not(.scroll-cue) {
+        width: 100%;
+        max-width: 46rem;
+    }
+
+    html.home.js .hero h1 {
+        font-size: calc(clamp(2rem, 5vw, 2.9rem) - clamp(0.45rem, 1.2vw, 0.9rem) * var(--hero-progress));
+    }
+
+    html.home.js .hero .tagline {
+        font-size: calc(clamp(1.1rem, 3vw, 1.35rem) - clamp(0.15rem, 0.5vw, 0.25rem) * var(--hero-progress));
+        margin-bottom: calc(1.25rem - 1.05rem * var(--hero-progress));
+    }
+
+    html.home.js .hero .tagline:has(+ .hero-availability) {
+        margin-bottom: calc(0.4rem - 0.2rem * var(--hero-progress));
+    }
+
+    html.home.js .hero .hero-availability {
+        margin-bottom: calc(1.25rem - 0.65rem * var(--hero-progress));
+        font-size: calc(0.95rem - 0.1rem * var(--hero-progress));
+    }
+
+    html.home.js .hero > p:not(.tagline):not(.hero-availability):not(.hero-cta):not(.contact) {
+        font-size: calc(1rem - 0.08rem * var(--hero-progress));
+    }
+
+    html.home.js .hero .hero-cta {
+        margin-top: calc(1.5rem - 0.65rem * var(--hero-progress));
+    }
+
+    html.home.js .hero .contact {
+        margin-top: calc(1.25rem - 0.55rem * var(--hero-progress));
+        font-size: calc(0.88rem - 0.08rem * var(--hero-progress));
+    }
+
+    html.home main {
+        padding-top: 2.5rem;
+    }
+}
+
+/* ---------- Homepage hero: bare down chevron ---------- */
+
+.scroll-cue {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem;
+    color: var(--muted);
+    transition: color 160ms ease, opacity 160ms ease;
+}
+
+.scroll-cue[hidden] {
+    display: none;
+}
+
+.scroll-cue svg {
+    display: block;
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.scroll-cue:hover,
+.scroll-cue:focus-visible {
+    color: var(--hover);
+}
+
+.scroll-cue--down {
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%);
+    animation: cue-bob 1.8s ease-in-out infinite;
+    opacity: calc(1 - var(--hero-progress) * 4);
+}
+
+@keyframes cue-bob {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, 0.35rem); }
+}
+
 .contact {
     display: flex;
     flex-wrap: wrap;
@@ -402,13 +562,30 @@ main > .card {
     white-space: nowrap;
 }
 
-/* Footer link groups: flex-gap spacing instead of literal separators */
+/* Footer link groups: icons with visible labels, no literal separators */
 .footer-links {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     column-gap: 0.75rem;
     row-gap: 0.25rem;
+}
+
+.footer-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.footer-links svg {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+}
+
+.footer-links span {
+    overflow-wrap: anywhere;
 }
 
 /* ---------- Cards ---------- */
@@ -693,7 +870,8 @@ main > .card {
    same crop and border as the gallery images keeps it inside the site's
    existing image language. height:auto stops the width/height attributes from
    stretching the box away from its 16:9 ratio. */
-.project .project-thumb {
+.project .project-thumb,
+.featured-card .project-thumb {
     display: block;
     width: 100%;
     height: auto;
@@ -1122,34 +1300,42 @@ html.dialog-capable .project-dialog:not([open]) {
     background-color: var(--surface);
     border-top: 1px solid var(--border);
     text-align: center;
-    padding: 2rem clamp(1rem, 4vw, 1.25rem);
+    padding: 1rem clamp(1rem, 4vw, 1.25rem);
     color: var(--muted);
 }
 
 .site-footer address {
     font-style: normal;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
-.site-footer address p:last-child {
+.site-footer address p:last-child,
+.site-footer > p {
     margin-bottom: 0;
 }
 
 .site-footer a {
-    white-space: nowrap;
+    white-space: normal;
 }
 
 /* ---------- Table of contents ---------- */
 
-/* Hidden by default: below the breakpoint the header is already sticky and a
-   second sticky column would crowd the content. The markup is a plain list of
-   anchors, so the no-CSS view still navigates. */
+/* The TOC now carries the theme switch, so it stays visible at every width.
+   Below the sidebar breakpoint it becomes a compact row above the content. */
 .toc {
-    display: none;
+    display: block;
+}
+
+.toc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
 }
 
 .toc__title {
-    margin: 0 0 0.75rem;
+    margin: 0;
     color: var(--muted);
     font-size: 0.78rem;
     font-weight: 600;
@@ -1158,17 +1344,18 @@ html.dialog-capable .project-dialog:not([open]) {
 }
 
 .toc ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
     margin: 0;
     padding: 0;
     list-style: none;
-    border-left: 1px solid var(--border);
 }
 
 .toc a {
-    display: block;
-    padding: 0.35rem 0 0.35rem 0.85rem;
-    margin-left: -1px;
-    border-left: 2px solid transparent;
+    display: inline-block;
+    padding: 0.15rem 0;
+    border-bottom: 2px solid transparent;
     color: var(--muted);
     font-size: 0.9rem;
 }
@@ -1180,7 +1367,17 @@ html.dialog-capable .project-dialog:not([open]) {
 
 .toc a[aria-current="true"] {
     color: var(--accent);
-    border-left-color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.page-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-grid .toc {
+    order: -1;
+    margin-bottom: 1.5rem;
 }
 
 @media (min-width: 1160px) {
@@ -1191,10 +1388,29 @@ html.dialog-capable .project-dialog:not([open]) {
         align-items: start;
     }
 
-    .toc {
-        display: block;
+    .page-grid .toc {
+        order: 0;
+        margin-bottom: 0;
         position: sticky;
-        top: 5rem;
+        top: 2rem;
+    }
+
+    .toc ul {
+        display: block;
+        border-left: 1px solid var(--border);
+    }
+
+    .toc a {
+        display: block;
+        padding: 0.35rem 0 0.35rem 0.85rem;
+        margin-left: -1px;
+        border-bottom: 0;
+        border-left: 2px solid transparent;
+    }
+
+    .toc a[aria-current="true"] {
+        border-left-color: var(--accent);
+        border-bottom-color: transparent;
     }
 }
 
@@ -1235,13 +1451,9 @@ html.dialog-capable .project-dialog:not([open]) {
         margin-right: auto;
     }
 
-    .contact,
-    .footer-links {
+    .contact {
         flex-direction: column;
         row-gap: 0.35rem;
-    }
-
-    .contact {
         justify-content: center;
         align-items: center;
     }
@@ -1254,7 +1466,7 @@ html.dialog-capable .project-dialog:not([open]) {
         white-space: normal;
     }
 
-    .hero {
+    html.home.js .hero {
         margin-bottom: 2rem;
     }
 
@@ -1313,7 +1525,7 @@ html.dialog-capable .project-dialog:not([open]) {
         padding-top: 1.75rem;
     }
 
-    .hero {
+    html.home.js .hero {
         margin-bottom: 1.5rem;
     }
 
@@ -1345,8 +1557,14 @@ html.dialog-capable .project-dialog:not([open]) {
         padding-bottom: 1.5rem;
     }
 
-    .hero {
+    html.home.js .hero {
+        min-height: auto;
         margin-bottom: 1.5rem;
+        padding-top: 2rem;
+    }
+
+    .scroll-cue {
+        display: none;
     }
 
     .hero .tagline {
@@ -1378,10 +1596,22 @@ html.dialog-capable .project-dialog:not([open]) {
     .site-header,
     .theme-switch,
     .skip-link,
+    .scroll-cue,
     .gallery-nav,
     .toc,
     .project-detail-open {
         display: none !important;
+    }
+
+    html.home.js .hero {
+        display: block;
+        min-height: auto;
+        margin-bottom: 0;
+        padding: 0 0 1.5rem;
+    }
+
+    html.home .page-grid {
+        display: block;
     }
 
     body {
