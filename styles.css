@@ -609,8 +609,121 @@ main > .card {
 
 /* ---------- Projects ---------- */
 
+/* Two shorter cards per row on wide screens, one column below that. The
+   wrapper owns the section spacing now that the cards are no longer direct
+   children of main. */
+.project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+@media (min-width: 820px) {
+    .project-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.project {
+    padding: 1.1rem;
+    border-radius: 0.75rem;
+}
+
 .project h2 {
+    margin-bottom: 0.6rem;
+    font-size: 1.2rem;
+}
+
+.project > p:not([class]) {
+    font-size: 0.92rem;
+}
+
+.project .meta {
+    row-gap: 0.25rem;
     margin-bottom: 1rem;
+}
+
+/* Positioning context for the award pill, which overlaps the still rather
+   than taking a line of its own between the image and the title. */
+.project-thumb-wrap {
+    position: relative;
+    margin-bottom: 0.9rem;
+}
+
+/* A compact award badge on the top-left of the still. It uses the site's
+   accent throughout: accent fill, uppercase accent-contrast label and a
+   contrasting tile holding a teal trophy. */
+.project-badge {
+    position: absolute;
+    z-index: 1;
+    top: 0.7rem;
+    left: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0.28rem 0.6rem 0.28rem 0.42rem;
+    border: 1px solid color-mix(in srgb, var(--accent-contrast) 22%, transparent);
+    border-radius: 0.5rem;
+    background-color: var(--accent);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+    color: var(--accent-contrast);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.project-badge__icon {
+    box-sizing: content-box;
+    width: 0.8rem;
+    height: 0.8rem;
+    flex: none;
+    padding: 0.2rem;
+    border-radius: 0.35rem;
+    background-color: var(--accent-contrast);
+    color: var(--accent);
+}
+
+/* One still per card, so the project list is visual before it is textual. The
+   same crop and border as the gallery images keeps it inside the site's
+   existing image language. height:auto stops the width/height attributes from
+   stretching the box away from its 16:9 ratio. */
+.project .project-thumb {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background-color: var(--surface-2);
+}
+
+/* Topic chips: plain text rather than links, so they add searchable words
+   without adding a second set of destinations to the panel. */
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tags li {
+    padding: 0.2rem 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background-color: var(--surface-2);
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
 }
 
 .gallery {
@@ -782,16 +895,18 @@ html.dialog-capable .project-dialog:not([open]) {
     font-size: 1rem;
 }
 
-.project-dialog ul {
+/* Only the module list gets list indentation and spaced items. Scoping away
+   from .tags keeps every topic chip the same height in the flex row. */
+.project-dialog ul:not(.tags) {
     margin: 0.5rem 0 0;
     padding-left: 1.15rem;
 }
 
-.project-dialog li {
+.project-dialog ul:not(.tags) li {
     margin-bottom: 0.35rem;
 }
 
-.project-dialog li:last-child {
+.project-dialog ul:not(.tags) li:last-child {
     margin-bottom: 0;
 }
 
@@ -815,6 +930,10 @@ html.dialog-capable .project-dialog:not([open]) {
     margin-top: 0.4rem;
     font-size: 0.85rem;
     color: var(--muted);
+}
+
+.dialog-actions {
+    margin: 1.25rem 0 0;
 }
 
 /* The trigger sits beside the solid project links, so it is drawn with an
@@ -1139,6 +1258,10 @@ html.dialog-capable .project-dialog:not([open]) {
         margin-bottom: 2rem;
     }
 
+    .project-grid {
+        margin-bottom: 1.5rem;
+    }
+
     .hero .tagline {
         margin-bottom: 0.75rem;
     }
@@ -1268,6 +1391,16 @@ html.dialog-capable .project-dialog:not([open]) {
 
     main {
         max-width: none;
+    }
+
+    /* Panels expand inside each card for print, so the two-column screen grid
+       becomes a single column of full-width cards. */
+    .project-grid {
+        display: block;
+    }
+
+    .project {
+        margin-bottom: 1rem;
     }
 
     /* Every project's detail is in the printout, not only the panel that
