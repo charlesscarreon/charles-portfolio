@@ -71,7 +71,7 @@ Contains local development tooling and documentation only. It is never deployed.
 Work in progress or planned to be done immediately.
 
 - Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
-- Phase 1 homepage rework: built on `feature/homepage-rework` and ready to commit. The header removal, moving cover, visible TOC, featured projects, compact footer, and Education marker passed local browser checks. Nothing merges until the branch is reviewed and pushed.
+- Phase 3 skills and certifications rework: built on `feature/skills-rework` and ready to commit. The cover hero, compact skills grid, five certificate cards, local previews, full visible dates, and shared tag and button colors passed local static and browser checks. Nothing merges until the branch is reviewed and pushed.
 
 ## Planned Changes
 
@@ -175,7 +175,7 @@ COMPLETED 2026-11-15. Local work for this round.
 
 ### Phase 1: homepage rework (`feature/homepage-rework`)
 
-Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The plan of record is kept outside the repo. This section records what actually landed by round, with related revisions folded into the same commit. Five of the six planned rounds were kept, followed by later rounds for the project list and the homepage closeout.
+Planned as six rounds on a branch so production stays on `45a7c5c` until the branch is merged. The branch was merged into `main` on 2026-11-18 as `633f70d`. The plan of record is kept outside the repo. This section records what actually landed by round, with related revisions folded into the same commit. Five of the six planned rounds were kept, followed by later rounds for the project list and the homepage closeout.
 
 The featured project block was dropped early because Lunas had no screenshot and a text-only version would have repeated the achievements entry. It was later built with the existing project thumbnails from OUTRUN, MUTED, and Lunas. The homepage closeout revision below records the final layout.
 
@@ -215,6 +215,7 @@ COMPLETED 2026-11-15.
 - Narrow screens: the facts collapse to one label per line, left-aligned, inside the otherwise centred card. The stat row centres its text and wraps at nine rem.
 - Contrast, computed from the tokens: tile number 8.51:1 dark / 4.64:1 light, tile label 6.30:1 / 5.35:1, fact label 7.39:1 / 5.64:1. All pass AA.
 - No JS, no new images, `sitemap.xml` unchanged.
+- Later revision: the certification stat was changed from `3` to `5` in the current skills rework, when two verified Wadhwani certificates were added.
 
 #### Round 5 — certifications on the skills page
 
@@ -227,6 +228,7 @@ COMPLETED 2026-11-16.
 - The section carries `id="certifications"`, so a future table of contents or a stat tile can link straight to it.
 - `sitemap.xml`: `/skills` lastmod moved to 2026-11-16. The homepage keeps 2026-11-15 until the next round edits it.
 - No JS. `skills.html` gained one section; `styles.css` gained two rules.
+- Superseded on 2026-11-18 by the five-card certification layout in the current skills rework. The local previews and full issue dates recorded there replace the three remote scans and year-only labels from this round.
 
 #### Round 6 — desktop table of contents
 
@@ -269,7 +271,7 @@ COMPLETED 2026-11-16.
 
 #### Round 8 — screenshots on the cards, and neutral copy
 
-BUILT 2026-11-17, uncommitted.
+COMPLETED 2026-11-18 as part of `488cf77`.
 
 - Each project with an image now carries one still on the card above its heading: OUTRUN official artwork, MUTED gameplay, Lunas homepage. The toolkit has no image and none was invented. The stills appear on the page before a reader opens a panel.
 - The seven PNGs supplied for the panels were resized to 1200px wide and encoded as WebP at quality 0.82 through Chrome's canvas encoder. Three megabytes became 283 KB. Originals were moved out of the repo to `C:\Users\charles\Pictures\portfolio-project-sources\` and are not tracked; only the WebPs are.
@@ -292,7 +294,7 @@ The four topic chip lists moved from the cards into their dialogs, directly afte
 
 The four cards are wrapped in `.project-grid`: one column by default, two from 820px up. Card padding, headings, body size and metadata gaps were tightened only for `.project`, so other cards elsewhere are untouched. The thumbnail keeps `aspect-ratio: 16 / 9` and gains `height: auto` so the HTML `height` attributes cannot stretch the box.
 
-Lunas carries a small `Top 8 National` pill over the top-right of its thumbnail. Card Dates are now 2026 Oct (OUTRUN and MUTED), 2026 Nov (toolkit) and 2026 May (Lunas), with `dateCreated` updated in the JSON-LD to `2026-10`, `2026-11` and `2026-05`.
+Lunas carries a small `Top 8 National` pill over the top-right of its thumbnail. Card Dates are now 2026 Oct (OUTRUN and MUTED), 2026 Nov (toolkit) and 2026 May (Lunas), with `dateCreated` updated in the JSON-LD to `2026-10`, `2026-11` and `2026-05`. The visible labels were later expanded to `2026 October` and `2026 November` in the current skills round. The JSON-LD values stayed ISO.
 
 The dialog's generic `ul` and `li` rules were scoped with `:not(.tags)`. They had been overriding `.tags` with left padding and per-item margins; in the flex row only the last chip kept full height, which made it look taller than the rest. Print collapses the project grid to one column so the expanded panels are full width.
 
@@ -318,7 +320,7 @@ COMPLETED 2026-11-17 as `3fb005b feat: tighten the homepage introduction`.
 
 #### Round — homepage cover and TOC theme switch
 
-BUILT 2026-11-17, uncommitted.
+COMPLETED 2026-11-18 as `df9eab5`, merged through PR #3 as `633f70d`.
 
 - The site header is gone from the homepage only. The theme switch now sits in a `.toc-head` row beside the `On this page` title, and the TOC stays visible at every width: a compact wrapped row on small screens and a sticky sidebar from 1160px up. Projects and skills page links are not replaced yet; projects access will come from the planned feature section and skills links will be added gradually.
 - The hero is now outside `<main>`. The skip link still targets `#main`, and `<main>` starts at About Me with `tabindex="-1"`, so keyboard users land on the summary instead of the visual cover. `<html>` has a `home` class to scope the new rules.
@@ -363,3 +365,32 @@ Checked 2026-11-18.
 - Static checks, hero scroll checks, TOC checks, and all four fallback variants pass. The footer and featured links are covered by the homepage checks.
 - At 200% zoom and 200% text resize there is no horizontal overflow and all hero content stays visible. Keyboard order starts with the skip link, and every control has an accessible name.
 - `sitemap.xml` now lists 2026-11-18 for the homepage, projects page, and skills page, matching their latest content dates.
+
+### Phase 2: projects rework (`feature/projects-rework`)
+
+COMPLETED 2026-11-18 as `488cf77`, merged through PR #4 as `8ca41e0`.
+
+- The projects page now matches the homepage cover pattern with a full-screen hero, `My Projects` heading, and back and down cues. The back cue targets `/#featured` and reads `Back to Home`. The down cue targets `#main` and reads `Scroll to projects`. Both hide at hero progress `>= 0.25`.
+- The `settledTarget(target)` damping in the shared hero scroll code stays intact.
+- The content header reads `What I've Built` with the description `Each project shows the tools I used, my role, and more detail about the work.`
+- The four cards run newest first: toolkit, OUTRUN, MUTED, and Lunas. The JSON-LD `itemListElement` order matches the visible order.
+- OUTRUN uses `images/projects/outrun/outrun-key-art.webp` with alt `OUTRUN official artwork`. Project tags remain inside the detail dialogs. Contributions stay as plain first-person paragraphs with no name, heading, colour change, or rule.
+- Roles use Pascal case with `&` in metadata values. Prose keeps normal `and`.
+- The deferred issue with bottom-aligned buttons leaving empty space on image-less cards stays deferred. No fix was attempted in this round.
+
+### Phase 3: skills and certifications rework (`feature/skills-rework`)
+
+BUILT 2026-11-18, uncommitted on `feature/skills-rework`, based on `origin/main` at `8ca41e0`.
+
+- The skills page now matches the projects cover style with the id `skills-hero`, heading `My Skills`, tagline `Tools, languages, and certifications`, a back cue to `/`, and a down cue to `#main` labelled `Scroll to skills`. The site header is removed from this page. The theme switch sits outside the hero in the first section header row.
+- The page uses `class="no-js home skills"` and keeps a readable no-JS fallback. The cues hide at hero progress `>= 0.25`. The hero stays in normal flow and is not sticky or fixed.
+- The theme switch stays binary, with no system-default state.
+- The skills header reads `Skills and Tools` with the description `Each group lists the tools and technologies I use with my current proficiency level.` Five compact cards sit in `.skills-grid`, two columns from `760px` up. Tools stays as a normal skill card.
+- `Unity Engine` and `C# Game Scripting` are `Proficient` in both visible rows and JSON-LD.
+- Certifications are separated from skills with `.cert-grid` and `.cert-card`. The five cards use local PNG previews from `images/certificates/`, remote verification or PDF links, and no copied PDF files. The certificate images use `object-fit: cover` with `object-position: center top` inside an `8rem` frame.
+- Certificate order is newest first: Proficiency Certificate, Certificate of Content Completion, EF SET English Certificate, Principles of Web Development, and Programming for Beginners Using Python.
+- Visible certificate dates use `YYYY MMMM DD`: `2026 May 13`, `2026 April 30`, `2025 May 23`, `2024 July 18`, and `2024 July 6`. Visible project dates use full month names. JSON-LD and `datetime` values stay ISO. Month-only labels and year-only labels stay compact.
+- Certificate tags are styled like the project dialog tags. Certificate buttons use the same cyan fill as the other buttons. Tags sit above buttons in a bottom-aligned footer group.
+- EF SET shows `78/100` in the title and keeps `C2 Proficient` as a tag. The Wadhwani certificates count as certifications. The Lunas participation certificate stays out because its verification site refuses to verify it.
+- `index.html` records five certifications. `sitemap.xml` already lists 2026-11-18 for all three pages.
+- Static checks, `git diff --check`, and browser checks pass for desktop, tablet, mobile, reduced motion, and no-JS.

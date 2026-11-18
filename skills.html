@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" class="no-js">
+<html lang="en" data-theme="dark" class="no-js home skills">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -73,9 +73,9 @@
             { "@type": "ListItem", "position": 9, "item": { "@type": "Thing", "name": "Java", "description": "Advanced" } },
             { "@type": "ListItem", "position": 10, "item": { "@type": "Thing", "name": "C#", "description": "Proficient" } },
             { "@type": "ListItem", "position": 11, "item": { "@type": "Thing", "name": "Python", "description": "Familiar" } },
-            { "@type": "ListItem", "position": 12, "item": { "@type": "Thing", "name": "Unity Engine", "description": "Familiar" } },
+            { "@type": "ListItem", "position": 12, "item": { "@type": "Thing", "name": "Unity Engine", "description": "Proficient" } },
             { "@type": "ListItem", "position": 13, "item": { "@type": "Thing", "name": "Godot Engine", "description": "Familiar" } },
-            { "@type": "ListItem", "position": 14, "item": { "@type": "Thing", "name": "C# Game Scripting", "description": "Familiar" } },
+            { "@type": "ListItem", "position": 14, "item": { "@type": "Thing", "name": "C# Game Scripting", "description": "Proficient" } },
             { "@type": "ListItem", "position": 15, "item": { "@type": "Thing", "name": "Git", "description": "Proficient" } },
             { "@type": "ListItem", "position": 16, "item": { "@type": "Thing", "name": "GitHub", "description": "Proficient" } },
             { "@type": "ListItem", "position": 17, "item": { "@type": "Thing", "name": "Docker Desktop", "description": "Familiar" } },
@@ -89,14 +89,37 @@
 <body>
     <a class="skip-link" href="#main">Skip to main content</a>
 
-    <header class="site-header">
-        <nav class="site-nav" aria-label="Primary">
-            <a class="brand" href="/">Charles S. Carreon</a>
-            <ul class="nav-list">
-                <li><a href="/">Home</a></li>
-                <li><a href="/projects">Projects</a></li>
-                <li><a href="/skills" aria-current="page">Skills</a></li>
-            </ul>
+    <section class="hero" id="skills-hero" aria-label="Skills introduction">
+        <a class="scroll-cue scroll-cue--back" href="/" aria-label="Back to Home">
+            <span class="scroll-cue__bob" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+            <span class="scroll-cue__label" aria-hidden="true">Back to Home</span>
+        </a>
+        <h1>My Skills</h1>
+        <p class="tagline">Tools, languages, and certifications</p>
+        <p>
+            The tools and technologies I use across web development, programming, and game development.
+            Proficiency levels range from <em>Familiar</em> to <em>Advanced</em>. See my
+            <a href="/">background</a> and <a href="/projects">projects</a> to learn more.
+        </p>
+        <a class="scroll-cue scroll-cue--down" href="#main" aria-label="Scroll to skills">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </section>
+
+    <main id="main" tabindex="-1">
+        <section class="skills-head">
+            <div class="skills-head__copy">
+                <h2>Skills and Tools</h2>
+                <p>Each group lists the tools and technologies I use with my current proficiency level.</p>
+            </div>
             <button type="button" class="theme-switch" data-theme-toggle aria-label="Switch between dark and light theme">
                 <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -117,93 +140,149 @@
                 </svg>
                 <span class="visually-hidden">Switch themes</span>
             </button>
-        </nav>
-    </header>
-
-    <main id="main">
-        <section class="hero">
-            <h1>Skills</h1>
-            <p class="tagline">Tools and technologies I use</p>
-            <p>
-                The tools and technologies of <strong>Charles S. Carreon</strong>, a Computer Science student
-                at Pamantasan ng Cabuyao. Proficiency levels range from <em>Familiar</em> to <em>Advanced</em>.
-                See my <a href="/">background</a> and <a href="/projects">projects</a> to learn more.
-            </p>
         </section>
 
-        <section class="card skill-category" id="front-end">
-            <h2>Front-End Development</h2>
-            <ul class="skill-list">
-                <li><span class="skill-name">HTML</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                <li><span class="skill-name">CSS</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                <li><span class="skill-name">JavaScript</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                <li><span class="skill-name">React.js</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                <li><span class="skill-name">Bootstrap</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-            </ul>
+        <div class="skills-grid">
+            <section class="card skill-category" id="front-end">
+                <h2>Front-End Development</h2>
+                <ul class="skill-list">
+                    <li><span class="skill-name">HTML</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                    <li><span class="skill-name">CSS</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                    <li><span class="skill-name">JavaScript</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                    <li><span class="skill-name">React.js</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li><span class="skill-name">Bootstrap</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                </ul>
+            </section>
+
+            <section class="card skill-category" id="back-end">
+                <h2>Back-End / Server-Side</h2>
+                <ul class="skill-list">
+                    <li><span class="skill-name">PHP</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li><span class="skill-name">Laravel (PHP)</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li><span class="skill-name">MySQL</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                </ul>
+            </section>
+
+            <section class="card skill-category" id="programming">
+                <h2>Programming</h2>
+                <ul class="skill-list">
+                    <li><span class="skill-name">Java</span><span class="skill-level skill-level--advanced">Advanced</span></li>
+                    <li><span class="skill-name">C#</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                    <li><span class="skill-name">Python</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                </ul>
+            </section>
+
+            <section class="card skill-category" id="game-development">
+                <h2>Game Development</h2>
+                <ul class="skill-list">
+                    <li><span class="skill-name">Unity Engine</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                    <li><span class="skill-name">Godot Engine</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li><span class="skill-name">C# Game Scripting</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                </ul>
+            </section>
+
+            <section class="card skill-category" id="tools">
+                <h2>Tools</h2>
+                <ul class="skill-list">
+                    <li><span class="skill-name">Git</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                    <li><span class="skill-name">GitHub</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                    <li><span class="skill-name">Docker Desktop</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li><span class="skill-name">Figma</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li><span class="skill-name">Command Line Interface (CLI)</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                    <li><span class="skill-name">Vercel</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                </ul>
+            </section>
+        </div>
+
+        <section class="certs-head">
+            <div class="certs-head__copy">
+                <h2>Certifications</h2>
+                <p>The certificates I've earned and what each one covers.</p>
+            </div>
         </section>
 
-        <section class="card skill-category" id="back-end">
-            <h2>Back-End / Server-Side</h2>
-            <ul class="skill-list">
-                <li><span class="skill-name">PHP</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                <li><span class="skill-name">Laravel (PHP)</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                <li><span class="skill-name">MySQL</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-            </ul>
-        </section>
+        <div class="cert-grid" id="certifications">
+            <article class="card cert-card">
+                <div class="cert-thumb-wrap">
+                    <img class="cert-thumb" src="images/certificates/cert-wadhwani-proficiency.png"
+                        alt="Preview of the Proficiency Certificate" loading="lazy" decoding="async">
+                </div>
+                <h3>Proficiency Certificate</h3>
+                <p class="cert-issuer">Wadhwani Foundation &middot; 2026 May 13</p>
+                <div class="cert-card__footer">
+                    <div class="cert-tags">
+                        <span class="cert-tag">Financial Management</span>
+                    </div>
+                    <p class="cert-more"><a href="https://web.certificate.wfglobal.org/en/certificate?certificateId=6a04850b8b44bd81aa7138a6" target="_blank"
+                        rel="noreferrer">View certificate</a></p>
+                </div>
+            </article>
 
-        <section class="card skill-category" id="programming">
-            <h2>Programming</h2>
-            <ul class="skill-list">
-                <li><span class="skill-name">Java</span><span class="skill-level skill-level--advanced">Advanced</span></li>
-                <li><span class="skill-name">C#</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                <li><span class="skill-name">Python</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-            </ul>
-        </section>
+            <article class="card cert-card">
+                <div class="cert-thumb-wrap">
+                    <img class="cert-thumb" src="images/certificates/cert-wadhwani-content_completion.png"
+                        alt="Preview of the Certificate of Content Completion" loading="lazy" decoding="async">
+                </div>
+                <h3>Certificate of Content Completion</h3>
+                <p class="cert-issuer">Wadhwani Foundation &middot; 2026 April 30</p>
+                <div class="cert-card__footer">
+                    <div class="cert-tags">
+                        <span class="cert-tag">Financial Management</span>
+                    </div>
+                    <p class="cert-more"><a href="https://web.certificate.wfglobal.org/en/certificate?certificateId=69f36a6cb36cdf49a0e65cd6" target="_blank"
+                        rel="noreferrer">View certificate</a></p>
+                </div>
+            </article>
 
-        <section class="card skill-category" id="game-development">
-            <h2>Game Development</h2>
-            <ul class="skill-list">
-                <li><span class="skill-name">Unity Engine</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                <li><span class="skill-name">Godot Engine</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                <li><span class="skill-name">C# Game Scripting</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-            </ul>
-        </section>
+            <article class="card cert-card">
+                <div class="cert-thumb-wrap">
+                    <img class="cert-thumb" src="images/certificates/cert-efset-2025.png"
+                        alt="Preview of the EF SET English Certificate" loading="lazy" decoding="async">
+                </div>
+                <h3>EF SET English Certificate, 78/100</h3>
+                <p class="cert-issuer">EF SET &middot; 2025 May 23</p>
+                <div class="cert-card__footer">
+                    <div class="cert-tags">
+                        <span class="cert-tag">English</span>
+                        <span class="cert-tag">C2 Proficient</span>
+                    </div>
+                    <p class="cert-more"><a href="https://cert.efset.org/r9hm2w" target="_blank"
+                        rel="noreferrer">View certificate</a></p>
+                </div>
+            </article>
 
-        <section class="card skill-category" id="tools">
-            <h2>Tools</h2>
-            <ul class="skill-list">
-                <li><span class="skill-name">Git</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                <li><span class="skill-name">GitHub</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                <li><span class="skill-name">Docker Desktop</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                <li><span class="skill-name">Figma</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                <li><span class="skill-name">Command Line Interface (CLI)</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                <li><span class="skill-name">Vercel</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-            </ul>
-        </section>
+            <article class="card cert-card">
+                <div class="cert-thumb-wrap">
+                    <img class="cert-thumb" src="images/certificates/cert-dict-wd001-webdev.png"
+                        alt="Preview of the Principles of Web Development certificate" loading="lazy" decoding="async">
+                </div>
+                <h3>Principles of Web Development</h3>
+                <p class="cert-issuer">DICT-WD001 &middot; 2024 July 18</p>
+                <div class="cert-card__footer">
+                    <div class="cert-tags">
+                        <span class="cert-tag">Web Development</span>
+                    </div>
+                    <p class="cert-more"><a href="https://courses.buri.io/view/user/certificate/1fe48931-54ce-41f7-97d3-73d42e5f85e1/pdf" target="_blank"
+                        rel="noreferrer">View certificate</a></p>
+                </div>
+            </article>
 
-        <section class="card skill-category" id="certifications">
-            <h2>Certifications</h2>
-            <ul class="skill-list">
-                <li>
-                    <span class="cert-name">EF SET English Certificate &mdash; C2 Proficient
-                        <span class="cert-issuer">EF SET</span></span>
-                    <a href="https://charlesscarreon.github.io/images/cert01.png" target="_blank"
-                        rel="noreferrer">View certificate</a>
-                </li>
-                <li>
-                    <span class="cert-name">Programming for Beginners Using Python
-                        <span class="cert-issuer">DICT &middot; 2024</span></span>
-                    <a href="https://charlesscarreon.github.io/images/cert02.png" target="_blank"
-                        rel="noreferrer">View certificate</a>
-                </li>
-                <li>
-                    <span class="cert-name">Principles of Web Development
-                        <span class="cert-issuer">DICT-WD001 &middot; 2024</span></span>
-                    <a href="https://charlesscarreon.github.io/images/cert03.png" target="_blank"
-                        rel="noreferrer">View certificate</a>
-                </li>
-            </ul>
-        </section>
+            <article class="card cert-card">
+                <div class="cert-thumb-wrap">
+                    <img class="cert-thumb" src="images/certificates/cert-dict-python.png"
+                        alt="Preview of the Programming for Beginners Using Python certificate" loading="lazy" decoding="async">
+                </div>
+                <h3>Programming for Beginners Using Python</h3>
+                <p class="cert-issuer">DICT &middot; 2024 July 6</p>
+                <div class="cert-card__footer">
+                    <div class="cert-tags">
+                        <span class="cert-tag">Python</span>
+                    </div>
+                    <p class="cert-more"><a href="https://courses.buri.io/view/user/certificate/d388ef03-62b6-4aa3-8420-b3363871e914/pdf" target="_blank"
+                        rel="noreferrer">View certificate</a></p>
+                </div>
+            </article>
+        </div>
     </main>
 
     <footer class="site-footer">
