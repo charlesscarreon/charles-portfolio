@@ -75,7 +75,9 @@ Contains local development tooling and documentation only. It is never deployed.
 Work in progress or planned to be done immediately.
 
 - Accessibility audit, verification step (started 2026-09-25): the code work is done (light-theme contrast fix and bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all five pages after Phase 5, covering 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
-- Phase 5 homepage rework: implemented and verified, uncommitted on `feature/homepage-rework`. The round adds an Experience page, moves Education off the homepage, reduces the hero contacts, adds an email draft dialog and a Skills and Certifications section, and applies a new homepage section order.
+- Phase 5 homepage rework: completed as `db8c8f8 feat: rework homepage and add experience page`. The round added an Experience page, moved Education off the homepage, reduced the hero contacts, added an email draft dialog and a Skills and Certifications section, and applied a new homepage section order.
+- Homepage skills and certificates refinement: implemented and verified, uncommitted on `feature/homepage-rework`. It shows the full Front-End and Game Development skill lists in one small card and three certificate cards for both Wadhwani certificates and EF SET.
+- Homepage card spacing and frame polish: implemented and verified, uncommitted on `feature/homepage-rework`. It adds space above the certificate grid and gives the homepage skills card, certificate cards, and featured project cards a thinner inset frame.
 - Phase 4 achievements page: completed and merged through PR #6 on 2026-11-18. The local `feature/achievements-page` branch and local `main` are up to date with the remote merge. The results from that round are recorded under Completed Changes.
 
 ## Planned Changes
@@ -86,7 +88,7 @@ Do not delete this section when the list is empty. An empty list means nothing i
 
 ### Phase 5: homepage rework and Experience page (`feature/homepage-rework`)
 
-DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. The local branch was updated from `main` before planning.
+DECISIONS RECORDED 2026-11-18. COMPLETED 2026-11-18 as `db8c8f8 feat: rework homepage and add experience page`. The local branch was updated from `main` before planning.
 
 - Final homepage section order for this build: `About Me`, `Featured Projects`, `Achievements`, `Skills and Certifications`, `Experience`. Education is removed from the homepage and carried on the Experience page.
 - Future homepage order after the Recommendations feature is built: `About Me`, `Featured Projects`, `Achievements`, `Skills and Certifications`, `Experience`, `Recommendations`. Recommendations goes last because it is supporting social proof rather than primary work history.
@@ -98,6 +100,27 @@ DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rewor
 - Add a compact Skills and Certifications section to the homepage, with a summary of the five skill categories and five certifications. The section ends with a `View all skills and certifications` button to `/skills`. Do not add credential schema, local certificate PDFs, or expanded certificate previews to the homepage.
 - `sitemap.xml` becomes five page entries after this build, adding `/experience` with `2026-11-18`. Recommendations is recorded but not added to the sitemap until its page exists.
 - Build order: record dev notes first, lock information architecture and internal links, create the Experience page and compact homepage summary, add the Skills and Certifications section, update hero copy and contacts, build the email draft dialog, then adjust styles and responsive behavior. Finish with `node --check`, static checks, browser checks, and `git diff --check`.
+
+### Homepage skills and certificates refinement (`feature/homepage-rework`)
+
+DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a new round after commit `db8c8f8 feat: rework homepage and add experience page`.
+
+- Change the homepage Skills and Certifications summary only. `/skills` stays unchanged.
+- Replace the five-category and five-certificate lists with one small skills card. It lists the full Front-End Development and Game Development skills from `/skills`, with the same Proficient and Familiar badges.
+- Below the skills card, show three mini certificate cards with the existing local thumbnails and remote verification links: Proficiency Certificate, Certificate of Content Completion, and EF SET English Certificate, 78/100.
+- Do not show Back-End / Server-Side, Programming, Tools, the DICT-WD001 certificate, or the Python certificate on the homepage. Do not add local PDFs or new certificate images.
+- Keep the `View all skills and certifications` button to `/skills`.
+- Reuse `.skill-list`, `.skill-name`, `.skill-level`, and `.cert-card`. Add scoped layout rules and a homepage-only margin override. Finish with `node --check`, static checks, browser checks, `git diff --check`, and `git status --short --branch`.
+
+### Homepage card spacing and frame polish (`feature/homepage-rework`)
+
+DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a follow-up to the uncommitted homepage skills and certificates refinement.
+
+- Add space above the certificate grid only. The three certificate cards keep their current gap and the `View all skills and certifications` button keeps its current margin.
+- Use the reference layout direction from https://emieljames.dev/#projects: a thin border, tighter padding, and images inset inside the card rather than flush with the card edge.
+- Apply the treatment to the homepage skills card, the three homepage certificate cards, and the homepage featured project cards. Do not change cards on `/projects`, `/skills`, or `/achievements`.
+- Keep all image paths, the Lunas award badge, and all card text unchanged. Do not change global `.card` rules.
+- Verify with `node --check`, static checks, browser checks, the achievements regression check, `git diff --check`, and `git status --short --branch`.
 
 ### Recommendations feature, planned for a later round
 
@@ -440,7 +463,7 @@ COMPLETED 2026-11-18 as `214dbb8 feat: add achievements page`, merged through PR
 
 ### Phase 5: homepage rework and Experience page (`feature/homepage-rework`)
 
-IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. Charles will stage and commit this round. The plan is preserved above as the record of the decisions.
+COMPLETED 2026-11-18 as `db8c8f8 feat: rework homepage and add experience page`. The plan is preserved above as the record of the decisions.
 
 - `index.html` now has the section order `About Me`, `Featured Projects`, `Achievements`, `Skills and Certifications`, `Experience`. The homepage Education section is gone. The TOC follows the same order.
 - The hero sentence is `I build games, developer tools, and web apps.` The About quick fact `Focus` is `Front-End and Game Development`. The meta descriptions describe projects, achievements, skills, and experience.
@@ -453,6 +476,26 @@ IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. C
 - `node --check`, a 22-assertion static check, `git diff --check`, a 35-assertion browser check, and the 104-assertion achievements regression browser check pass. The browser checks cover JS and no-JS states, desktop/tablet/mobile widths, dialog open and close, mail draft fields, hero contacts, section order, Experience page cues, Education placement, theme toggle, and no horizontal overflow.
 - `settledTarget(target)` in `script.js` is unchanged. The deferred project issue about bottom-aligned buttons on image-less cards was left alone.
 
-## Pending git action
+### Homepage skills and certificates refinement (`feature/homepage-rework`)
 
-Phase 5 is ready for Charles to stage and commit. Do not commit, push, merge, reset, or switch branches on his behalf.
+IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This round supersedes the five-category and five-certificate homepage summary recorded in Phase 5.
+
+- `index.html` replaces the old summary lists with one `.skills-summary` card. The Front-End Development group lists HTML, CSS, JavaScript, React.js, and Bootstrap. The Game Development group lists Unity Engine, Godot Engine, and C# Game Scripting. All eight rows keep the Proficient or Familiar badge used on `/skills`.
+- Below the skills card, `.cert-grid--home` shows three mini certificate cards with the existing local thumbnails and remote verification links: Proficiency Certificate from Wadhwani Foundation dated 2026 May 13, Certificate of Content Completion from Wadhwani Foundation dated 2026 April 30, and EF SET English Certificate, 78/100 dated 2025 May 23. The DICT-WD001 certificate and the Python certificate stay on `/skills` only.
+- The `View all skills and certifications` button still links to `/skills`. `/skills`, `script.js`, `sitemap.xml`, and the homepage hero are unchanged in this round.
+- `styles.css` adds `.skills-summary` and `.skills-summary__group h3`. It removes the unused `.summary-grid` and `.summary-list` rules. `.cert-grid--home` only clears the large bottom margin used by the skills page certificate grid.
+- `node --check`, an 18-assertion static check, a 19-assertion browser check, the 104-assertion achievements regression browser check, and `git diff --check` pass. The browser checks cover desktop, tablet, mobile, and no-JS views, exact skill and certificate content, loaded thumbnails, remote links, two-column and single-column layouts, and no horizontal overflow.
+
+This round is ready for Charles to stage and commit. Do not commit, push, merge, reset, or switch branches on his behalf.
+
+### Homepage card spacing and frame polish (`feature/homepage-rework`)
+
+IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This follows the uncommitted homepage skills and certificates refinement.
+
+- `.cert-grid--home` now has `margin-top: 1.25rem`, so there is space between the skills card and the certificate grid. The certificate cards keep their existing gap and the `View all skills and certifications` button keeps its existing margin.
+- `.summary-card` and `.featured-card` use `padding: 1rem` and `0.85rem` with a `0.75rem` radius. These scoped rules sit after the global `.card` rule so they win the cascade. The global `.card` rule is unchanged.
+- `.featured-card .project-thumb-wrap` and `.cert-grid--home .cert-thumb-wrap` carry a 1px border, a `0.25rem` inset, and a `0.6rem` radius. The featured project image drops its own border so the wrapper becomes the frame. Certificate images keep their existing crop and remote links.
+- All homepage images stay inside their cards. The Lunas award badge, card text, image paths, `/projects`, `/skills`, `/achievements`, `script.js`, and `sitemap.xml` are unchanged in this round.
+- `node --check`, a 24-assertion static check, a 28-assertion browser check, the 104-assertion achievements regression browser check, and `git diff --check` pass. The browser checks cover the 20px gap above the certificate grid, tighter card padding, 1px image frames with a 5px inset, loaded featured and certificate images, desktop, tablet, mobile, and no-JS views, and no horizontal overflow.
+
+This round is ready for Charles to stage and commit. Do not commit, push, merge, reset, or switch branches on his behalf.

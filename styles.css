@@ -437,28 +437,15 @@ main > .card {
     margin-top: 1.25rem;
 }
 
-.summary-grid {
+.skills-summary {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.25rem;
 }
 
-.summary-grid h3 {
-    margin-top: 0;
+.skills-summary__group h3 {
+    margin: 0 0 0.5rem;
     font-size: 1rem;
-}
-
-.summary-list {
-    margin: 0.5rem 0 0;
-    padding-left: 1.15rem;
-}
-
-.summary-list li {
-    margin-bottom: 0.25rem;
-}
-
-.summary-list li:last-child {
-    margin-bottom: 0;
 }
 
 @media (max-width: 760px) {
@@ -466,7 +453,7 @@ main > .card {
         grid-template-columns: minmax(0, 1fr);
     }
 
-    .summary-grid {
+    .skills-summary {
         grid-template-columns: minmax(0, 1fr);
     }
 }
@@ -717,6 +704,18 @@ main > .card {
     border-radius: 0.9rem;
     padding: clamp(1.25rem, 3vw, 1.75rem);
     box-shadow: var(--shadow);
+}
+
+/* Homepage cards use a tighter frame than the shared card rule. These stay
+   after .card so the scoped padding and radius win the cascade. */
+.summary-card {
+    padding: 1rem;
+    border-radius: 0.75rem;
+}
+
+.featured-card {
+    padding: 0.85rem;
+    border-radius: 0.75rem;
 }
 
 .entry-head {
@@ -1019,6 +1018,20 @@ html.dialog-capable .project {
     border: 1px solid var(--border);
     border-radius: 0.6rem;
     background-color: var(--surface-2);
+}
+
+/* Homepage featured cards use a thinner inset frame. The wrapper carries the
+   border, so the image sits inside the card rather than becoming the frame. */
+.featured-card .project-thumb-wrap {
+    padding: 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background-color: var(--surface-2);
+}
+
+.featured-card .project-thumb {
+    border: 0;
+    border-radius: 0.45rem;
 }
 
 /* Achievement lead images use a figure so the shared image class can be reused.
@@ -1558,6 +1571,11 @@ html.dialog-capable .project-dialog:not([open]) {
     }
 }
 
+.cert-grid--home {
+    margin-top: 1.25rem;
+    margin-bottom: 0;
+}
+
 .cert-card {
     display: flex;
     flex-direction: column;
@@ -1584,6 +1602,17 @@ html.dialog-capable .project-dialog:not([open]) {
     height: 100%;
     object-fit: cover;
     object-position: center top;
+}
+
+/* Homepage certificate cards use the same inset frame as featured projects. */
+.cert-grid--home .cert-card {
+    padding: 0.85rem;
+}
+
+.cert-grid--home .cert-thumb-wrap {
+    padding: 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
 }
 
 .cert-card h3 {
