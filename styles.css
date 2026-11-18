@@ -326,7 +326,8 @@ html.home .theme-switch {
 
 html.projects .theme-switch,
 html.skills .theme-switch,
-html.achievements .theme-switch {
+html.achievements .theme-switch,
+html.experience .theme-switch {
     flex: 0 0 auto;
     margin-left: 0;
 }
@@ -375,7 +376,8 @@ main > .card {
 .projects-head,
 .skills-head,
 .certs-head,
-.achievements-head {
+.achievements-head,
+.experience-head {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -386,21 +388,24 @@ main > .card {
 .projects-head__copy,
 .skills-head__copy,
 .certs-head__copy,
-.achievements-head__copy {
+.achievements-head__copy,
+.experience-head__copy {
     max-width: 46rem;
 }
 
 .projects-head h2,
 .skills-head h2,
 .certs-head h2,
-.achievements-head h2 {
+.achievements-head h2,
+.experience-head h2 {
     margin-top: 0;
 }
 
 .projects-head p,
 .skills-head p,
 .certs-head p,
-.achievements-head p {
+.achievements-head p,
+.experience-head p {
     margin-bottom: 0;
 }
 
@@ -432,8 +437,23 @@ main > .card {
     margin-top: 1.25rem;
 }
 
+.skills-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.skills-summary__group h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+}
+
 @media (max-width: 760px) {
     .featured-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .skills-summary {
         grid-template-columns: minmax(0, 1fr);
     }
 }
@@ -485,7 +505,17 @@ main > .card {
 }
 
 .hero .contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     color: var(--muted);
+}
+
+.hero .contact svg {
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: none;
 }
 
 .hero .contact a:hover {
@@ -674,6 +704,18 @@ main > .card {
     border-radius: 0.9rem;
     padding: clamp(1.25rem, 3vw, 1.75rem);
     box-shadow: var(--shadow);
+}
+
+/* Homepage cards use a tighter frame than the shared card rule. These stay
+   after .card so the scoped padding and radius win the cascade. */
+.summary-card {
+    padding: 1rem;
+    border-radius: 0.75rem;
+}
+
+.featured-card {
+    padding: 0.85rem;
+    border-radius: 0.75rem;
 }
 
 .entry-head {
@@ -978,6 +1020,20 @@ html.dialog-capable .project {
     background-color: var(--surface-2);
 }
 
+/* Homepage featured cards use a thinner inset frame. The wrapper carries the
+   border, so the image sits inside the card rather than becoming the frame. */
+.featured-card .project-thumb-wrap {
+    padding: 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background-color: var(--surface-2);
+}
+
+.featured-card .project-thumb {
+    border: 0;
+    border-radius: 0.45rem;
+}
+
 /* Achievement lead images use a figure so the shared image class can be reused.
    Reset the UA figure margin to match the plain project card images. */
 .project > figure.project-thumb-wrap {
@@ -1241,6 +1297,94 @@ html.dialog-capable .project-dialog:not([open]) {
         border: 0;
         border-radius: 0;
     }
+
+}
+
+/* Get in touch mail draft. It stays hidden until script.js confirms showModal()
+   exists and the trigger opens it, so the plain mailto anchor is the no-JS view. */
+.contact-dialog {
+    display: none;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    background-color: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+}
+
+.contact-dialog[open] {
+    display: block;
+    margin: auto;
+    width: min(34rem, calc(100vw - 2rem));
+    max-height: min(85dvh, 42rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted) transparent;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.contact-dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="light"] .contact-dialog::backdrop {
+    background-color: rgba(20, 30, 40, 0.45);
+}
+
+.contact-dialog__body {
+    padding: clamp(1.25rem, 4vw, 1.75rem);
+}
+
+.contact-dialog__to {
+    margin: 0.75rem 0 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.contact-dialog__label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.contact-dialog__input,
+.contact-dialog__textarea {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background-color: var(--surface-2);
+    color: var(--text);
+    font: inherit;
+    padding: 0.65rem 0.75rem;
+}
+
+.contact-dialog__textarea {
+    min-height: 9rem;
+    resize: vertical;
+}
+
+.contact-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin: 1rem 0 0;
+}
+
+/* Phones: the panel becomes the screen instead of a card with a scrollbar
+   inside it. dvh, so the mobile URL bar cannot clip the close button. */
+@media (max-width: 620px) {
+    .contact-dialog[open] {
+        width: 100%;
+        max-width: none;
+        height: 100dvh;
+        max-height: 100dvh;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+    }
 }
 
 /* Inline code in card copy: a package name and a target framework. Monospace
@@ -1427,6 +1571,11 @@ html.dialog-capable .project-dialog:not([open]) {
     }
 }
 
+.cert-grid--home {
+    margin-top: 1.25rem;
+    margin-bottom: 0;
+}
+
 .cert-card {
     display: flex;
     flex-direction: column;
@@ -1453,6 +1602,17 @@ html.dialog-capable .project-dialog:not([open]) {
     height: 100%;
     object-fit: cover;
     object-position: center top;
+}
+
+/* Homepage certificate cards use the same inset frame as featured projects. */
+.cert-grid--home .cert-card {
+    padding: 0.85rem;
+}
+
+.cert-grid--home .cert-thumb-wrap {
+    padding: 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
 }
 
 .cert-card h3 {
@@ -1830,7 +1990,8 @@ html.dialog-capable .project-dialog:not([open]) {
     .scroll-cue,
     .gallery-nav,
     .toc,
-    .project-detail-open {
+    .project-detail-open,
+    .contact-dialog {
         display: none !important;
     }
 

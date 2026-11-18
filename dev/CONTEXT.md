@@ -10,14 +10,17 @@ November 18, 2026
 
 Personal portfolio website for Charles S. Carreon (full name Charles Serrano Carreon), a Computer Science student at Pamantasan ng Cabuyao, Philippines.
 
-The site has four pages:
+The built site has five pages:
 
-- `/`, About, experience, achievements, and education
+- `/`, About Me, Featured Projects, Achievements, Skills and Certifications, and Experience
 - `/projects`, 4 software and game projects
 - `/skills`, skills and tools across 5 categories
 - `/achievements`, competitions, recognition, and event highlights
+- `/experience`, roles, responsibilities, and education
 
-It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement). JavaScript adds the theme toggle, image carousels, project and achievement dialogs, table-of-contents marker, and the scroll-linked homepage cover.
+A sixth page, `/recommendations`, is planned as a later feature.
+
+It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement). JavaScript adds the theme toggle, image carousels, project, achievement and contact dialogs, table-of-contents marker, and the scroll-linked homepage cover.
 
 The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public URLs have no `.html` extension.
 
@@ -71,8 +74,11 @@ Contains local development tooling and documentation only. It is never deployed.
 
 Work in progress or planned to be done immediately.
 
-- Accessibility audit, verification step (started 2026-09-25): the code work is done (light-theme contrast fix and bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all four pages, covering 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
-- Phase 4 achievements page: built on `feature/achievements-page` and ready to commit. The cover hero, two achievement cards, More dialogs, six local WebP photos, compact homepage summary, reciprocal project and achievement links, and four-page sitemap passed local static and browser checks. Nothing merges until the branch is reviewed and pushed.
+- Accessibility audit, verification step (started 2026-09-25): the code work is done (light-theme contrast fix and bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all five pages after Phase 5, covering 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
+- Phase 5 homepage rework: completed as `db8c8f8 feat: rework homepage and add experience page`. The round added an Experience page, moved Education off the homepage, reduced the hero contacts, added an email draft dialog and a Skills and Certifications section, and applied a new homepage section order.
+- Homepage skills and certificates refinement: implemented and verified, uncommitted on `feature/homepage-rework`. It shows the full Front-End and Game Development skill lists in one small card and three certificate cards for both Wadhwani certificates and EF SET.
+- Homepage card spacing and frame polish: implemented and verified, uncommitted on `feature/homepage-rework`. It adds space above the certificate grid and gives the homepage skills card, certificate cards, and featured project cards a thinner inset frame.
+- Phase 4 achievements page: completed and merged through PR #6 on 2026-11-18. The local `feature/achievements-page` branch and local `main` are up to date with the remote merge. The results from that round are recorded under Completed Changes.
 
 ## Planned Changes
 
@@ -80,9 +86,50 @@ Changes to be done in the future, not immediately. The bullets below are NOT ord
 
 Do not delete this section when the list is empty. An empty list means nothing is planned right now, not that the section is stale or finished.
 
-### Content additions
+### Phase 5: homepage rework and Experience page (`feature/homepage-rework`)
 
-- No content additions are planned right now. Completed work stays under Completed Changes.
+DECISIONS RECORDED 2026-11-18. COMPLETED 2026-11-18 as `db8c8f8 feat: rework homepage and add experience page`. The local branch was updated from `main` before planning.
+
+- Final homepage section order for this build: `About Me`, `Featured Projects`, `Achievements`, `Skills and Certifications`, `Experience`. Education is removed from the homepage and carried on the Experience page.
+- Future homepage order after the Recommendations feature is built: `About Me`, `Featured Projects`, `Achievements`, `Skills and Certifications`, `Experience`, `Recommendations`. Recommendations goes last because it is supporting social proof rather than primary work history.
+- New `experience.html` uses the shared cover hero pattern. The page carries the detailed experience entries first and the Education section last. The page title stays focused on experience, while Education is a secondary section at the bottom. The homepage Experience section becomes a compact summary with a `View all experience` button to `/experience#experience-hero`.
+- Hero contacts are reduced to Email, Facebook, LinkedIn, and GitHub. Facebook stays in both the hero and the footer because it is useful for local contacts in the Philippines. Instagram is removed from both places. The hero uses logo icons with accessible labels, and it does not show usernames.
+- Hero sentence becomes `I build games, developer tools, and web apps.` The course and school are removed because they are already covered in About and on the Experience page.
+- The About quick fact `Focus` changes from `Front-end and game development` to `Front-End and Game Development`. This is a label value, so it follows the existing `Front-End Developer` wording. Normal prose keeps lowercase `front-end`.
+- The `Get in touch` button becomes a mail draft dialog. The destination stays `charlesserranocarreon+portfolio@gmail.com`, the subject stays `Portfolio inquiry`, and the body starts with `Hi Charles,` plus a blank line. Visitors can type a message in a text area, and submitting opens their mail app through `mailto:`. The site does not send mail, has no backend, and shows no fake success state. Without JavaScript, the button remains a plain `mailto:` anchor.
+- Add a compact Skills and Certifications section to the homepage, with a summary of the five skill categories and five certifications. The section ends with a `View all skills and certifications` button to `/skills`. Do not add credential schema, local certificate PDFs, or expanded certificate previews to the homepage.
+- `sitemap.xml` becomes five page entries after this build, adding `/experience` with `2026-11-18`. Recommendations is recorded but not added to the sitemap until its page exists.
+- Build order: record dev notes first, lock information architecture and internal links, create the Experience page and compact homepage summary, add the Skills and Certifications section, update hero copy and contacts, build the email draft dialog, then adjust styles and responsive behavior. Finish with `node --check`, static checks, browser checks, and `git diff --check`.
+
+### Homepage skills and certificates refinement (`feature/homepage-rework`)
+
+DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a new round after commit `db8c8f8 feat: rework homepage and add experience page`.
+
+- Change the homepage Skills and Certifications summary only. `/skills` stays unchanged.
+- Replace the five-category and five-certificate lists with one small skills card. It lists the full Front-End Development and Game Development skills from `/skills`, with the same Proficient and Familiar badges.
+- Below the skills card, show three mini certificate cards with the existing local thumbnails and remote verification links: Proficiency Certificate, Certificate of Content Completion, and EF SET English Certificate, 78/100.
+- Do not show Back-End / Server-Side, Programming, Tools, the DICT-WD001 certificate, or the Python certificate on the homepage. Do not add local PDFs or new certificate images.
+- Keep the `View all skills and certifications` button to `/skills`.
+- Reuse `.skill-list`, `.skill-name`, `.skill-level`, and `.cert-card`. Add scoped layout rules and a homepage-only margin override. Finish with `node --check`, static checks, browser checks, `git diff --check`, and `git status --short --branch`.
+
+### Homepage card spacing and frame polish (`feature/homepage-rework`)
+
+DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a follow-up to the uncommitted homepage skills and certificates refinement.
+
+- Add space above the certificate grid only. The three certificate cards keep their current gap and the `View all skills and certifications` button keeps its current margin.
+- Use the reference layout direction from https://emieljames.dev/#projects: a thin border, tighter padding, and images inset inside the card rather than flush with the card edge.
+- Apply the treatment to the homepage skills card, the three homepage certificate cards, and the homepage featured project cards. Do not change cards on `/projects`, `/skills`, or `/achievements`.
+- Keep all image paths, the Lunas award badge, and all card text unchanged. Do not change global `.card` rules.
+- Verify with `node --check`, static checks, browser checks, the achievements regression check, `git diff --check`, and `git status --short --branch`.
+
+### Recommendations feature, planned for a later round
+
+- Add a homepage Recommendations section as the last section. It shows the latest recommendations about Charles.
+- The section has two buttons: `View all recommendations` to `/recommendations`, and `Write a recommendation` to `/recommendations#write`.
+- Add a `/recommendations` page later. It lists all recommendations and has a write area at `#write`.
+- The recommendation submission method is undecided. Build the interface first when this feature is approved, then decide whether the write area opens a mail draft or uses another no-backend flow.
+- Do not add the section, page, sitemap entry, or navigation link in Phase 5. Record only.
+- This plan supersedes the earlier direction that kept testimonials out of the site. Treat recommendations as a separate later feature.
 
 ### SEO and identity (from audit)
 
@@ -398,7 +445,7 @@ COMPLETED 2026-11-18 as `13ba76f`, merged through PR #5 as `90ed14e`.
 
 ### Phase 4: achievements page (`feature/achievements-page`)
 
-BUILT 2026-11-18, uncommitted on `feature/achievements-page`, based on `origin/main` at `90ed14e`.
+COMPLETED 2026-11-18 as `214dbb8 feat: add achievements page`, merged through PR #6 as `116823f`.
 
 - The new `achievements.html` uses `class="no-js home achievements"` and reuses the shared cover hero pattern. The hero id is `achievements-hero`, the heading is `My Achievements`, and the tagline is `Competitions, recognition, and event highlights`.
 - The back cue targets `/#achievements` and reads `Back to Home`. The down cue targets `#main` and reads `Scroll to achievements`. Both hide at hero progress `>= 0.25`. The site header is removed, and the theme switch sits outside the hero in the first section header row.
@@ -413,3 +460,42 @@ BUILT 2026-11-18, uncommitted on `feature/achievements-page`, based on `origin/m
 - The files named `school-congratulations.webp` come from Pamantasan ng Cabuyao, not from the event organizer. They include Charles S. Carreon or the team. Their captions read `From Pamantasan ng Cabuyao`, and their alt text starts with `Post from Pamantasan ng Cabuyao`. Nothing attributes them to SIKAPTala or iSITE organizers.
 - Each school congratulatory image is the card lead and is repeated inside the matching More dialog. The announcement and team images sit inside the SIKAPTala dialog in the order announcement, Result, team, My contribution, lead image, About Lunas. The lead image for iSITE comes before Participation, then the two behind-the-scenes images, then Focus. Only optimized WebP files are kept in the repo, and the originals stay outside the final committed set.
 - Static checks, `git diff --check`, and browser checks pass for desktop, tablet, mobile, reduced motion, and no-JS. Browser checks also cover dialog open and close, hash landing on the Lunas card, hash-to-dialog links on both pages, dialog photo loading, mobile dialog sizing, card style comparison against the projects page, local links, dates, roles, and computed card styles.
+
+### Phase 5: homepage rework and Experience page (`feature/homepage-rework`)
+
+COMPLETED 2026-11-18 as `db8c8f8 feat: rework homepage and add experience page`. The plan is preserved above as the record of the decisions.
+
+- `index.html` now has the section order `About Me`, `Featured Projects`, `Achievements`, `Skills and Certifications`, `Experience`. The homepage Education section is gone. The TOC follows the same order.
+- The hero sentence is `I build games, developer tools, and web apps.` The About quick fact `Focus` is `Front-End and Game Development`. The meta descriptions describe projects, achievements, skills, and experience.
+- The hero contacts are Email, Facebook, LinkedIn, and GitHub. The three social links use inline SVG logos with `aria-label` and no visible usernames. Instagram is removed from the homepage hero, all page footers, and the homepage JSON-LD `sameAs`.
+- `Get in touch` remains a plain `mailto:` anchor without JavaScript. With JavaScript, `initContactDialog()` opens `#contact-dialog` with subject `Portfolio inquiry` and message body starting `Hi Charles,` followed by a blank line. The `Open email app` button builds the `mailto:` URL. The dialog supports close button, backdrop click, Escape through the native dialog, and a full-screen phone layout.
+- The homepage Skills and Certifications section summarizes five categories and five certifications, then links to `/skills`. The Experience section stays compact and links to `/experience#experience-hero`.
+- `experience.html` uses `class="no-js home experience"`, with `experience-hero`, heading `My Experience`, tagline `Roles, responsibilities, and education`, a back cue to `/#experience`, and a down cue to `#main`. It carries the three roles first, Education last, per-page metadata, the shared footer contact links without Instagram, and the theme switch.
+- `styles.css` adds `.experience-head`, `.summary-grid`, `.hero .contact svg`, and `.contact-dialog` styles. The phone dialog rule is placed after the base dialog rule so it wins the cascade. Print styles hide the contact dialog.
+- `sitemap.xml` has five page entries after adding `/experience` with `2026-11-18`. `README.md` and `vercel.json` were not changed for this round.
+- `node --check`, a 22-assertion static check, `git diff --check`, a 35-assertion browser check, and the 104-assertion achievements regression browser check pass. The browser checks cover JS and no-JS states, desktop/tablet/mobile widths, dialog open and close, mail draft fields, hero contacts, section order, Experience page cues, Education placement, theme toggle, and no horizontal overflow.
+- `settledTarget(target)` in `script.js` is unchanged. The deferred project issue about bottom-aligned buttons on image-less cards was left alone.
+
+### Homepage skills and certificates refinement (`feature/homepage-rework`)
+
+IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This round supersedes the five-category and five-certificate homepage summary recorded in Phase 5.
+
+- `index.html` replaces the old summary lists with one `.skills-summary` card. The Front-End Development group lists HTML, CSS, JavaScript, React.js, and Bootstrap. The Game Development group lists Unity Engine, Godot Engine, and C# Game Scripting. All eight rows keep the Proficient or Familiar badge used on `/skills`.
+- Below the skills card, `.cert-grid--home` shows three mini certificate cards with the existing local thumbnails and remote verification links: Proficiency Certificate from Wadhwani Foundation dated 2026 May 13, Certificate of Content Completion from Wadhwani Foundation dated 2026 April 30, and EF SET English Certificate, 78/100 dated 2025 May 23. The DICT-WD001 certificate and the Python certificate stay on `/skills` only.
+- The `View all skills and certifications` button still links to `/skills`. `/skills`, `script.js`, `sitemap.xml`, and the homepage hero are unchanged in this round.
+- `styles.css` adds `.skills-summary` and `.skills-summary__group h3`. It removes the unused `.summary-grid` and `.summary-list` rules. `.cert-grid--home` only clears the large bottom margin used by the skills page certificate grid.
+- `node --check`, an 18-assertion static check, a 19-assertion browser check, the 104-assertion achievements regression browser check, and `git diff --check` pass. The browser checks cover desktop, tablet, mobile, and no-JS views, exact skill and certificate content, loaded thumbnails, remote links, two-column and single-column layouts, and no horizontal overflow.
+
+This round is ready for Charles to stage and commit. Do not commit, push, merge, reset, or switch branches on his behalf.
+
+### Homepage card spacing and frame polish (`feature/homepage-rework`)
+
+IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This follows the uncommitted homepage skills and certificates refinement.
+
+- `.cert-grid--home` now has `margin-top: 1.25rem`, so there is space between the skills card and the certificate grid. The certificate cards keep their existing gap and the `View all skills and certifications` button keeps its existing margin.
+- `.summary-card` and `.featured-card` use `padding: 1rem` and `0.85rem` with a `0.75rem` radius. These scoped rules sit after the global `.card` rule so they win the cascade. The global `.card` rule is unchanged.
+- `.featured-card .project-thumb-wrap` and `.cert-grid--home .cert-thumb-wrap` carry a 1px border, a `0.25rem` inset, and a `0.6rem` radius. The featured project image drops its own border so the wrapper becomes the frame. Certificate images keep their existing crop and remote links.
+- All homepage images stay inside their cards. The Lunas award badge, card text, image paths, `/projects`, `/skills`, `/achievements`, `script.js`, and `sitemap.xml` are unchanged in this round.
+- `node --check`, a 24-assertion static check, a 28-assertion browser check, the 104-assertion achievements regression browser check, and `git diff --check` pass. The browser checks cover the 20px gap above the certificate grid, tighter card padding, 1px image frames with a 5px inset, loaded featured and certificate images, desktop, tablet, mobile, and no-JS views, and no horizontal overflow.
+
+This round is ready for Charles to stage and commit. Do not commit, push, merge, reset, or switch branches on his behalf.
