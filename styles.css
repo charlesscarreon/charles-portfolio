@@ -310,15 +310,22 @@ html.no-js .theme-switch svg {
     /* 44px-tall touch targets for gallery controls and pill links */
     .gallery-nav button,
     .links a,
-    .btn {
+    .btn,
+    .project-dialog-close {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         min-height: 2.75rem;
+        line-height: 1;
     }
 }
 
 html.home .theme-switch {
+    margin-left: 0;
+}
+
+html.projects .theme-switch {
+    flex: 0 0 auto;
     margin-left: 0;
 }
 
@@ -360,6 +367,26 @@ main > .card {
 
 .section > :last-child,
 .card > :last-child {
+    margin-bottom: 0;
+}
+
+.projects-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.projects-head__copy {
+    max-width: 46rem;
+}
+
+.projects-head h2 {
+    margin-top: 0;
+}
+
+.projects-head p {
     margin-bottom: 0;
 }
 
@@ -509,7 +536,7 @@ main > .card {
     }
 }
 
-/* ---------- Homepage hero: bare down chevron ---------- */
+/* ---------- Cover heroes: bare down chevron ---------- */
 
 .scroll-cue {
     position: absolute;
@@ -547,6 +574,43 @@ main > .card {
 @keyframes cue-bob {
     0%, 100% { transform: translate(-50%, 0); }
     50% { transform: translate(-50%, 0.35rem); }
+}
+
+.scroll-cue--back {
+    top: 50%;
+    left: clamp(0.5rem, 3vw, 1.5rem);
+    transform: translateY(-50%);
+    opacity: calc(1 - var(--hero-progress) * 4);
+}
+
+.scroll-cue__bob {
+    display: block;
+    line-height: 0;
+    animation: cue-sway 1.8s ease-in-out infinite;
+}
+
+.scroll-cue__label {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 0.35rem);
+    opacity: 0;
+    transform: translate(-0.5rem, -50%);
+    transition: opacity 160ms ease, transform 160ms ease;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.scroll-cue--back:hover .scroll-cue__label,
+.scroll-cue--back:focus-visible .scroll-cue__label {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+@keyframes cue-sway {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(0.35rem); }
 }
 
 .contact {
@@ -803,8 +867,25 @@ main > .card {
 }
 
 .project {
+    display: flex;
+    flex-direction: column;
     padding: 1.1rem;
     border-radius: 0.75rem;
+    transition: transform 180ms ease;
+}
+
+html.dialog-capable .project {
+    cursor: pointer;
+}
+
+.project:focus-within {
+    transform: translateY(-0.25rem);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .project:hover {
+        transform: translateY(-0.25rem);
+    }
 }
 
 .project h2 {
@@ -1160,6 +1241,11 @@ html.dialog-capable .project-dialog:not([open]) {
     margin: 1.25rem 0 0;
 }
 
+.project .links {
+    margin-top: auto;
+    padding-top: 1.25rem;
+}
+
 .links a,
 .btn {
     display: inline-block;
@@ -1451,6 +1537,12 @@ html.dialog-capable .project-dialog:not([open]) {
         margin-right: auto;
     }
 
+    .scroll-cue--back {
+        top: 1rem;
+        left: 0.5rem;
+        transform: none;
+    }
+
     .contact {
         flex-direction: column;
         row-gap: 0.35rem;
@@ -1587,6 +1679,11 @@ html.dialog-capable .project-dialog:not([open]) {
     *::after {
         transition: none !important;
         animation: none !important;
+    }
+
+    .project:hover,
+    .project:focus-within {
+        transform: none;
     }
 }
 

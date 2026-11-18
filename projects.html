@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" class="no-js">
+<html lang="en" data-theme="dark" class="no-js home projects">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -140,14 +140,36 @@
 <body>
     <a class="skip-link" href="#main">Skip to main content</a>
 
-    <header class="site-header">
-        <nav class="site-nav" aria-label="Primary">
-            <a class="brand" href="/">Charles S. Carreon</a>
-            <ul class="nav-list">
-                <li><a href="/">Home</a></li>
-                <li><a href="/projects" aria-current="page">Projects</a></li>
-                <li><a href="/skills">Skills</a></li>
-            </ul>
+    <section class="hero" id="projects-hero" aria-label="Projects introduction">
+        <a class="scroll-cue scroll-cue--back" href="/#featured" aria-label="Back to Home">
+            <span class="scroll-cue__bob" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                    <path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+            <span class="scroll-cue__label" aria-hidden="true">Back to Home</span>
+        </a>
+        <h1>My Projects</h1>
+        <p class="tagline">A showcase of my works and contributions</p>
+        <p>
+            A selection of software, web and game projects I worked on, with my role in each. See my
+            <a href="/">background</a> and <a href="/skills">skills</a> to learn more.
+        </p>
+        <a class="scroll-cue scroll-cue--down" href="#main" aria-label="Scroll to projects">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </section>
+
+    <main id="main" tabindex="-1">
+        <section class="projects-head">
+            <div class="projects-head__copy">
+                <h2>What I've Built</h2>
+                <p>Each project shows the tools I used, my role, and more detail about the work.</p>
+            </div>
             <button type="button" class="theme-switch" data-theme-toggle aria-label="Switch between dark and light theme">
                 <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -168,17 +190,6 @@
                 </svg>
                 <span class="visually-hidden">Switch themes</span>
             </button>
-        </nav>
-    </header>
-
-    <main id="main">
-        <section class="hero">
-            <h1>Projects</h1>
-            <p class="tagline">A showcase of my works and contributions</p>
-            <p>
-                A selection of software, web and game projects I worked on, with my role in each. See my
-                <a href="/">background</a> and <a href="/skills">skills</a> to learn more.
-            </p>
         </section>
         <div class="project-grid">
 
