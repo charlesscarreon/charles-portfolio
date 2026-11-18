@@ -450,6 +450,59 @@
         }
     }
 
+    /* ---------- Get in touch: mail draft dialog ---------- */
+    function initContactDialog() {
+        var trigger = document.querySelector("[data-contact-open]");
+        var dialog = document.getElementById("contact-dialog");
+        if (!trigger || !dialog || typeof dialog.showModal !== "function") {
+            return;
+        }
+
+        doc.classList.add("contact-capable");
+
+        var message = dialog.querySelector("#contact-message");
+        var subject = dialog.querySelector("#contact-subject");
+        var close = dialog.querySelector("[data-contact-close]");
+        var send = dialog.querySelector("[data-contact-send]");
+
+        function open() {
+            if (!dialog.open) {
+                dialog.showModal();
+            }
+            if (message && message.focus) {
+                message.focus();
+            }
+        }
+
+        trigger.addEventListener("click", function (event) {
+            event.preventDefault();
+            open();
+        });
+
+        if (close) {
+            close.addEventListener("click", function () {
+                dialog.close();
+            });
+        }
+
+        /* The dialog itself has no padding, so a click that targets it lands on
+           the backdrop rather than on its contents. */
+        dialog.addEventListener("click", function (event) {
+            if (event.target === dialog) {
+                dialog.close();
+            }
+        });
+
+        if (send) {
+            send.addEventListener("click", function () {
+                var body = message ? message.value : "Hi Charles,";
+                var value = subject && subject.value ? subject.value : "Portfolio inquiry";
+                window.location.href = "mailto:charlesserranocarreon+portfolio@gmail.com?subject="
+                    + encodeURIComponent(value) + "&body=" + encodeURIComponent(body);
+            });
+        }
+    }
+
     /* Enable JS-specific UI (theme toggle visibility, etc.) */
     doc.classList.remove("no-js");
     doc.classList.add("js");
@@ -460,4 +513,5 @@
     initHeroCollapse();
     initToc();
     initProjectDialogs();
+    initContactDialog();
 })();
