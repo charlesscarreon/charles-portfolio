@@ -297,6 +297,22 @@
             window.requestAnimationFrame(frame);
         }
 
+        /* Deep links such as /projects#lunas land while the cover is still
+           changing height. Settle the target after the initial layout and once
+           images have finished loading. */
+        function settleHashTarget() {
+            if (!window.location.hash || window.location.hash.length < 2) {
+                return;
+            }
+            var target = document.getElementById(window.location.hash.slice(1));
+            if (!target || target.classList.contains("project-dialog")) {
+                return;
+            }
+            scrollToTarget(function () {
+                return Math.max(0, target.getBoundingClientRect().top + window.scrollY - 16);
+            }, true);
+        }
+
         window.addEventListener("scroll", onScroll, { passive: true });
         window.addEventListener("resize", onScroll, { passive: true });
 
@@ -330,6 +346,8 @@
         }
 
         update();
+        settleHashTarget();
+        window.addEventListener("load", settleHashTarget, { once: true });
     }
 
     /* ---------- Project detail dialogs ---------- */
