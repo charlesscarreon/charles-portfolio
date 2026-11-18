@@ -325,7 +325,8 @@ html.home .theme-switch {
 }
 
 html.projects .theme-switch,
-html.skills .theme-switch {
+html.skills .theme-switch,
+html.achievements .theme-switch {
     flex: 0 0 auto;
     margin-left: 0;
 }
@@ -373,7 +374,8 @@ main > .card {
 
 .projects-head,
 .skills-head,
-.certs-head {
+.certs-head,
+.achievements-head {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -383,19 +385,22 @@ main > .card {
 
 .projects-head__copy,
 .skills-head__copy,
-.certs-head__copy {
+.certs-head__copy,
+.achievements-head__copy {
     max-width: 46rem;
 }
 
 .projects-head h2,
 .skills-head h2,
-.certs-head h2 {
+.certs-head h2,
+.achievements-head h2 {
     margin-top: 0;
 }
 
 .projects-head p,
 .skills-head p,
-.certs-head p {
+.certs-head p,
+.achievements-head p {
     margin-bottom: 0;
 }
 
@@ -971,6 +976,12 @@ html.dialog-capable .project {
     border: 1px solid var(--border);
     border-radius: 0.6rem;
     background-color: var(--surface-2);
+}
+
+/* Achievement lead images use a figure so the shared image class can be reused.
+   Reset the UA figure margin to match the plain project card images. */
+.project > figure.project-thumb-wrap {
+    margin: 0 0 0.9rem;
 }
 
 /* Topic chips: plain text rather than links, so they add searchable words

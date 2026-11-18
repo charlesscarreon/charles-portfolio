@@ -10,13 +10,14 @@ November 18, 2026
 
 Personal portfolio website for Charles S. Carreon (full name Charles Serrano Carreon), a Computer Science student at Pamantasan ng Cabuyao, Philippines.
 
-The site has three pages:
+The site has four pages:
 
-- `/` — About, experience, achievements, education
-- `/projects` — 4 software and game projects
-- `/skills` — skills and tools across 5 categories
+- `/`, About, experience, achievements, and education
+- `/projects`, 4 software and game projects
+- `/skills`, skills and tools across 5 categories
+- `/achievements`, competitions, recognition, and event highlights
 
-It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement). JavaScript adds the theme toggle, image carousels, project dialogs, table-of-contents marker, and the scroll-linked homepage cover.
+It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement). JavaScript adds the theme toggle, image carousels, project and achievement dialogs, table-of-contents marker, and the scroll-linked homepage cover.
 
 The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public URLs have no `.html` extension.
 
@@ -70,8 +71,8 @@ Contains local development tooling and documentation only. It is never deployed.
 
 Work in progress or planned to be done immediately.
 
-- Accessibility audit — verification step (started 2026-09-25): the code work is done (light-theme contrast fix + bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all three pages — 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
-- Phase 3 skills and certifications rework: built on `feature/skills-rework` and ready to commit. The cover hero, compact skills grid, five certificate cards, local previews, full visible dates, and shared tag and button colors passed local static and browser checks. Nothing merges until the branch is reviewed and pushed.
+- Accessibility audit, verification step (started 2026-09-25): the code work is done (light-theme contrast fix and bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all four pages, covering 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
+- Phase 4 achievements page: built on `feature/achievements-page` and ready to commit. The cover hero, two achievement cards, More dialogs, six local WebP photos, compact homepage summary, reciprocal project and achievement links, and four-page sitemap passed local static and browser checks. Nothing merges until the branch is reviewed and pushed.
 
 ## Planned Changes
 
@@ -380,7 +381,7 @@ COMPLETED 2026-11-18 as `488cf77`, merged through PR #4 as `8ca41e0`.
 
 ### Phase 3: skills and certifications rework (`feature/skills-rework`)
 
-BUILT 2026-11-18, uncommitted on `feature/skills-rework`, based on `origin/main` at `8ca41e0`.
+COMPLETED 2026-11-18 as `13ba76f`, merged through PR #5 as `90ed14e`.
 
 - The skills page now matches the projects cover style with the id `skills-hero`, heading `My Skills`, tagline `Tools, languages, and certifications`, a back cue to `/`, and a down cue to `#main` labelled `Scroll to skills`. The site header is removed from this page. The theme switch sits outside the hero in the first section header row.
 - The page uses `class="no-js home skills"` and keeps a readable no-JS fallback. The cues hide at hero progress `>= 0.25`. The hero stays in normal flow and is not sticky or fixed.
@@ -394,3 +395,21 @@ BUILT 2026-11-18, uncommitted on `feature/skills-rework`, based on `origin/main`
 - EF SET shows `78/100` in the title and keeps `C2 Proficient` as a tag. The Wadhwani certificates count as certifications. The Lunas participation certificate stays out because its verification site refuses to verify it.
 - `index.html` records five certifications. `sitemap.xml` already lists 2026-11-18 for all three pages.
 - Static checks, `git diff --check`, and browser checks pass for desktop, tablet, mobile, reduced motion, and no-JS.
+
+### Phase 4: achievements page (`feature/achievements-page`)
+
+BUILT 2026-11-18, uncommitted on `feature/achievements-page`, based on `origin/main` at `90ed14e`.
+
+- The new `achievements.html` uses `class="no-js home achievements"` and reuses the shared cover hero pattern. The hero id is `achievements-hero`, the heading is `My Achievements`, and the tagline is `Competitions, recognition, and event highlights`.
+- The back cue targets `/#achievements` and reads `Back to Home`. The down cue targets `#main` and reads `Scroll to achievements`. Both hide at hero progress `>= 0.25`. The site header is removed, and the theme switch sits outside the hero in the first section header row.
+- The section header reads `Recognition` with the description `The competitions I joined and what each one involved.` Two cards cover SIKAPTala 2026 and iSITE National IT Skills Competition 2025. Visible dates are `2026 May 11 – 14` and `2025 March 28`. Role values use Pascal case, with `&` only where a combined role needs it. For iSITE, the role is `Contestant` and `C# Programming` stays the category. Prose keeps normal `and`.
+- The cards reuse the projects page classes: `.project-grid`, `.card.project`, `.meta`, `.links`, `.project-detail-open`, and `.project-dialog`. Each card has a More dialog. Tags stay inside those dialogs. Computed card styles match the projects page cards.
+- The SIKAPTala card and dialog link to the event post, the Lunas source, and `/projects#lunas-detail`, which opens the Lunas More dialog on the projects page. The projects page Lunas dialog links back to `/achievements#sikaptala-2026-detail`. The iSITE card links to its event post. The dialogs carry the longer factual descriptions and the tags.
+- `index.html` keeps the Achievements section and TOC entry, but the entries are compact. Each entry has a title, date, role, result where relevant, and one sentence. A `View all achievements` button links to `/achievements#achievements-hero`. The JSON-LD award strings and the iSITE role wording were updated to match the visible content.
+- `styles.css` groups `html.achievements .theme-switch` with the projects and skills theme switch rules. It also groups `.achievements-head` with the shared section header rules and resets the figure margin for achievement lead images. No new card style system was added.
+- `sitemap.xml` gained `/achievements` with `2026-11-18`. The sitemap now has four page entries.
+- `script.js` adds `settleHashTarget()` so deep links to card targets settle after the cover changes height. The existing `settledTarget(target)` damping stays unchanged. Hash links to `.project-dialog` elements still open the matching More dialog.
+- The six local WebP files are under `images/achievements/`: `sikaptala-2026/school-congratulations.webp` at 1200x1200, `sikaptala-2026/announcement.webp` at 800x800, `sikaptala-2026/team.webp` at 1200x900, `isite-2025/school-congratulations.webp` at 1080x1080, `isite-2025/behind-the-scenes-with-me.webp` at 1200x685, and `isite-2025/behind-the-scenes.webp` at 1200x713.
+- The files named `school-congratulations.webp` come from Pamantasan ng Cabuyao, not from the event organizer. They include Charles S. Carreon or the team. Their captions read `From Pamantasan ng Cabuyao`, and their alt text starts with `Post from Pamantasan ng Cabuyao`. Nothing attributes them to SIKAPTala or iSITE organizers.
+- Each school congratulatory image is the card lead and is repeated inside the matching More dialog. The announcement and team images sit inside the SIKAPTala dialog in the order announcement, Result, team, My contribution, lead image, About Lunas. The lead image for iSITE comes before Participation, then the two behind-the-scenes images, then Focus. Only optimized WebP files are kept in the repo, and the originals stay outside the final committed set.
+- Static checks, `git diff --check`, and browser checks pass for desktop, tablet, mobile, reduced motion, and no-JS. Browser checks also cover dialog open and close, hash landing on the Lunas card, hash-to-dialog links on both pages, dialog photo loading, mobile dialog sizing, card style comparison against the projects page, local links, dates, roles, and computed card styles.
