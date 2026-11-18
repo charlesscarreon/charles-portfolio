@@ -184,7 +184,7 @@
         update();
     }
 
-    /* ---------- Homepage hero: scroll-linked shrink and down chevron ---------- */
+    /* ---------- Cover hero: scroll-linked shrink and direction cues ---------- */
     function initHeroCollapse() {
         var hero = document.querySelector(".hero");
         if (!doc.classList.contains("home") || !hero) {
@@ -192,7 +192,11 @@
         }
 
         var down = hero.querySelector(".scroll-cue--down");
-        var about = document.getElementById("about");
+        var downHref = down ? down.getAttribute("href") : null;
+        var downTarget = downHref && downHref.charAt(0) === "#"
+            ? document.getElementById(downHref.slice(1))
+            : null;
+        var cues = hero.querySelectorAll(".scroll-cue");
         var main = document.getElementById("main");
         var skip = document.querySelector(".skip-link");
         var ticking = false;
@@ -207,9 +211,9 @@
             var progress = window.scrollY / (window.innerHeight * 0.45);
             progress = Math.max(0, Math.min(1, progress));
             doc.style.setProperty("--hero-progress", progress.toFixed(4));
-            if (down) {
-                down.hidden = progress >= 0.25;
-            }
+            Array.prototype.forEach.call(cues, function (cue) {
+                cue.hidden = progress >= 0.25;
+            });
         }
 
         function onScroll() {
@@ -219,28 +223,61 @@
             }
         }
 
-        /* The About target moves while the cover shrinks, so this scroll is
-           stepped frame by frame instead of using a one-shot smooth scroll. */
-        function scrollToTarget(target, instant) {
-            if (instant) {
-                /* Reduced motion skips the animation, but the target still moves
-                   while the cover settles. A few instant corrections land it
-                   without a visible animation. */
-                var passes = 0;
-                function settle() {
-                    update();
-                    var next = Math.max(0, target());
-                    if (Math.abs(next - window.scrollY) <= 1 || passes >= 6) {
-                        return;
+        /* The target moves while the cover shrinks. Find the scroll position
+           where the target stops moving by simulating progress and damping each
+           step, then animate to that fixed point. Recomputing during the
+           animation itself would oscillate. */
+        function settledTarget(target) {
+            var previous = doc.style.getPropertyValue("--hero-progress");
+            var distance = window.innerHeight * 0.45;
+            var candidate = Math.max(0, target());
+            var progress;
+            var next;
+            var index;
+
+            if (distance > 0) {
+                for (index = 0; index < 20; index += 1) {
+                    progress = Math.max(0, Math.min(1, candidate / distance));
+                    doc.style.setProperty("--hero-progress", progress.toFixed(4));
+                    next = Math.max(0, target());
+                    if (Math.abs(next - candidate) <= 0.5) {
+                        candidate = next;
+                        break;
                     }
-                    passes += 1;
-                    window.scrollTo({ top: next, behavior: "instant" });
-                    window.requestAnimationFrame(settle);
+                    candidate = (candidate + next) / 2;
                 }
-                window.scrollTo({ top: Math.max(0, target()), behavior: "instant" });
-                window.requestAnimationFrame(settle);
+            }
+
+            if (previous) {
+                doc.style.setProperty("--hero-progress", previous);
+            } else {
+                doc.style.removeProperty("--hero-progress");
+            }
+            return Math.max(0, candidate);
+        }
+
+        function scrollToTarget(target, instant) {
+            function settle(passes) {
+                update();
+                var next = settledTarget(target);
+                if (Math.abs(next - window.scrollY) <= 1 || passes >= 6) {
+                    return;
+                }
+                window.scrollTo({ top: next, behavior: "instant" });
+                window.requestAnimationFrame(function () {
+                    settle(passes + 1);
+                });
+            }
+
+            var destination = settledTarget(target);
+            if (instant) {
+                window.scrollTo({ top: destination, behavior: "instant" });
+                window.requestAnimationFrame(function () {
+                    settle(0);
+                });
                 return;
             }
+
             var start = window.scrollY;
             var started = null;
             var duration = 650;
@@ -250,9 +287,11 @@
                 }
                 var t = Math.min(1, (now - started) / duration);
                 var eased = 1 - Math.pow(1 - t, 3);
-                window.scrollTo({ top: start + (target() - start) * eased, behavior: "instant" });
+                window.scrollTo({ top: start + (destination - start) * eased, behavior: "instant" });
                 if (t < 1) {
                     window.requestAnimationFrame(frame);
+                } else {
+                    settle(0);
                 }
             }
             window.requestAnimationFrame(frame);
@@ -261,14 +300,14 @@
         window.addEventListener("scroll", onScroll, { passive: true });
         window.addEventListener("resize", onScroll, { passive: true });
 
-        if (down && about) {
+        if (down && downTarget) {
             down.addEventListener("click", function (event) {
                 event.preventDefault();
                 scrollToTarget(function () {
-                    return Math.max(0, about.getBoundingClientRect().top + window.scrollY - 16);
+                    return Math.max(0, downTarget.getBoundingClientRect().top + window.scrollY - 16);
                 }, reduced());
                 try {
-                    window.history.replaceState(null, "", "#about");
+                    window.history.replaceState(null, "", downHref);
                 } catch (e) { /* file:// or blocked history: the anchor still works without JS */ }
             });
         }
@@ -334,6 +373,31 @@
             });
         });
 
+        function isInteractive(target) {
+            return target && target.closest
+                && target.closest("a, button, input, select, textarea, dialog, [contenteditable]");
+        }
+
+        Array.prototype.forEach.call(document.querySelectorAll(".project"), function (card) {
+            card.addEventListener("click", function (event) {
+                if (event.defaultPrevented || event.button !== 0
+                    || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                    return;
+                }
+                if (isInteractive(event.target)) {
+                    return;
+                }
+                var selection = window.getSelection();
+                if (selection && selection.toString() && card.contains(selection.anchorNode)) {
+                    return;
+                }
+                var trigger = card.querySelector(".project-detail-open[data-dialog]");
+                if (trigger) {
+                    trigger.click();
+                }
+            });
+        });
+
         Array.prototype.forEach.call(dialogs, function (dialog) {
             /* The dialog itself has no padding, so any click that targets it is
                a click on the backdrop rather than on its contents. */
@@ -344,7 +408,9 @@
             });
 
             dialog.addEventListener("close", function () {
-                setHash(null);
+                if (!doc.querySelector(".project-dialog[open]")) {
+                    setHash(null);
+                }
             });
         });
 
