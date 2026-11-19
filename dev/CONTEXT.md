@@ -76,8 +76,9 @@ Work in progress or planned to be done immediately.
 
 - Accessibility audit, verification step (started 2026-09-25): the code work is done (light-theme contrast fix and bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all five pages after Phase 5, covering 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
 - Phase 5 homepage rework: completed as `db8c8f8 feat: rework homepage and add experience page`. The round added an Experience page, moved Education off the homepage, reduced the hero contacts, added an email draft dialog and a Skills and Certifications section, and applied a new homepage section order.
-- Homepage skills and certificates refinement: implemented and verified, uncommitted on `feature/homepage-rework`. It shows the full Front-End and Game Development skill lists in one small card and three certificate cards for both Wadhwani certificates and EF SET.
-- Homepage card spacing and frame polish: implemented and verified, uncommitted on `feature/homepage-rework`. It adds space above the certificate grid and gives the homepage skills card, certificate cards, and featured project cards a thinner inset frame.
+- Homepage skills and certificates refinement: completed as `270dfde feat: refine homepage skills and certificate cards`. It shows the full Front-End and Game Development skill lists in one small card and three certificate cards for both Wadhwani certificates and EF SET.
+- Homepage card spacing and frame polish: completed with the same `270dfde feat: refine homepage skills and certificate cards` commit. It adds space above the certificate grid and gives the homepage skills card, certificate cards, and featured project cards a thinner inset frame.
+- TRIGGR project entry: implemented and verified, uncommitted on `feature/homepage-rework`. It adds a text-only project card and detail dialog on `/projects`, reorders the existing projects by reverse completion chronology, and updates JSON-LD positions to match. The copy uses neutral third-person wording and states that the game was built by a three-person team.
 - Phase 4 achievements page: completed and merged through PR #6 on 2026-11-18. The local `feature/achievements-page` branch and local `main` are up to date with the remote merge. The results from that round are recorded under Completed Changes.
 
 ## Planned Changes
@@ -103,7 +104,7 @@ DECISIONS RECORDED 2026-11-18. COMPLETED 2026-11-18 as `db8c8f8 feat: rework hom
 
 ### Homepage skills and certificates refinement (`feature/homepage-rework`)
 
-DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a new round after commit `db8c8f8 feat: rework homepage and add experience page`.
+DECISIONS RECORDED 2026-11-18. COMPLETED 2026-11-18 as `270dfde feat: refine homepage skills and certificate cards`. This is a new round after commit `db8c8f8 feat: rework homepage and add experience page`.
 
 - Change the homepage Skills and Certifications summary only. `/skills` stays unchanged.
 - Replace the five-category and five-certificate lists with one small skills card. It lists the full Front-End Development and Game Development skills from `/skills`, with the same Proficient and Familiar badges.
@@ -114,13 +115,26 @@ DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rewor
 
 ### Homepage card spacing and frame polish (`feature/homepage-rework`)
 
-DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a follow-up to the uncommitted homepage skills and certificates refinement.
+DECISIONS RECORDED 2026-11-18. COMPLETED 2026-11-18 with `270dfde feat: refine homepage skills and certificate cards`. This follows the homepage skills and certificates refinement in the same commit.
 
 - Add space above the certificate grid only. The three certificate cards keep their current gap and the `View all skills and certifications` button keeps its current margin.
 - Use the reference layout direction from https://emieljames.dev/#projects: a thin border, tighter padding, and images inset inside the card rather than flush with the card edge.
 - Apply the treatment to the homepage skills card, the three homepage certificate cards, and the homepage featured project cards. Do not change cards on `/projects`, `/skills`, or `/achievements`.
 - Keep all image paths, the Lunas award badge, and all card text unchanged. Do not change global `.card` rules.
 - Verify with `node --check`, static checks, browser checks, the achievements regression check, `git diff --check`, and `git status --short --branch`.
+
+### TRIGGR project entry (`feature/homepage-rework`)
+
+DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a new round after commit `270dfde feat: refine homepage skills and certificate cards`.
+
+- Add TRIGGR to `/projects` only. Leave the homepage featured cards unchanged.
+- Use a text-only project card with no new image asset and no CSS changes. Do not fix the deferred issue about bottom-aligned buttons on image-less cards.
+- Order `/projects` by reverse completion chronology, newest first: Toolkit, OUTRUN, TRIGGR, MUTED, Lunas. OUTRUN started earlier than TRIGGR but finished later, so it stays before TRIGGR. Do not write that timeline into the visible copy.
+- Update JSON-LD `itemListElement` order and positions to match the page: Toolkit 1, OUTRUN 2, TRIGGR 3, MUTED 4, Lunas 5.
+- TRIGGR is an unreleased Windows multiplayer shooting game built in about 12 hours over 2026 October 10 – 11. Rooms support up to 20 players, everyone can shoot and respawn, and the first player to reach 30 kills wins.
+- Show Unity 6.3, C#, and Photon as the technologies. State that Photon handles the multiplayer server. Show `Game Developer` as the role and `Unreleased Prototype` as the status. State that there are no current plans to continue it.
+- Do not use first-person TRIGGR prose. State that the game was built by a three-person team in prose only, with no `Team` metadata row. Keep `Game Developer` as the role value. Do not add a URL or repository link.
+- Verify with `node --check`, a temporary static check for order and content, a temporary browser check for desktop, tablet, mobile, no-JS, dialog behavior, and overflow, `git diff --check`, and `git status --short --branch`.
 
 ### Recommendations feature, planned for a later round
 
@@ -478,7 +492,7 @@ COMPLETED 2026-11-18 as `db8c8f8 feat: rework homepage and add experience page`.
 
 ### Homepage skills and certificates refinement (`feature/homepage-rework`)
 
-IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This round supersedes the five-category and five-certificate homepage summary recorded in Phase 5.
+COMPLETED 2026-11-18 as `270dfde feat: refine homepage skills and certificate cards`. This round supersedes the five-category and five-certificate homepage summary recorded in Phase 5.
 
 - `index.html` replaces the old summary lists with one `.skills-summary` card. The Front-End Development group lists HTML, CSS, JavaScript, React.js, and Bootstrap. The Game Development group lists Unity Engine, Godot Engine, and C# Game Scripting. All eight rows keep the Proficient or Familiar badge used on `/skills`.
 - Below the skills card, `.cert-grid--home` shows three mini certificate cards with the existing local thumbnails and remote verification links: Proficiency Certificate from Wadhwani Foundation dated 2026 May 13, Certificate of Content Completion from Wadhwani Foundation dated 2026 April 30, and EF SET English Certificate, 78/100 dated 2025 May 23. The DICT-WD001 certificate and the Python certificate stay on `/skills` only.
@@ -486,16 +500,28 @@ IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. T
 - `styles.css` adds `.skills-summary` and `.skills-summary__group h3`. It removes the unused `.summary-grid` and `.summary-list` rules. `.cert-grid--home` only clears the large bottom margin used by the skills page certificate grid.
 - `node --check`, an 18-assertion static check, a 19-assertion browser check, the 104-assertion achievements regression browser check, and `git diff --check` pass. The browser checks cover desktop, tablet, mobile, and no-JS views, exact skill and certificate content, loaded thumbnails, remote links, two-column and single-column layouts, and no horizontal overflow.
 
-This round is ready for Charles to stage and commit. Do not commit, push, merge, reset, or switch branches on his behalf.
+Completed as `270dfde feat: refine homepage skills and certificate cards`. Do not commit, push, merge, reset, or switch branches on his behalf.
 
 ### Homepage card spacing and frame polish (`feature/homepage-rework`)
 
-IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This follows the uncommitted homepage skills and certificates refinement.
+COMPLETED 2026-11-18 with `270dfde feat: refine homepage skills and certificate cards`. This follows the homepage skills and certificates refinement in the same commit.
 
 - `.cert-grid--home` now has `margin-top: 1.25rem`, so there is space between the skills card and the certificate grid. The certificate cards keep their existing gap and the `View all skills and certifications` button keeps its existing margin.
 - `.summary-card` and `.featured-card` use `padding: 1rem` and `0.85rem` with a `0.75rem` radius. These scoped rules sit after the global `.card` rule so they win the cascade. The global `.card` rule is unchanged.
 - `.featured-card .project-thumb-wrap` and `.cert-grid--home .cert-thumb-wrap` carry a 1px border, a `0.25rem` inset, and a `0.6rem` radius. The featured project image drops its own border so the wrapper becomes the frame. Certificate images keep their existing crop and remote links.
 - All homepage images stay inside their cards. The Lunas award badge, card text, image paths, `/projects`, `/skills`, `/achievements`, `script.js`, and `sitemap.xml` are unchanged in this round.
 - `node --check`, a 24-assertion static check, a 28-assertion browser check, the 104-assertion achievements regression browser check, and `git diff --check` pass. The browser checks cover the 20px gap above the certificate grid, tighter card padding, 1px image frames with a 5px inset, loaded featured and certificate images, desktop, tablet, mobile, and no-JS views, and no horizontal overflow.
+
+Completed as `270dfde feat: refine homepage skills and certificate cards`. Do not commit, push, merge, reset, or switch branches on his behalf.
+
+### TRIGGR project entry (`feature/homepage-rework`)
+
+IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a new round after commit `270dfde feat: refine homepage skills and certificate cards`.
+
+- `projects.html` now orders cards and JSON-LD items as Toolkit, OUTRUN, TRIGGR, MUTED, and Lunas. JSON-LD positions are 1 to 5 in that order. OUTRUN stays before TRIGGR because it finished later, with no added timeline prose.
+- The TRIGGR card is text-only, with no image and no external link. It shows `2026 October 10 – 11`, Unity 6.3, C#, Photon, `Multiplayer Game`, `Unreleased Prototype`, `Game Developer`, and Windows. The summary states the 12-hour build, the 20-player room limit, respawning, and the 30-kill win condition.
+- The `triggr-detail` dialog uses the existing project dialog pattern. It adds the development window, match rules, implementation details, the three-person team, and the statement that there are no current plans to continue the game. TRIGGR copy is neutral third person with no first-person wording.
+- `index.html`, `styles.css`, `script.js`, `sitemap.xml`, and all image files are unchanged. The shared dialog script handles TRIGGR without code changes. The deferred issue about bottom-aligned buttons on image-less cards was left alone.
+- `node --check`, a 17-assertion static check, a 30-assertion browser check, the 104-assertion achievements regression browser check, and `git diff --check` pass. The browser checks cover reverse card order, rendered copy, neutral wording, metadata, tags, dialog opening by link, card click, and shared hash, desktop, tablet, mobile, no-JS, and no horizontal overflow. Hash clearing on close is not asserted because `history.replaceState` does not clear it on the `file://` test URL.
 
 This round is ready for Charles to stage and commit. Do not commit, push, merge, reset, or switch branches on his behalf.
