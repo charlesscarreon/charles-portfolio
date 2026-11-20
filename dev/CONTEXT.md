@@ -4,21 +4,22 @@ This document provides context about the portfolio project for human readers and
 
 ## Last Updated
 
-November 18, 2026
+November 19, 2026
 
 ## Project Summary
 
 Personal portfolio website for Charles S. Carreon (full name Charles Serrano Carreon), a Computer Science student at Pamantasan ng Cabuyao, Philippines.
 
-The built site has five pages:
+The built site has six pages:
 
-- `/`, About Me, Featured Projects, Achievements, Skills and Certifications, and Experience
-- `/projects`, 4 software and game projects
+- `/`, About Me, Featured Projects, Achievements, Skills and Certifications, Experience, and Recommendations
+- `/projects`, 5 software and game projects
 - `/skills`, skills and tools across 5 categories
 - `/achievements`, competitions, recognition, and event highlights
 - `/experience`, roles, responsibilities, and education
+- `/recommendations`, basic recommendations UI with an empty state and a static write form
 
-A sixth page, `/recommendations`, is planned as a later feature.
+Recommendation structure, storage, and a real submission method are deferred.
 
 It is built with pure static HTML, CSS, and vanilla JavaScript. There are no frameworks, build tools, or npm dependencies. The site is fully functional without JavaScript (progressive enhancement). JavaScript adds the theme toggle, image carousels, project, achievement and contact dialogs, table-of-contents marker, and the scroll-linked homepage cover.
 
@@ -74,12 +75,13 @@ Contains local development tooling and documentation only. It is never deployed.
 
 Work in progress or planned to be done immediately.
 
-- Accessibility audit, verification step (started 2026-09-25): the code work is done (light-theme contrast fix and bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all five pages after Phase 5, covering 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
+- Accessibility audit, verification step (started 2026-09-25): the code work is done (light-theme contrast fix and bare-HTML fallback, see Completed Changes). Remaining: in-browser verification pass of all six pages after Phase 5 and the Recommendations round, covering 200% zoom and text-only 200% resizing at 320 / 375 / 414 / 620 / 768 / 900 / 1024 / 1280 / 1440 px, keyboard-only tab walk with visible focus, and a screen-reader sweep.
 - Phase 5 homepage rework: completed as `db8c8f8 feat: rework homepage and add experience page`. The round added an Experience page, moved Education off the homepage, reduced the hero contacts, added an email draft dialog and a Skills and Certifications section, and applied a new homepage section order.
 - Homepage skills and certificates refinement: completed as `270dfde feat: refine homepage skills and certificate cards`. It shows the full Front-End and Game Development skill lists in one small card and three certificate cards for both Wadhwani certificates and EF SET.
 - Homepage card spacing and frame polish: completed with the same `270dfde feat: refine homepage skills and certificate cards` commit. It adds space above the certificate grid and gives the homepage skills card, certificate cards, and featured project cards a thinner inset frame.
-- TRIGGR project entry: implemented and verified, uncommitted on `feature/homepage-rework`. It adds a text-only project card and detail dialog on `/projects`, reorders the existing projects by reverse completion chronology, and updates JSON-LD positions to match. The copy uses neutral third-person wording and states that the game was built by a three-person team.
+- TRIGGR project entry: completed, committed, and pushed by Charles on `feature/homepage-rework`, then merged into remote `main`. Local `main` is up to date with the remote merge. It adds a text-only project card and detail dialog on `/projects`, reorders the existing projects by reverse completion chronology, and updates JSON-LD positions to match. The copy uses neutral third-person wording and states that the game was built by a three-person team.
 - Phase 4 achievements page: completed and merged through PR #6 on 2026-11-18. The local `feature/achievements-page` branch and local `main` are up to date with the remote merge. The results from that round are recorded under Completed Changes.
+- Recommendations basic UI: implemented and verified on `feature/recommendations-page` as of 2026-11-19, uncommitted. This round adds the page and homepage section with an empty state and a static write form. It adds no recommendation data, storage, submission behavior, or JavaScript changes.
 
 ## Planned Changes
 
@@ -125,7 +127,7 @@ DECISIONS RECORDED 2026-11-18. COMPLETED 2026-11-18 with `270dfde feat: refine h
 
 ### TRIGGR project entry (`feature/homepage-rework`)
 
-DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a new round after commit `270dfde feat: refine homepage skills and certificate cards`.
+DECISIONS RECORDED 2026-11-18. COMPLETED 2026-11-18 on `feature/homepage-rework`, committed and pushed by Charles, merged into remote `main`, with local `main` updated. The exact commit hash was not captured in these notes. This is a new round after commit `270dfde feat: refine homepage skills and certificate cards`.
 
 - Add TRIGGR to `/projects` only. Leave the homepage featured cards unchanged.
 - Use a text-only project card with no new image asset and no CSS changes. Do not fix the deferred issue about bottom-aligned buttons on image-less cards.
@@ -138,12 +140,27 @@ DECISIONS RECORDED 2026-11-18. IMPLEMENTED 2026-11-18 on `feature/homepage-rewor
 
 ### Recommendations feature, planned for a later round
 
+This high-level note was recorded before the basic UI round. It is superseded by the decisions recorded below for the 2026-11-19 build.
+
 - Add a homepage Recommendations section as the last section. It shows the latest recommendations about Charles.
 - The section has two buttons: `View all recommendations` to `/recommendations`, and `Write a recommendation` to `/recommendations#write`.
 - Add a `/recommendations` page later. It lists all recommendations and has a write area at `#write`.
 - The recommendation submission method is undecided. Build the interface first when this feature is approved, then decide whether the write area opens a mail draft or uses another no-backend flow.
 - Do not add the section, page, sitemap entry, or navigation link in Phase 5. Record only.
 - This plan supersedes the earlier direction that kept testimonials out of the site. Treat recommendations as a separate later feature.
+
+### Recommendations basic UI (`feature/recommendations-page`)
+
+DECISIONS RECORDED 2026-11-19. IMPLEMENTED 2026-11-19 on `feature/recommendations-page`, verified and uncommitted. The TRIGGR commit has been pushed and merged into remote `main`, and local `main` has been updated. Do not create another branch, run checkout, pull, merge, reset, or push.
+
+- Build the basic UI only. Recommendation structure, storage, and a real submission method are deferred.
+- Add `recommendations.html` with the shared page pattern: `no-js home recommendations`, a hero with `id="recommendations-hero"`, a back cue to `/#recommendations`, shared theme switch, shared footer contacts, no Instagram, full metadata, canonical URL, Open Graph, Twitter Card, and `WebPage` JSON-LD.
+- Show an empty state in the recommendations list. Do not invent names, quotes, roles, or dates.
+- Add a static write form at `#write` with name, role or relationship, recommendation, and submit UI. The note must say submission is not connected yet. Do not use a backend, `mailto:`, form action, JavaScript, or a fake success message.
+- Add the Recommendations section after Experience on the homepage, and add Recommendations as the last desktop TOC item. Use `View all recommendations` to `/recommendations` and `Write a recommendation` to `/recommendations#write`.
+- Add scoped CSS only for the empty state and static form. Leave global card styles unchanged.
+- Add a sixth `sitemap.xml` entry for `/recommendations`. Leave `script.js`, the skills page, the projects page, and all images unchanged.
+- Verify with `node --check script.js`, a temporary static check, a temporary browser check, the existing phase 6 homepage checks, the achievements regression check, `git diff --check`, and `git status --short --branch`. Leave staging and committing to Charles.
 
 ### SEO and identity (from audit)
 
@@ -516,7 +533,7 @@ Completed as `270dfde feat: refine homepage skills and certificate cards`. Do no
 
 ### TRIGGR project entry (`feature/homepage-rework`)
 
-IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. This is a new round after commit `270dfde feat: refine homepage skills and certificate cards`.
+COMPLETED 2026-11-18 on `feature/homepage-rework`, committed and pushed by Charles, merged into remote `main`, with local `main` updated. The exact commit hash was not captured in these notes. This is a new round after commit `270dfde feat: refine homepage skills and certificate cards`.
 
 - `projects.html` now orders cards and JSON-LD items as Toolkit, OUTRUN, TRIGGR, MUTED, and Lunas. JSON-LD positions are 1 to 5 in that order. OUTRUN stays before TRIGGR because it finished later, with no added timeline prose.
 - The TRIGGR card is text-only, with no image and no external link. It shows `2026 October 10 – 11`, Unity 6.3, C#, Photon, `Multiplayer Game`, `Unreleased Prototype`, `Game Developer`, and Windows. The summary states the 12-hour build, the 20-player room limit, respawning, and the 30-kill win condition.
@@ -524,4 +541,17 @@ IMPLEMENTED 2026-11-18 on `feature/homepage-rework`, verified and uncommitted. T
 - `index.html`, `styles.css`, `script.js`, `sitemap.xml`, and all image files are unchanged. The shared dialog script handles TRIGGR without code changes. The deferred issue about bottom-aligned buttons on image-less cards was left alone.
 - `node --check`, a 17-assertion static check, a 30-assertion browser check, the 104-assertion achievements regression browser check, and `git diff --check` pass. The browser checks cover reverse card order, rendered copy, neutral wording, metadata, tags, dialog opening by link, card click, and shared hash, desktop, tablet, mobile, no-JS, and no horizontal overflow. Hash clearing on close is not asserted because `history.replaceState` does not clear it on the `file://` test URL.
 
-This round is ready for Charles to stage and commit. Do not commit, push, merge, reset, or switch branches on his behalf.
+Do not commit, push, merge, reset, or switch branches on Charles' behalf.
+
+### Recommendations basic UI (`feature/recommendations-page`)
+
+IMPLEMENTED 2026-11-19 on `feature/recommendations-page`, verified and uncommitted. This round follows the completed and merged TRIGGR round. The exact TRIGGR commit hash was not captured in these notes.
+
+- `recommendations.html` uses the shared cover hero pattern with `id="recommendations-hero"`, the heading `Recommendations`, a back cue to `/#recommendations`, the shared theme switch, shared footer contacts, no Instagram, page metadata, canonical URL, Open Graph, Twitter Card, and `WebPage` JSON-LD.
+- The recommendations list shows only an empty state. It uses no invented names, quotes, roles, or dates. The `#write` section shows a static form with Name, Role or relationship, Recommendation, and a disabled `Submit recommendation` button. The note says submission is not connected yet. There is no backend, no `mailto:` in the form, no form action, no JavaScript, and no fake success state.
+- `index.html` now ends with a Recommendations section after Experience. The homepage buttons point to `/recommendations` and `/recommendations#write`. The desktop TOC ends with Recommendations.
+- `styles.css` adds scoped rules for the empty state and static form. The global `.card` rule is unchanged. `sitemap.xml` now has six entries, including `/recommendations` with `2026-11-19`.
+- `script.js`, `projects.html`, `skills.html`, `achievements.html`, `experience.html`, and all images are unchanged in this round.
+- `node --check`, an 18-assertion recommendations static check, a 22-assertion recommendations browser check, the 24-assertion phase 6 static check, the 28-assertion phase 6 browser check, the 17-assertion TRIGGR static check, the 31-assertion TRIGGR browser check, the 104-assertion achievements regression browser check, and `git diff --check` pass. The browser checks cover the hero, empty state, rendered form fields, no submission path, `#write` anchor, theme switch, footer contacts, desktop, tablet, 390px, 320px, no-JS, and no horizontal overflow.
+
+Do not stage, commit, push, merge, reset, or switch branches on Charles' behalf.
