@@ -2,42 +2,42 @@
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
-        <loc>https://charlescarreon.vercel.app/</loc>
+        <loc>https://charlescarreon.dev/</loc>
         <lastmod>2026-11-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
     </url>
 
     <url>
-        <loc>https://charlescarreon.vercel.app/projects</loc>
+        <loc>https://charlescarreon.dev/projects</loc>
         <lastmod>2026-11-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
 
     <url>
-        <loc>https://charlescarreon.vercel.app/achievements</loc>
+        <loc>https://charlescarreon.dev/achievements</loc>
         <lastmod>2026-11-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
 
     <url>
-        <loc>https://charlescarreon.vercel.app/skills</loc>
+        <loc>https://charlescarreon.dev/skills</loc>
         <lastmod>2026-11-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
 
     <url>
-        <loc>https://charlescarreon.vercel.app/experience</loc>
+        <loc>https://charlescarreon.dev/experience</loc>
         <lastmod>2026-11-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
 
     <url>
-        <loc>https://charlescarreon.vercel.app/recommendations</loc>
+        <loc>https://charlescarreon.dev/recommendations</loc>
         <lastmod>2026-11-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
