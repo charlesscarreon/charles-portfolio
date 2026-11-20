@@ -1387,6 +1387,72 @@ html.dialog-capable .project-dialog:not([open]) {
     }
 }
 
+/* ---------- Recommendations ---------- */
+
+.empty-state {
+    text-align: center;
+}
+
+.empty-state p {
+    color: var(--muted);
+    margin-bottom: 0;
+}
+
+.empty-state .empty-state__title {
+    color: var(--text-strong);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+
+.recommendation-form {
+    max-width: 42rem;
+    margin-top: 1rem;
+}
+
+.recommendation-form__field + .recommendation-form__field {
+    margin-top: 1rem;
+}
+
+.recommendation-form label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.recommendation-form input,
+.recommendation-form textarea {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background-color: var(--surface-2);
+    color: var(--text);
+    font: inherit;
+    padding: 0.65rem 0.75rem;
+}
+
+.recommendation-form textarea {
+    min-height: 9rem;
+    resize: vertical;
+}
+
+.recommendation-form__actions {
+    margin-top: 1rem;
+}
+
+.recommendation-form__submit:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.recommendation-form__submit:disabled:hover {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+}
+
 /* Inline code in card copy: a package name and a target framework. Monospace
    is right here, but the browser default sits a size below the body text and
    clashes with the system stack, so it is pulled in line. */
