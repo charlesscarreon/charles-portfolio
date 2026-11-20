@@ -43,7 +43,8 @@ The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public 
 
 ## Important Links
 
-- Current website: https://charlescarreon.vercel.app/
+- Current website: https://charlescarreon.dev/
+- Domain: `charlescarreon.dev` is the main address (free first year via the GitHub Student Developer Pack, registered at Name.com, auto-renew OFF; expires 20 Nov 2027, renewal ₱1,511.90). `charlescarreon.vercel.app` stays valid and redirects with a temporary 307. If not renewing, revert by swapping the hostname back across the HTML, `sitemap.xml`, `robots.txt` and README, then remove the Vercel redirect. Decide by early Oct 2027.
 - GitHub link of current website: https://github.com/charlesscarreon/charles-portfolio
 - Old website: https://charlesscarreon.github.io/
 - GitHub link of old website: https://github.com/charlesscarreon/charlesscarreon.github.io

@@ -1,6 +1,6 @@
 # Charles S. Carreon · Portfolio
 
-[![Live](https://img.shields.io/badge/live-charlescarreon.vercel.app-2dd4a7)](https://charlescarreon.vercel.app/)
+[![Live](https://img.shields.io/badge/live-charlescarreon.dev-2dd4a7)](https://charlescarreon.dev/)
 ![HTML](https://img.shields.io/badge/HTML-CSS-orange)
 ![JavaScript](https://img.shields.io/badge/JavaScript-yellow)
 
@@ -10,9 +10,9 @@ Built with **pure static HTML, CSS, and JavaScript**, with no frameworks, build 
 
 ## Pages
 
-- [`/`](https://charlescarreon.vercel.app/) · About, experience, achievements, education
-- [`/projects`](https://charlescarreon.vercel.app/projects) · 8 software, web, and game projects
-- [`/skills`](https://charlescarreon.vercel.app/skills) · skills and tools across 5 categories
+- [`/`](https://charlescarreon.dev/) · About, experience, achievements, education
+- [`/projects`](https://charlescarreon.dev/projects) · 8 software, web, and game projects
+- [`/skills`](https://charlescarreon.dev/skills) · skills and tools across 5 categories
 
 ## Local Development
 
