@@ -35,9 +35,31 @@
           "value": "noindex"
         }
       ]
+    },
+    {
+      "source": "/index.template",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/index.template.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
     }
   ],
   "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/home"
+    },
     {
       "source": "/recommendations",
       "destination": "/api/recommendations"
@@ -50,6 +72,9 @@
   "functions": {
     "api/recommendations.js": {
       "includeFiles": "recommendations.template.html"
+    },
+    "api/home.js": {
+      "includeFiles": "index.template.html"
     }
   }
 }

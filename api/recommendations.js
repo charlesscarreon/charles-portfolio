@@ -5,7 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { esc } = require('./_lib/html');
+const { renderEntry } = require('./_lib/render');
 const { loadPublic } = require('./_lib/publicList');
 
 const START = '<!-- recommendations:list -->';
@@ -22,39 +22,10 @@ function readTemplate() {
   return null;
 }
 
-function formatDate(iso) {
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return '';
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-}
-
-function paragraphs(text) {
-  return String(text).split(/\n{2,}/).map(function (block) {
-    return '<p>' + esc(block.trim()).replace(/\n/g, '<br>') + '</p>';
-  }).join('');
-}
-
-function renderEntry(e) {
-  const who = [e.role, e.organization].filter(Boolean).map(esc).join(', ');
-  const date = formatDate(e.publishedAt);
-  const links = (e.links || []).map(function (l) {
-    return '<a href="' + esc(l.url) + '" rel="noopener noreferrer">' + esc(l.label) + '</a>';
-  }).join(' · ');
-  return '<article class="card recommendation">' +
-    '<blockquote class="recommendation__text">' + paragraphs(e.message) + '</blockquote>' +
-    '<p class="recommendation__author"><strong>' + esc(e.name) + '</strong>' +
-    (who ? '<br>' + who : '') +
-    '<br>' + esc(e.line) +
-    (date ? '<br><time datetime="' + esc(String(e.publishedAt).slice(0, 10)) + '">' + date + '</time>' : '') +
-    '</p>' +
-    (links ? '<p class="recommendation__links">' + links + '</p>' : '') +
-    '</article>';
-}
-
 function renderList(list) {
   return '<section class="section" aria-label="Published recommendations">' +
     '<h2 class="visually-hidden">Published recommendations</h2>' +
-    list.map(renderEntry).join('\n') +
+    list.map(function (e) { return renderEntry(e); }).join('\n') +
     '</section>';
 }
 
@@ -82,7 +53,7 @@ module.exports = async function handler(req, res) {
   let list = [];
   let loaded = true;
   try {
-    list = await loadPublic();
+    list = (await loadPublic()).entries;
   } catch (error) {
     console.error('loading recommendations failed:', error && error.message);
     loaded = false;

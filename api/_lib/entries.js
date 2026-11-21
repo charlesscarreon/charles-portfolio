@@ -5,7 +5,7 @@
 
 const config = require('./config');
 const redis = require('./redis');
-const { rebuildPublic } = require('./publicList');
+const { rebuildPublic, getFeatured, setFeatured, MAX_FEATURED } = require('./publicList');
 
 const P = config.PREFIX;
 const SETS = {
@@ -55,9 +55,15 @@ async function reject(id) {
   return true;
 }
 
+async function dropFeatured(id) {
+  const f = await getFeatured();
+  if (f.indexOf(id) !== -1) await setFeatured(f.filter(function (x) { return x !== id; }));
+}
+
 async function hide(id) {
   const e = await get(id);
   if (!e.id || e.state !== 'published') return false;
+  await dropFeatured(id);
   const now = new Date();
   await redis.pipeline([
     ['HSET', entryKey(id), 'state', 'hidden', 'hiddenAt', now.toISOString()],
@@ -87,12 +93,44 @@ async function unhide(id) {
 async function remove(id) {
   const e = await get(id);
   if (!e.id) return false;
+  await dropFeatured(id);
   const commands = [['DEL', entryKey(id)]];
   Object.keys(SETS).forEach(function (name) { commands.push(['ZREM', SETS[name], id]); });
   if (e.confirmHash) commands.push(['DEL', P + 'confirm:' + e.confirmHash]);
   if (e.statusHash) commands.push(['DEL', P + 'status:' + e.statusHash]);
   if (e.decideHash) commands.push(['DEL', P + 'decide:' + e.decideHash]);
   await redis.pipeline(commands);
+  await refresh();
+  return true;
+}
+
+// Top picks for the homepage (at most three, only published entries).
+// Returns 'ok', 'full' (three already chosen) or 'invalid'.
+async function feature(id) {
+  const e = await get(id);
+  if (!e.id || e.state !== 'published') return 'invalid';
+  const f = await getFeatured();
+  if (f.indexOf(id) !== -1) return 'ok';
+  if (f.length >= MAX_FEATURED) return 'full';
+  f.push(id);
+  await setFeatured(f);
+  await refresh();
+  return 'ok';
+}
+
+async function unfeature(id) {
+  await dropFeatured(id);
+  await refresh();
+  return true;
+}
+
+async function moveFeatured(id, direction) {
+  const f = await getFeatured();
+  const i = f.indexOf(id);
+  const j = direction === 'up' ? i - 1 : i + 1;
+  if (i === -1 || j < 0 || j >= f.length) return false;
+  const tmp = f[i]; f[i] = f[j]; f[j] = tmp;
+  await setFeatured(f);
   await refresh();
   return true;
 }
@@ -105,4 +143,4 @@ async function list(setName, limit) {
   return rows.map(redis.toObject).filter(function (e) { return e.id; });
 }
 
-module.exports = { SETS, validId, get, approve, reject, hide, unhide, remove, list };
+module.exports = { SETS, validId, get, approve, reject, hide, unhide, remove, list, feature, unfeature, moveFeatured };

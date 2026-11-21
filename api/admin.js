@@ -9,6 +9,7 @@ const admin = require('./_lib/admin');
 const entries = require('./_lib/entries');
 const { relationshipLine } = require('./_lib/ownerMail');
 const { esc, respond } = require('./_lib/html');
+const { getFeatured, MAX_FEATURED } = require('./_lib/publicList');
 
 const MAX_FAILED_LOGINS = 10;
 const LOGIN_WINDOW_SECONDS = 15 * 60;
@@ -79,20 +80,39 @@ function section(title, list, buttonsFor, open, emptyText) {
       : '<p>' + esc(emptyText) + '</p>');
 }
 
-async function dashboard(res) {
+const NOTES = {
+  full: 'The top ' + MAX_FEATURED + ' is full. Remove one first, then feature this one.',
+  invalid: 'That recommendation could not be changed. It may have been hidden or deleted.'
+};
+
+async function dashboard(res, noteKey) {
   const results = await Promise.all([
     entries.list('awaiting'), entries.list('published'), entries.list('hidden'), entries.list('rejected')
   ]);
+  const featuredIds = (await getFeatured()).filter(function (id) {
+    return results[1].some(function (e) { return e.id === id; });
+  });
+  const featured = featuredIds.map(function (id) {
+    return results[1].filter(function (e) { return e.id === id; })[0];
+  });
   const del = function (e) { return actionForm(e.id, 'delete', 'Delete'); };
   const html =
     '<h1>Recommendations</h1>' +
     '<form method="post" action="/admin"><input type="hidden" name="action" value="logout">' +
     '<button type="submit" class="btn">Log out</button></form>' +
+    (NOTES[noteKey] ? '<p><strong>' + esc(NOTES[noteKey]) + '</strong></p>' : '') +
+    section('Top recommendations on the homepage', featured, function (e) {
+      const at = featuredIds.indexOf(e.id);
+      return (at > 0 ? actionForm(e.id, 'up', 'Move up') : '') +
+        (at < featuredIds.length - 1 ? actionForm(e.id, 'down', 'Move down') : '') +
+        actionForm(e.id, 'unfeature', 'Remove from top');
+    }, false, 'Nothing is chosen. The homepage shows the newest recommendations until you choose up to ' + MAX_FEATURED + '.') +
     section('Pending', results[0], function (e) {
       return actionForm(e.id, 'approve', 'Approve') + actionForm(e.id, 'reject', 'Reject') + del(e);
     }, true, 'Nothing is waiting for a decision.') +
     section('Published', results[1], function (e) {
-      return actionForm(e.id, 'hide', 'Hide') + del(e);
+      return (featuredIds.indexOf(e.id) === -1 ? actionForm(e.id, 'feature', 'Feature on homepage') : '(featured) ') +
+        actionForm(e.id, 'hide', 'Hide') + del(e);
     }, false, 'Nothing is published.') +
     section('Hidden', results[2], function (e) {
       return actionForm(e.id, 'unhide', 'Unhide') + del(e);
@@ -129,7 +149,8 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
-      return admin.isAuthed(req) ? dashboard(res) : loginPage(res);
+      const note = String((req.query && req.query.note) || '');
+      return admin.isAuthed(req) ? dashboard(res, note) : loginPage(res);
     }
 
     if (!admin.sameOrigin(req)) return respond(res, 403, 'Not allowed', '<h1>Not allowed</h1>');
@@ -162,7 +183,16 @@ module.exports = async function handler(req, res) {
         '<p><a href="/admin">No, go back</a></p>');
     }
 
-    const actions = { approve: entries.approve, reject: entries.reject, hide: entries.hide, unhide: entries.unhide, delete: entries.remove };
+    if (action === 'feature') {
+      const outcome = await entries.feature(id);
+      return redirect(res, outcome === 'ok' ? '/admin' : '/admin?note=' + outcome);
+    }
+    const actions = {
+      approve: entries.approve, reject: entries.reject, hide: entries.hide, unhide: entries.unhide, delete: entries.remove,
+      unfeature: entries.unfeature,
+      up: function (x) { return entries.moveFeatured(x, 'up'); },
+      down: function (x) { return entries.moveFeatured(x, 'down'); }
+    };
     if (actions[action]) await actions[action](id);
     return redirect(res, '/admin');
   } catch (error) {
