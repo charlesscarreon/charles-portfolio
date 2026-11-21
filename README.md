@@ -10,9 +10,12 @@ Built with **pure static HTML, CSS, and JavaScript**, with no frameworks, build 
 
 ## Pages
 
-- [`/`](https://charlescarreon.dev/) · About, experience, achievements, education
-- [`/projects`](https://charlescarreon.dev/projects) · 8 software, web, and game projects
-- [`/skills`](https://charlescarreon.dev/skills) · skills and tools across 5 categories
+- [`/`](https://charlescarreon.dev/) · About, featured projects, achievements, skills and certifications, experience, recommendations
+- [`/projects`](https://charlescarreon.dev/projects) · 5 software, web, and game projects
+- [`/skills`](https://charlescarreon.dev/skills) · skills and tools across 5 categories, plus certifications
+- [`/achievements`](https://charlescarreon.dev/achievements) · competitions and recognition
+- [`/experience`](https://charlescarreon.dev/experience) · roles and education
+- [`/recommendations`](https://charlescarreon.dev/recommendations) · recommendations and a write form
 
 ## Local Development
 
