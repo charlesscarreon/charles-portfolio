@@ -23,6 +23,8 @@
             }
         } catch (error) { /* storage blocked: keep the dark default */ }
     </script>
+    <!-- Tells the stylesheet which way the page transition moves; see transitions.js. -->
+    <script src="transitions.js"></script>
     <!-- Color-agnostic no-CSS fallback (only matters when styles.css fails to
          load). No colors or CSS custom properties, so it survives an empty
          stylesheet. Every selector below is redefined by styles.css, which is
@@ -171,13 +173,29 @@
     <a class="skip-link" href="#main">Skip to main content</a>
 
     <section class="hero" aria-label="Introduction">
+        <div class="hero-decor" aria-hidden="true">
+            <svg class="hero-decor__defs" width="0" height="0" focusable="false">
+                <symbol id="deco-brackets" viewBox="0 0 24 24"><path d="M9 4H5v16h4 M15 4h4v16h-4"/></symbol>
+                <symbol id="deco-code" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5 M16 7l5 5-5 5 M14 5l-4 14"/></symbol>
+                <symbol id="deco-dots" viewBox="0 0 24 24"><path d="M6 6h.01 M12 6h.01 M18 6h.01 M6 12h.01 M12 12h.01 M18 12h.01 M6 18h.01 M12 18h.01 M18 18h.01"/></symbol>
+                <symbol id="deco-prompt" viewBox="0 0 24 24"><path d="M5 7l6 5-6 5 M13 18h7"/></symbol>
+            </svg>
+            <span class="deco deco--1"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-brackets"/></svg></span>
+            <span class="deco deco--2"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-code"/></svg></span>
+            <span class="deco deco--3"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-dots"/></svg></span>
+            <span class="deco deco--4"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-prompt"/></svg></span>
+            <span class="deco deco--5"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-dots"/></svg></span>
+            <span class="deco deco--6"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-prompt"/></svg></span>
+            <span class="deco deco--7"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-brackets"/></svg></span>
+            <span class="deco deco--8"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-code"/></svg></span>
+        </div>
         <h1>Charles S. Carreon</h1>
         <p class="tagline">Computer Science Student &amp; Aspiring Software Developer</p>
         <p class="hero-availability">Open to internship and junior developer roles</p>
         <p>I build games, developer tools, and web apps.</p>
         <p class="hero-cta">
             <a class="btn btn--lg" data-contact-open
-                href="mailto:charlesserranocarreon+portfolio@gmail.com?subject=Portfolio%20inquiry&amp;body=Hi%20Charles%2C%0D%0A%0D%0A">Get in touch</a>
+                href="mailto:charlesserranocarreon+portfolio@gmail.com?subject=Portfolio%20Inquiry&amp;body=Hi%20Charles%2C%0D%0A%0D%0A">Get in touch</a>
         </p>
         <p class="contact" aria-label="Contact links">
             <a href="mailto:charlesserranocarreon@gmail.com">
@@ -274,6 +292,10 @@
                                 <img class="project-thumb" src="images/projects/outrun/outrun-key-art.webp" width="1200" height="675"
                                     alt="OUTRUN official artwork" loading="lazy" decoding="async">
                             </div>
+                            <div class="tech-tiles" aria-hidden="true">
+                                <span class="tech-tile tech-tile--unity" data-name="Unity"></span>
+                                <span class="tech-tile tech-tile--csharp" data-name="C#"></span>
+                            </div>
                             <h3>OUTRUN</h3>
                             <p>A download-only racing game built with a five-person team, with nine vehicles including the starting e-bike.</p>
                             <p class="featured-card__more"><a href="/projects#outrun-detail">More about OUTRUN</a></p>
@@ -282,6 +304,12 @@
                             <div class="project-thumb-wrap">
                                 <img class="project-thumb" src="images/projects/muted/muted-gameplay.webp" width="1200" height="667"
                                     alt="MUTED gameplay." loading="lazy" decoding="async">
+                            </div>
+                            <div class="tech-tiles" aria-hidden="true">
+                                <span class="tech-tile tech-tile--unity" data-name="Unity"></span>
+                                <span class="tech-tile tech-tile--csharp" data-name="C#"></span>
+                                <span class="tech-tile tech-tile--python" data-name="Python"></span>
+                                <span class="tech-tile tech-tile--onnx" data-name="ONNX"></span>
                             </div>
                             <h3>MUTED</h3>
                             <p>A thesis project comparing CNN and CNN+GRU models for muted-speech detection, moving from Barracuda to ONNX Runtime for inference.</p>
@@ -304,6 +332,11 @@
                                     </svg>
                                     <span>Top 8 National</span>
                                 </p>
+                            </div>
+                            <div class="tech-tiles" aria-hidden="true">
+                                <span class="tech-tile tech-tile--nextjs" data-name="Next.js"></span>
+                                <span class="tech-tile tech-tile--tailwindcss" data-name="Tailwind CSS"></span>
+                                <span class="tech-tile tech-tile--typescript" data-name="TypeScript"></span>
                             </div>
                             <h3>Lunas</h3>
                             <p>A QR-based emergency medical information system from an eight-person hackathon team that placed Top 8 nationally at SIKAPTala 2026 in under 24 hours.</p>
@@ -346,24 +379,23 @@
 
                 <section id="skills" class="section">
                     <h2>Skills and Certifications</h2>
-                    <div class="card summary-card">
-                        <div class="skills-summary">
+                    <div class="card summary-card">                        <div class="skills-summary">
                             <div class="skills-summary__group">
                                 <h3>Front-End Development</h3>
                                 <ul class="skill-list">
-                                    <li><span class="skill-name">HTML</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                                    <li><span class="skill-name">CSS</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                                    <li><span class="skill-name">JavaScript</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                                    <li><span class="skill-name">React.js</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                                    <li><span class="skill-name">Bootstrap</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                                    <li class="skill-chip skill-chip--html5"><span class="skill-box"><span class="skill-text"><span class="skill-name">HTML</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                                    <li class="skill-chip skill-chip--css3"><span class="skill-box"><span class="skill-text"><span class="skill-name">CSS</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                                    <li class="skill-chip skill-chip--javascript"><span class="skill-box"><span class="skill-text"><span class="skill-name">JavaScript</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                                    <li class="skill-chip skill-chip--react"><span class="skill-box"><span class="skill-text"><span class="skill-name">React.js</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
+                                    <li class="skill-chip skill-chip--bootstrap"><span class="skill-box"><span class="skill-text"><span class="skill-name">Bootstrap</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
                                 </ul>
                             </div>
                             <div class="skills-summary__group">
                                 <h3>Game Development</h3>
                                 <ul class="skill-list">
-                                    <li><span class="skill-name">Unity Engine</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                                    <li><span class="skill-name">Godot Engine</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                                    <li><span class="skill-name">C# Game Scripting</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                                    <li class="skill-chip skill-chip--unity"><span class="skill-box"><span class="skill-text"><span class="skill-name">Unity Engine</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                                    <li class="skill-chip skill-chip--godot"><span class="skill-box"><span class="skill-text"><span class="skill-name">Godot Engine</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
+                                    <li class="skill-chip skill-chip--csharp"><span class="skill-box"><span class="skill-text"><span class="skill-name">C# Game Scripting</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
                                 </ul>
                             </div>
                         </div>
@@ -381,7 +413,7 @@
                                     <span class="cert-tag">Financial Management</span>
                                 </div>
                                 <p class="cert-more"><a href="https://web.certificate.wfglobal.org/en/certificate?certificateId=6a04850b8b44bd81aa7138a6"
-                                    target="_blank" rel="noreferrer">View certificate</a></p>
+                                    target="_blank" rel="noreferrer">View certificate<span class="visually-hidden">: Proficiency Certificate</span></a></p>
                             </div>
                         </article>
                         <article class="card cert-card">
@@ -396,7 +428,7 @@
                                     <span class="cert-tag">Financial Management</span>
                                 </div>
                                 <p class="cert-more"><a href="https://web.certificate.wfglobal.org/en/certificate?certificateId=69f36a6cb36cdf49a0e65cd6"
-                                    target="_blank" rel="noreferrer">View certificate</a></p>
+                                    target="_blank" rel="noreferrer">View certificate<span class="visually-hidden">: Certificate of Content Completion</span></a></p>
                             </div>
                         </article>
                         <article class="card cert-card">
@@ -412,7 +444,7 @@
                                     <span class="cert-tag">C2 Proficient</span>
                                 </div>
                                 <p class="cert-more"><a href="https://cert.efset.org/r9hm2w" target="_blank"
-                                    rel="noreferrer">View certificate</a></p>
+                                    rel="noreferrer">View certificate<span class="visually-hidden">: EF SET English Certificate, 78/100</span></a></p>
                             </div>
                         </article>
                     </div>
@@ -557,25 +589,44 @@
     </footer>
 
     <dialog class="contact-dialog" id="contact-dialog" aria-labelledby="contact-dialog-title"
-        aria-describedby="contact-dialog-to">
+        aria-describedby="contact-dialog-intro">
         <div class="contact-dialog__body">
-            <div class="project-dialog-head">
-                <h3 id="contact-dialog-title">Get in touch</h3>
+            <div class="project-dialog-head contact-dialog__head">
+                <div class="contact-dialog__heading">
+                    <span class="contact-dialog__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" focusable="false">
+                            <rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor"
+                                stroke-width="1.75"/>
+                            <path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.75"
+                                stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <h3 id="contact-dialog-title">I&rsquo;d love to hear from you</h3>
+                        <p class="contact-dialog__intro" id="contact-dialog-intro">Write your message below. It opens
+                            in your email app, ready to send.</p>
+                    </div>
+                </div>
                 <button type="button" class="project-dialog-close" data-contact-close>Close</button>
             </div>
-            <p class="contact-dialog__to" id="contact-dialog-to">To: charlesserranocarreon+portfolio@gmail.com</p>
-            <p>
-                <label class="contact-dialog__label" for="contact-subject">Subject</label>
-                <input class="contact-dialog__input" id="contact-subject" type="text" value="Portfolio inquiry" readonly>
-            </p>
-            <p>
-                <label class="contact-dialog__label" for="contact-message">Message</label>
-                <textarea class="contact-dialog__textarea" id="contact-message" rows="7">Hi Charles,
+            <div class="contact-dialog__form">
+                <div class="contact-dialog__field">
+                    <span class="contact-dialog__label">To</span>
+                    <p class="contact-dialog__value" id="contact-dialog-to">charlesserranocarreon+portfolio@gmail.com</p>
+                </div>
+                <div class="contact-dialog__field">
+                    <label class="contact-dialog__label" for="contact-subject">Subject</label>
+                    <input class="contact-dialog__input" id="contact-subject" type="text" value="Portfolio Inquiry" readonly>
+                </div>
+                <div class="contact-dialog__field">
+                    <label class="contact-dialog__label" for="contact-message">Message</label>
+                    <textarea class="contact-dialog__textarea" id="contact-message" rows="4">Hi Charles,
 
 </textarea>
-            </p>
+                </div>
+            </div>
             <p class="contact-dialog__actions">
-                <button type="button" class="btn" data-contact-send>Open email app</button>
+                <button type="button" class="btn btn--lg" data-contact-send>Open email app</button>
             </p>
         </div>
     </dialog>

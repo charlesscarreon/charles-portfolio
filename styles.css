@@ -78,6 +78,9 @@ body {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.65;
+    /* The hero background layer is as wide as the window; this keeps its edge
+       from ever adding a sideways scrollbar. */
+    overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -373,6 +376,26 @@ main > .card {
     margin-bottom: 0;
 }
 
+/* Homepage only: a longer gap so each section reads as its own topic. The
+   last section keeps the shorter gap above the footer. */
+html.home .section {
+    margin-bottom: 5rem;
+}
+
+html.home .section:last-child {
+    margin-bottom: 2.5rem;
+}
+
+@media (max-width: 760px) {
+    html.home .section {
+        margin-bottom: 3.5rem;
+    }
+
+    html.home .section:last-child {
+        margin-bottom: 2rem;
+    }
+}
+
 .projects-head,
 .skills-head,
 .certs-head,
@@ -431,6 +454,11 @@ main > .card {
 .featured-card__more {
     margin-top: auto;
     padding-top: 0.75rem;
+    text-decoration: none;
+}
+
+.featured-card__more a:hover {
+    text-decoration: none;
 }
 
 .featured-more {
@@ -462,6 +490,7 @@ main > .card {
 
 .hero {
     position: relative;
+    isolation: isolate;
     max-width: 46rem;
     margin: 0 auto 3rem;
     padding: 2.5rem clamp(1rem, 4vw, 1.25rem) 0;
@@ -577,6 +606,283 @@ main > .card {
 
     html.home main {
         padding-top: 2.5rem;
+    }
+}
+
+/* ---------- Hero background: faint floating objects ---------- */
+
+/* One decorative layer sits behind each hero's text. It is as wide as the
+   window, so the objects can fill the empty sides of the narrow subpage
+   heroes. The objects never take clicks and are hidden from screen readers.
+   Without script they keep the fixed layout below; script.js scatters them
+   afresh on every visit. */
+.hero-decor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    z-index: -1;
+    width: 100vw;
+    transform: translateX(-50%);
+    overflow: hidden;
+    pointer-events: none;
+    /* Everything in the layer fades out toward the bottom edge, so the hero
+       never ends in a hard line. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent);
+}
+
+/* Traces that run on past the bottom of the hero into the gap above the
+   content, a small bridge into the page. They belong to the hero, so they
+   scroll away with it. */
+.hero-trail {
+    position: absolute;
+    top: calc(100% - 3.5rem);
+    left: 50%;
+    z-index: -1;
+    width: 100vw;
+    height: 5rem;
+    transform: translateX(-50%);
+    overflow: hidden;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 30%, transparent);
+}
+
+.hero-trail svg {
+    display: block;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1px;
+    stroke-linecap: square;
+    shape-rendering: crispEdges;
+    /* Like the circuit traces, these show only in a soft circle around the
+       pointer; script.js sets --mx and --my. */
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    -webkit-mask-image: radial-gradient(circle 170px at var(--mx, -999px) var(--my, -999px),
+        #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+    mask-image: radial-gradient(circle 170px at var(--mx, -999px) var(--my, -999px),
+        #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+}
+
+.hero-trail.is-lit svg {
+    opacity: calc(0.7 * var(--lit, 1));
+}
+
+.hero-decor__defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.hero-decor__defs path {
+    vector-effect: non-scaling-stroke;
+}
+
+.deco {
+    position: absolute;
+    left: var(--x, 5%);
+    top: var(--y, 20%);
+    color: var(--accent);
+    animation: deco-drift var(--dur, 22s) ease-in-out var(--delay, 0s) infinite;
+}
+
+.deco svg {
+    display: block;
+    width: var(--s, 40px);
+    height: var(--s, 40px);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: var(--o, 0.16);
+    transform: rotate(var(--r0, 0deg));
+    animation: deco-turn var(--dur, 22s) ease-in-out var(--delay, 0s) infinite;
+}
+
+/* With script, the objects fade in once they have been placed. */
+html.js .deco svg {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+html.js .hero-decor.is-ready .deco svg {
+    opacity: var(--o, 0.16);
+}
+
+
+.deco--1 { --x: 4%; --y: 20%; --s: 44px; --r0: -12deg; --r1: 8deg; --dx: 14px; --dy: -12px; --dur: 21s; --delay: -3s; --o: 0.18; }
+.deco--2 { --x: 90%; --y: 12%; --s: 36px; --r0: 14deg; --r1: -6deg; --dx: -10px; --dy: 14px; --dur: 25s; --delay: -9s; --o: 0.15; }
+.deco--3 { --x: 12%; --y: 62%; --s: 30px; --r0: 6deg; --r1: 24deg; --dx: 12px; --dy: 10px; --dur: 19s; --delay: -6s; --o: 0.14; }
+.deco--4 { --x: 84%; --y: 56%; --s: 48px; --r0: -20deg; --r1: -4deg; --dx: -14px; --dy: -10px; --dur: 27s; --delay: -14s; --o: 0.18; }
+.deco--5 { --x: 22%; --y: 8%; --s: 28px; --r0: 18deg; --r1: 2deg; --dx: 8px; --dy: 12px; --dur: 23s; --delay: -11s; --o: 0.13; }
+.deco--6 { --x: 74%; --y: 68%; --s: 32px; --r0: -8deg; --r1: 12deg; --dx: -12px; --dy: 8px; --dur: 20s; --delay: -2s; --o: 0.14; }
+.deco--7 { --x: 94%; --y: 38%; --s: 28px; --r0: 10deg; --r1: -14deg; --dx: -8px; --dy: -14px; --dur: 26s; --delay: -17s; --o: 0.13; }
+.deco--8 { --x: 2%; --y: 46%; --s: 34px; --r0: -16deg; --r1: -30deg; --dx: 10px; --dy: -8px; --dur: 24s; --delay: -8s; --o: 0.15; }
+
+@keyframes deco-drift {
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(var(--dx, 10px), var(--dy, 10px));
+    }
+}
+
+@keyframes deco-turn {
+    0%,
+    100% {
+        transform: rotate(var(--r0, 0deg));
+    }
+
+    50% {
+        transform: rotate(var(--r1, 10deg));
+    }
+}
+
+/* Circuit traces: straight lines and right angles only. They are invisible
+   until the pointer is over the hero, then show in a soft circle around it,
+   with a glow and small pulses running along the traces. script.js draws the
+   traces and updates --mx and --my. */
+.hero-decor::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle 200px at var(--mx, -999px) var(--my, -999px),
+        rgba(45, 212, 167, 0.06), transparent 70%);
+    background: radial-gradient(circle 200px at var(--mx, -999px) var(--my, -999px),
+        color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.hero-circuit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    fill: none;
+    stroke: var(--accent);
+    shape-rendering: crispEdges;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    -webkit-mask-image: radial-gradient(circle 170px at var(--mx, -999px) var(--my, -999px),
+        #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+    mask-image: radial-gradient(circle 170px at var(--mx, -999px) var(--my, -999px),
+        #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+}
+
+.hero-circuit__base {
+    stroke-width: 1px;
+    stroke-linejoin: miter;
+    stroke-linecap: square;
+    opacity: 0.35;
+}
+
+.hero-circuit__pulse {
+    stroke: var(--accent);
+    stroke-width: 1.5px;
+    stroke-linecap: square;
+    stroke-dasharray: 8 172;
+    opacity: 0.6;
+    animation: circuit-pulse 3.2s linear infinite;
+}
+
+.hero-circuit__pulse:nth-of-type(3) {
+    animation-duration: 4.1s;
+    animation-delay: -1.3s;
+}
+
+.hero-circuit__pulse:nth-of-type(4) {
+    animation-duration: 2.7s;
+    animation-delay: -2.2s;
+}
+
+/* Now and then a trace lights up and a short bright segment runs along it,
+   like data being sent. script.js picks the trace and the place at random. */
+.hero-flow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    fill: none;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+}
+
+.hero-flow__line {
+    stroke: var(--accent);
+    stroke-width: 1px;
+    opacity: 0;
+    shape-rendering: crispEdges;
+    animation: flow-line var(--flow-time, 2s) ease-in-out forwards;
+}
+
+.hero-flow__dash {
+    stroke: var(--accent-strong);
+    stroke-width: 2px;
+    stroke-dasharray: var(--seg, 18px) var(--len, 200px);
+    opacity: 0.75;
+    animation: flow-run var(--flow-time, 2s) cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+}
+
+@keyframes flow-line {
+    0% {
+        opacity: 0;
+    }
+
+    20%,
+    80% {
+        opacity: 0.28;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes flow-run {
+    from {
+        stroke-dashoffset: var(--seg, 18px);
+    }
+
+    to {
+        stroke-dashoffset: calc(var(--len, 200px) * -1);
+    }
+}
+
+@keyframes circuit-pulse {
+    to {
+        stroke-dashoffset: -180;
+    }
+}
+
+/* --lit is 1 in the upper part of the hero and has fallen to 0 well before
+   its bottom edge, so the light dims the further down the pointer goes and
+   nothing is lit along the boundary. */
+.hero-decor.is-lit::before {
+    opacity: var(--lit, 1);
+}
+
+.hero-decor.is-lit .hero-circuit {
+    opacity: calc(0.68 * var(--lit, 1));
+}
+
+/* The home hero shrinks as the page scrolls; the objects fade out with it. */
+html.home.js .hero > .hero-decor,
+html.home.js .hero > .hero-trail {
+    width: 100vw;
+    max-width: none;
+    opacity: calc(1 - var(--hero-progress, 0));
+}
+
+@media (max-width: 640px) {
+    .deco--6,
+    .deco--7,
+    .deco--8 {
+        display: none;
     }
 }
 
@@ -927,7 +1233,8 @@ main > .card {
     flex-direction: column;
     padding: 1.1rem;
     border-radius: 0.75rem;
-    transition: transform 180ms ease;
+    transition: transform 180ms ease, background-color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 html.dialog-capable .project {
@@ -961,6 +1268,7 @@ html.dialog-capable .project {
 /* Positioning context for the award pill, which overlaps the still rather
    than taking a line of its own between the image and the title. */
 .project-thumb-wrap {
+    --badge-off: calc(1.1rem + 1px);
     position: relative;
     margin-bottom: 0.9rem;
 }
@@ -971,24 +1279,38 @@ html.dialog-capable .project {
 .project-badge {
     position: absolute;
     z-index: 1;
-    top: 0.7rem;
-    left: 0.7rem;
+    top: 0;
+    left: -0.35rem;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     margin: 0;
-    padding: 0.28rem 0.6rem 0.28rem 0.42rem;
+    padding: 0.26rem 0.65rem 0.26rem 0.38rem;
     border: 1px solid color-mix(in srgb, var(--accent-contrast) 22%, transparent);
     border-radius: 0.5rem;
     background-color: var(--accent);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
     color: var(--accent-contrast);
+    transform: translateY(-30%);
+    transform-origin: left top;
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     line-height: 1.2;
     text-transform: uppercase;
     white-space: nowrap;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Diagonal shine: a soft white band parked off the left edge, swept across
+   once when the card is hovered or focused. */
+.project-badge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.6) 50%, transparent 62%);
+    transform: translateX(-130%);
     pointer-events: none;
 }
 
@@ -997,10 +1319,42 @@ html.dialog-capable .project {
     width: 0.8rem;
     height: 0.8rem;
     flex: none;
-    padding: 0.2rem;
+    padding: 0.18rem;
     border-radius: 0.35rem;
     background-color: var(--accent-contrast);
     color: var(--accent);
+}
+
+/* At rest the badge straddles the image's top-left corner. On hover it moves
+   past the card's own top-left corner, sticking out like the logo tiles do, grows and throws a deeper shadow. */
+@media (prefers-reduced-motion: no-preference) {
+    .project-badge {
+        transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .project:hover .project-badge::before,
+    .featured-card:hover .project-badge::before,
+    .project:has(a:focus-visible) .project-badge::before,
+    .featured-card:has(a:focus-visible) .project-badge::before {
+        transform: translateX(130%);
+        transition: transform 0.8s ease 0.2s;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .project:hover .project-badge,
+    .featured-card:hover .project-badge {
+        transform: translate(calc(-1 * var(--badge-off) - 0.55rem), calc(-1 * var(--badge-off) - 0.8rem)) scale(1.2);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.38);
+    }
+}
+
+.project:has(a:focus-visible) .project-badge,
+.featured-card:has(a:focus-visible) .project-badge {
+    transform: translate(calc(-1 * var(--badge-off) - 0.55rem), calc(-1 * var(--badge-off) - 0.8rem)) scale(1.2);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.38);
 }
 
 /* One still per card, so the project list is visual before it is textual. The
@@ -1023,6 +1377,7 @@ html.dialog-capable .project {
 /* Homepage featured cards use a thinner inset frame. The wrapper carries the
    border, so the image sits inside the card rather than becoming the frame. */
 .featured-card .project-thumb-wrap {
+    --badge-off: calc(0.85rem + 2px);
     padding: 0.25rem;
     border: 1px solid var(--border);
     border-radius: 0.6rem;
@@ -1032,6 +1387,260 @@ html.dialog-capable .project {
 .featured-card .project-thumb {
     border: 0;
     border-radius: 0.45rem;
+}
+
+/* ---------- Project cards: hover, tech tiles, quiet "More about" ---------- */
+
+/* Hovering or focusing a card tints it teal and turns its title teal. On
+   /projects the technology list turns into filled chips. On a pointer device,
+   logo tiles slide out of the card's right edge, one after another, and the
+   "More about" button fades in. Without hover (touch) the tiles are a small
+   row inside the card and the button stays visible. The tiles are decoration
+   only, so the real tool names stay as text in the Technologies line. */
+.project,
+.featured-card {
+    position: relative;
+}
+
+.featured-card {
+    transition: transform 180ms ease, background-color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+/* The whole homepage card opens the project: the link is stretched over it. */
+.featured-card__more a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.tech-tiles {
+    display: flex;
+    gap: 0.4rem;
+    margin: 0 0 0.7rem;
+}
+
+/* Each tile is a logo square. On a pointer device it widens on hover to a
+   rectangle that shows the tool's name beside the logo; the logo stays put and
+   the name opens out to its left. */
+.tech-tile {
+    --tile: 1.75rem;
+    display: flex;
+    flex: none;
+    flex-direction: row-reverse;
+    align-items: center;
+    box-sizing: border-box;
+    height: var(--tile);
+    border: 1px solid var(--border);
+    border-radius: 0.45rem;
+    background-color: var(--surface-2);
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.tech-tile::before {
+    content: "";
+    flex: none;
+    box-sizing: border-box;
+    width: calc(var(--tile) - 2px);
+    height: calc(var(--tile) - 2px);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 62%;
+}
+
+.tech-tile::after {
+    content: attr(data-name);
+    box-sizing: content-box;
+    max-width: 0;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition: max-width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.25s ease;
+}
+
+.tech-tile--unity::before { background-image: url("images/tech/unity-original.svg"); }
+.tech-tile--csharp::before { background-image: url("images/tech/csharp-original.svg"); }
+.tech-tile--dotnet::before { background-image: url("images/tech/dotnetcore-original.svg"); }
+.tech-tile--photon::before { background-image: url("images/tech/photonengine-original.svg"); }
+.tech-tile--python::before { background-image: url("images/tech/python-original.svg"); }
+.tech-tile--onnx::before { background-image: url("images/tech/onnx.svg"); }
+.tech-tile--nextjs::before { background-image: url("images/tech/nextjs-original.svg"); }
+.tech-tile--tailwindcss::before { background-image: url("images/tech/tailwindcss-original.svg"); }
+.tech-tile--typescript::before { background-image: url("images/tech/typescript-original.svg"); }
+
+/* These logos are black, so on the dark theme they are shown white. */
+html:not([data-theme="light"]) .tech-tile--unity::before,
+html:not([data-theme="light"]) .tech-tile--onnx::before,
+html:not([data-theme="light"]) .tech-tile--nextjs::before {
+    filter: invert(1);
+}
+
+/* The Technologies line is a list that reads like the old text at rest. */
+.tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tech-list li {
+    border-radius: 0.35rem;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.tech-list li:not(:last-child)::after {
+    content: ",";
+    content: "," / "";
+    transition: color 0.2s ease;
+}
+
+html.projects .project:has(a:focus-visible),
+.featured-card:has(a:focus-visible) {
+    transform: translateY(-0.25rem);
+    background-color: color-mix(in srgb, var(--accent) 8%, var(--surface));
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+        0 8px 28px color-mix(in srgb, var(--accent) 17%, transparent);
+}
+
+/* Dim the other cards while one is hovered or focused, as on the
+   certifications. Separate rules so a browser without :has() only loses this. */
+.featured-grid:has(.featured-card a:focus-visible) .featured-card:not(:has(a:focus-visible)),
+html.projects main:has(.project a:focus-visible) .project:not(:has(a:focus-visible)) {
+    opacity: 0.65;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .featured-grid:has(.featured-card:hover) .featured-card:not(:hover),
+    html.projects main:has(.project:hover) .project:not(:hover) {
+        opacity: 0.65;
+    }
+}
+
+html.projects .project:has(a:focus-visible) h2,
+.featured-card:has(a:focus-visible) h3 {
+    color: var(--accent);
+}
+
+html.projects .project:has(a:focus-visible) .tech-list li {
+    background-color: color-mix(in srgb, var(--accent) 16%, transparent);
+    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent-strong);
+}
+
+html.projects .project:has(a:focus-visible) .tech-list li::after {
+    color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    html.projects .project:hover,
+    .featured-card:hover {
+        background-color: color-mix(in srgb, var(--accent) 8%, var(--surface));
+        border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 17%, transparent);
+    }
+
+    .featured-card:hover {
+        transform: translateY(-0.25rem);
+        cursor: pointer;
+    }
+
+    html.projects .project:hover h2,
+    .featured-card:hover h3 {
+        color: var(--accent);
+    }
+
+    html.projects .project:hover .tech-list li {
+        background-color: color-mix(in srgb, var(--accent) 16%, transparent);
+        box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--accent) 16%, transparent);
+        color: var(--accent-strong);
+    }
+
+    html.projects .project:hover .tech-list li::after {
+        color: transparent;
+    }
+
+    /* The button is hidden at rest and fades in on hover or focus. Its space
+       is reserved, so the card does not jump. */
+    html.projects .project .links a.project-detail-open,
+    .featured-card__more a {
+        opacity: 0;
+        transform: translateY(0.35rem);
+        transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+    html.projects .project:hover .links a.project-detail-open,
+    html.projects .project:has(a:focus-visible) .links a.project-detail-open,
+    html.projects .project .links a.project-detail-open:focus-visible,
+    .featured-card:hover .featured-card__more a,
+    .featured-card:has(a:focus-visible) .featured-card__more a,
+    .featured-card__more a:focus-visible {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Pointer devices with room for it: the tiles overlap the card's right edge
+   and slide out when the card is hovered or focused. */
+@media (hover: hover) and (pointer: fine) and (min-width: 620px) {
+    .tech-tiles {
+        position: absolute;
+        top: 1rem;
+        right: -0.9rem;
+        z-index: 2;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .tech-tile {
+        --tile: 2.5rem;
+        border-radius: 0.6rem;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(1.25rem) scale(0.9);
+        transition: opacity 0.35s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+            border-color 0.2s ease;
+        transition-delay: calc(var(--i, 0) * 90ms);
+    }
+
+    .tech-tile:nth-child(2) { --i: 1; }
+    .tech-tile:nth-child(3) { --i: 2; }
+    .tech-tile:nth-child(4) { --i: 3; }
+
+    html.projects .project:hover .tech-tile,
+    html.projects .project:has(a:focus-visible) .tech-tile,
+    .featured-card:hover .tech-tile,
+    .featured-card:has(a:focus-visible) .tech-tile {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+
+    /* Hovering a tile widens it into a rectangle with the name beside the
+       logo. Its delay is cleared so it responds at once. */
+    .tech-tile:hover {
+        border-color: var(--accent);
+        transition-delay: 0s;
+    }
+
+    .tech-tile:hover::after {
+        max-width: 14rem;
+        padding: 0 0.3rem 0 0.8rem;
+        opacity: 1;
+    }
 }
 
 /* Achievement lead images use a figure so the shared image class can be reused.
@@ -1336,18 +1945,79 @@ html.dialog-capable .project-dialog:not([open]) {
     padding: clamp(1.25rem, 4vw, 1.75rem);
 }
 
-.contact-dialog__to {
-    margin: 0.75rem 0 1rem;
+.contact-dialog[open] {
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+    background-image: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, var(--surface)),
+        var(--surface) 10rem);
+}
+
+.contact-dialog__head {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+.contact-dialog__heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    min-width: 0;
+}
+
+.contact-dialog__icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: 0.75rem;
+    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+}
+
+.contact-dialog__icon svg {
+    display: block;
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+.contact-dialog__head h3 {
+    font-size: 1.25rem;
+    line-height: 1.3;
+}
+
+.contact-dialog__intro {
+    margin: 0.3rem 0 0;
     color: var(--muted);
     font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.contact-dialog__form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 .contact-dialog__label {
     display: block;
     margin-bottom: 0.35rem;
     color: var(--muted);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.contact-dialog__value {
+    margin: 0;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text);
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
 }
 
 .contact-dialog__input,
@@ -1362,15 +2032,36 @@ html.dialog-capable .project-dialog:not([open]) {
     padding: 0.65rem 0.75rem;
 }
 
+.contact-dialog__input:focus-visible,
+.contact-dialog__textarea:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
 .contact-dialog__textarea {
-    min-height: 9rem;
+    min-height: 6rem;
     resize: vertical;
 }
 
 .contact-dialog__actions {
     display: flex;
     justify-content: flex-end;
-    margin: 1rem 0 0;
+    margin: 1.4rem 0 0;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--border);
+}
+
+.contact-dialog__actions .btn::after {
+    content: "\2192";
+    content: "\2192" / "";
+    display: inline-block;
+    margin-left: 0.45em;
+    transition: transform 0.15s ease;
+}
+
+.contact-dialog__actions .btn:hover::after {
+    transform: translateX(0.15rem);
 }
 
 /* Phones: the panel becomes the screen instead of a card with a scrollbar
@@ -1545,6 +2236,77 @@ html.dialog-capable .project-dialog:not([open]) {
 .btn {
     border: none;
     cursor: pointer;
+    /* A <button> does not inherit the page font on its own, so it would look
+       heavier and different from a link-styled .btn. */
+    font-family: inherit;
+}
+
+/* Get in touch reveal. script.js wraps the button and puts a panel-coloured
+   button, with no text, directly behind it. When the wrapper is hovered or
+   focused, the teal button lifts a little and the button behind it shows
+   below. The two act as one. While the panel is open (or opening or closing)
+   the lifted state is held, because the panel grows out of, and shrinks back
+   into, the button behind. When it is done the teal button slides back down.
+   Without script the button is a plain link. */
+.btn-reveal {
+    position: relative;
+    display: inline-block;
+    border-radius: 999px;
+    vertical-align: top;
+}
+
+.btn-reveal__front {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.15s ease;
+}
+
+.btn-reveal__back {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+    border-radius: 999px;
+    background-color: var(--surface);
+    background-color: color-mix(in srgb, var(--accent) 9%, var(--surface));
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, border-color 0.15s ease;
+}
+
+.btn-reveal:has(.btn:focus-visible) {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+
+.btn-reveal:has(.btn:focus-visible) .btn-reveal__front,
+.btn-reveal.is-open .btn-reveal__front {
+    transform: translateY(-0.7rem);
+}
+
+.btn-reveal:has(.btn:focus-visible) .btn-reveal__back,
+.btn-reveal.is-open .btn-reveal__back {
+    opacity: 1;
+}
+
+.btn-reveal.is-open .btn-reveal__front {
+    background-color: var(--accent-strong);
+}
+
+.btn-reveal.is-open .btn-reveal__back {
+    border-color: var(--accent);
+}
+
+/* The two buttons act as one: hovering either gives the same result. */
+@media (hover: hover) and (pointer: fine) {
+    .btn-reveal:hover .btn-reveal__front {
+        transform: translateY(-0.7rem);
+        background-color: var(--accent-strong);
+    }
+
+    .btn-reveal:hover .btn-reveal__back {
+        opacity: 1;
+        border-color: var(--accent);
+    }
 }
 
 /* Hero call to action: a single primary button, sized up so it reads as the
@@ -1552,6 +2314,42 @@ html.dialog-capable .project-dialog:not([open]) {
 .btn--lg {
     padding: 0.6rem 1.4rem;
     font-size: 0.95rem;
+}
+
+/* Homepage "View all" buttons: an outlined pill, quieter than the solid
+   primary button. They stay ordinary links, so with no CSS they read as
+   plain links. The arrow is decoration only and is not read aloud. */
+.featured-more .btn {
+    background-color: transparent;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    padding: 0.3rem 0.95rem;
+    font-size: 0.875rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.featured-more .btn::after {
+    content: "\2192";
+    content: "\2192" / "";
+    display: inline-block;
+    margin-left: 0.4em;
+    transition: transform 0.15s ease;
+}
+
+.featured-more .btn[href$="#write"]::after {
+    content: none;
+}
+
+.featured-more .btn:hover,
+.featured-more .btn:focus-visible {
+    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-color: var(--accent);
+    color: var(--hover);
+}
+
+.featured-more .btn:hover::after,
+.featured-more .btn:focus-visible::after {
+    transform: translateX(0.15rem);
 }
 
 /* ---------- Scratch embeds ---------- */
@@ -1607,60 +2405,200 @@ html.dialog-capable .project-dialog:not([open]) {
     font-size: 1.05rem;
 }
 
+/* Skills are a list of logos. On a pointer device each logo sits in a small
+   square and, on hover, a small label pops up above it with the name and
+   level. The label never covers the other logos in the row.
+   On touch screens and anywhere without hover, every chip is shown in full.
+   The level word is real text in the markup, so it also shows with no CSS. */
 .skill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.skill-list li {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.15rem 0.75rem;
-    padding: 0.4rem 0;
-    line-height: 1.35;
-    border-bottom: 1px solid var(--border);
+.skill-chip {
+    --logo: none;
+    max-width: 100%;
 }
 
-.skill-list li:last-child {
-    border-bottom: 0;
+.skill-box {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 0.35rem 0.8rem 0.35rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background-color: var(--surface-2);
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skill-box::before {
+    content: "";
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: var(--logo) center / contain no-repeat;
+}
+
+.skill-text {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.6rem;
+    line-height: 1.25;
 }
 
 .skill-name {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-strong);
 }
 
+.skill-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .skill-level {
-    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
-    color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    border-radius: 999px;
-    padding: 0.12rem 0.55rem;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    line-height: 1.2;
+    color: var(--dot);
 }
 
-.skill-level--familiar {
-    background-color: var(--familiar-bg);
-    border-color: var(--familiar-border);
-    color: var(--familiar-text);
+.skill-dots {
+    display: inline-flex;
+    flex: none;
+    gap: 0.18rem;
 }
 
-.skill-level--proficient {
-    background-color: var(--proficient-bg);
-    border-color: var(--proficient-border);
-    color: var(--proficient-text);
+.skill-dots i {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background-color: color-mix(in srgb, var(--muted) 38%, transparent);
 }
 
-.skill-level--advanced {
-    background-color: var(--advanced-bg);
-    border-color: var(--advanced-border);
-    color: var(--advanced-text);
+.skill-meta:has(.skill-dots--familiar) { --dot: var(--familiar-text); }
+.skill-meta:has(.skill-dots--proficient) { --dot: var(--proficient-text); }
+.skill-meta:has(.skill-dots--advanced) { --dot: var(--advanced-text); }
+
+.skill-dots--familiar i:nth-child(-n + 1),
+.skill-dots--proficient i:nth-child(-n + 2),
+.skill-dots--advanced i:nth-child(-n + 3) {
+    background-color: var(--dot);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .skill-chip {
+        position: relative;
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .skill-box {
+        box-sizing: border-box;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+    }
+
+    /* The name and level become a small label that pops up above the logo.
+       It sits above every chip (z-index) even while it fades out, and never
+       covers the logos in its own row. */
+    .skill-text {
+        position: absolute;
+        z-index: 5;
+        bottom: calc(100% + 0.55rem);
+        left: 50%;
+        margin: 0;
+        padding: 0.4rem 0.7rem;
+        border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+        border-radius: 0.5rem;
+        background-color: var(--surface);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translate(-50%, 0.3rem);
+    }
+
+    .skill-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        width: 0.55rem;
+        height: 0.55rem;
+        border: solid color-mix(in srgb, var(--accent) 45%, var(--border));
+        border-width: 0 1px 1px 0;
+        background-color: var(--surface);
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .skill-chip:hover .skill-text,
+    .skill-chip:focus-within .skill-text {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+    }
+
+    .skill-chip:hover .skill-box,
+    .skill-chip:focus-within .skill-box {
+        border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+        background-color: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+        box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .skill-text {
+        transition: opacity 0.18s ease, transform 0.22s ease, visibility 0s linear 0.22s;
+    }
+
+    .skill-chip:hover .skill-text,
+    .skill-chip:focus-within .skill-text {
+        transition-delay: 0s;
+    }
+}
+
+/* Logos (Devicon, original variants). The black marks are inverted on the
+   dark theme so they stay visible. */
+.skill-chip--html5 { --logo: url("images/tech/html5-original.svg"); }
+.skill-chip--css3 { --logo: url("images/tech/css3-original.svg"); }
+.skill-chip--javascript { --logo: url("images/tech/javascript-original.svg"); }
+.skill-chip--react { --logo: url("images/tech/react-original.svg"); }
+.skill-chip--bootstrap { --logo: url("images/tech/bootstrap-original.svg"); }
+.skill-chip--php { --logo: url("images/tech/php-original.svg"); }
+.skill-chip--laravel { --logo: url("images/tech/laravel-original.svg"); }
+.skill-chip--mysql { --logo: url("images/tech/mysql-original.svg"); }
+.skill-chip--java { --logo: url("images/tech/java-original.svg"); }
+.skill-chip--csharp { --logo: url("images/tech/csharp-original.svg"); }
+.skill-chip--python { --logo: url("images/tech/python-original.svg"); }
+.skill-chip--unity { --logo: url("images/tech/unity-original.svg"); }
+.skill-chip--godot { --logo: url("images/tech/godot-original.svg"); }
+.skill-chip--git { --logo: url("images/tech/git-original.svg"); }
+.skill-chip--github { --logo: url("images/tech/github-original.svg"); }
+.skill-chip--docker { --logo: url("images/tech/docker-original.svg"); }
+.skill-chip--figma { --logo: url("images/tech/figma-original.svg"); }
+.skill-chip--vercel { --logo: url("images/tech/vercel-original.svg"); }
+
+html:not([data-theme="light"]) .skill-chip--unity .skill-box::before,
+html:not([data-theme="light"]) .skill-chip--github .skill-box::before,
+html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
+    filter: invert(1);
+}
+
+/* No Devicon mark for the command line, so a small terminal prompt is drawn
+   in the text colour instead. */
+.skill-chip--cli .skill-box::before {
+    background: var(--text-strong);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 17 6-6-6-6'/%3E%3Cpath d='M12 19h8'/%3E%3C/svg%3E") center / 80% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 17 6-6-6-6'/%3E%3Cpath d='M12 19h8'/%3E%3C/svg%3E") center / 80% no-repeat;
 }
 
 /* ---------- Certifications ---------- */
@@ -1690,23 +2628,23 @@ html.dialog-capable .project-dialog:not([open]) {
 }
 
 .cert-card {
+    --cert-pad: 0.9rem;
     display: flex;
     flex-direction: column;
-    padding: 0.9rem;
+    padding: var(--cert-pad);
     border-radius: 0.75rem;
     background-color: var(--surface-2);
     border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
 }
 
 .cert-thumb-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 8rem;
-    padding: 0.35rem;
+    /* The frame is always the same 16:9 shape, whatever the image size. The
+       image fills it without stretching (any extra is trimmed) and the frame
+       has no background, padding or border of its own. */
+    aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: 0.5rem;
-    background-color: var(--surface);
+    transition: margin 0.25s ease, border-radius 0.25s ease;
 }
 
 .cert-thumb {
@@ -1714,18 +2652,12 @@ html.dialog-capable .project-dialog:not([open]) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center top;
+    object-position: center;
 }
 
 /* Homepage certificate cards use the same inset frame as featured projects. */
 .cert-grid--home .cert-card {
-    padding: 0.85rem;
-}
-
-.cert-grid--home .cert-thumb-wrap {
-    padding: 0.25rem;
-    border: 1px solid var(--border);
-    border-radius: 0.6rem;
+    --cert-pad: 0.85rem;
 }
 
 .cert-card h3 {
@@ -1771,20 +2703,110 @@ html.dialog-capable .project-dialog:not([open]) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--accent);
-    color: var(--accent-contrast);
-    border: 1px solid transparent;
+    min-height: 1.625rem;
+    background-color: transparent;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
     border-radius: 999px;
-    padding: 0.35rem 0.9rem;
-    font-size: 0.85rem;
+    padding: 0.15rem 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: opacity 0.18s ease, transform 0.18s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.cert-more a:hover,
+.cert-more a:focus-visible {
+    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-color: var(--accent);
+    color: var(--hover);
     text-decoration: none;
 }
 
-.cert-more a:hover {
-    background-color: var(--accent-strong);
-    color: var(--accent-contrast);
-    border-color: transparent;
+/* The whole card is one link: the existing button link is stretched over
+   the card. This is plain CSS, so it needs no script, and with no CSS the
+   button is simply an ordinary visible link. */
+.cert-card {
+    position: relative;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.cert-more a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.cert-thumb {
+    transition: transform 0.3s ease;
+}
+
+/* Highlight one certificate on keyboard focus too. The button itself always
+   shows on focus (see below), so a browser without :has() still reveals it. */
+.cert-card:has(a:focus-visible) {
+    transform: translateY(-0.25rem);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+        0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.cert-card:has(a:focus-visible) .cert-thumb {
+    transform: scale(1.04);
+}
+
+.cert-card:has(a:focus-visible) .cert-thumb-wrap {
+    margin: calc(var(--cert-pad) * -1) calc(var(--cert-pad) * -1) calc(var(--cert-pad) * -0.125);
+    border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0;
+}
+
+.cert-grid:has(.cert-card a:focus-visible) .cert-card:not(:has(a:focus-visible)) {
+    opacity: 0.65;
+}
+
+/* Pointer devices: the button stays out of sight until the card is hovered
+   or focused. Its space is reserved, so the cards do not jump. Touch screens
+   and anything without hover keep the quiet button visible. */
+@media (hover: hover) and (pointer: fine) {
+    .cert-card:hover {
+        transform: translateY(-0.25rem);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+        cursor: pointer;
+    }
+
+    .cert-card:hover .cert-thumb {
+        transform: scale(1.04);
+    }
+
+    /* The image grows out to the card's top and side edges. The negative
+       margins equal the card padding. The frame keeps its 16:9 shape, so it
+       grows 1.125x the padding in height; the bottom margin pulls that back
+       up so the text below does not move. */
+    .cert-card:hover .cert-thumb-wrap {
+        margin: calc(var(--cert-pad) * -1) calc(var(--cert-pad) * -1) calc(var(--cert-pad) * -0.125);
+        border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0;
+    }
+
+    .cert-more a {
+        opacity: 0;
+        transform: translateY(0.35rem);
+    }
+
+    .cert-card:hover .cert-more a,
+    .cert-more a:focus-visible {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Dim the other certificates while one is hovered. Kept as its own rule so a
+   browser without :has() only loses this dimming. */
+@media (hover: hover) and (pointer: fine) {
+    .cert-grid:has(.cert-card:hover) .cert-card:not(:hover) {
+        opacity: 0.65;
+    }
 }
 
 /* ---------- Footer ---------- */
@@ -2071,8 +3093,80 @@ html.dialog-capable .project-dialog:not([open]) {
     }
 
     .section,
-    main > .card {
+    main > .card,
+    html.home .section,
+    html.home .section:last-child {
         margin-bottom: 1.5rem;
+    }
+}
+
+/* ---------- Page transitions ---------- */
+
+/* Cross-document view transitions: when one page of the site loads another,
+   the old page slides away while it fades, then the new one slides in. The
+   direction comes from transitions.js (data-vt on the html element): going
+   forward from the homepage slides left, back to the homepage slides right,
+   and between subpages the move is up or down by the order of the sections on
+   the homepage. Without that attribute, or without script, it is a plain
+   fade. Browsers without view transitions load pages as before, and visitors
+   who prefer reduced motion get no transition at all. */
+@media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+        navigation: auto;
+    }
+}
+
+::view-transition-old(root) {
+    animation: vt-out 0.2s ease-in both;
+}
+
+::view-transition-new(root) {
+    animation: vt-in 0.3s ease-out 0.1s both;
+}
+
+html[data-vt="forward"]::view-transition-old(root) {
+    --vt-x: -4rem;
+}
+
+html[data-vt="forward"]::view-transition-new(root) {
+    --vt-x: 4rem;
+}
+
+html[data-vt="back"]::view-transition-old(root) {
+    --vt-x: 4rem;
+}
+
+html[data-vt="back"]::view-transition-new(root) {
+    --vt-x: -4rem;
+}
+
+html[data-vt="down"]::view-transition-old(root) {
+    --vt-y: -4rem;
+}
+
+html[data-vt="down"]::view-transition-new(root) {
+    --vt-y: 4rem;
+}
+
+html[data-vt="up"]::view-transition-old(root) {
+    --vt-y: 4rem;
+}
+
+html[data-vt="up"]::view-transition-new(root) {
+    --vt-y: -4rem;
+}
+
+@keyframes vt-out {
+    to {
+        opacity: 0;
+        transform: translate(var(--vt-x, 0), var(--vt-y, 0));
+    }
+}
+
+@keyframes vt-in {
+    from {
+        opacity: 0;
+        transform: translate(var(--vt-x, 0), var(--vt-y, 0));
     }
 }
 
@@ -2092,6 +3186,25 @@ html.dialog-capable .project-dialog:not([open]) {
     .project:focus-within {
         transform: none;
     }
+
+    .cert-card:hover,
+    .cert-card:hover .cert-thumb,
+    .cert-more a {
+        transform: none;
+    }
+
+    .cert-card:has(a:focus-visible),
+    .cert-card:has(a:focus-visible) .cert-thumb {
+        transform: none;
+    }
+
+    .featured-card:hover {
+        transform: none;
+    }
+
+    .featured-card:has(a:focus-visible) {
+        transform: none;
+    }
 }
 
 /* ---------- Print ---------- */
@@ -2104,6 +3217,9 @@ html.dialog-capable .project-dialog:not([open]) {
     .gallery-nav,
     .toc,
     .project-detail-open,
+    .hero-decor,
+    .hero-trail,
+    .tech-tiles,
     .contact-dialog {
         display: none !important;
     }

@@ -21,6 +21,8 @@
             }
         } catch (error) { /* storage blocked: keep the dark default */ }
     </script>
+    <!-- Tells the stylesheet which way the page transition moves; see transitions.js. -->
+    <script src="transitions.js"></script>
     <!-- Color-agnostic no-CSS fallback (only matters when styles.css fails to
          load). No colors or CSS custom properties, so it survives an empty
          stylesheet. Every selector below is redefined by styles.css, which is
@@ -90,6 +92,22 @@
     <a class="skip-link" href="#main">Skip to main content</a>
 
     <section class="hero" id="skills-hero" aria-label="Skills introduction">
+        <div class="hero-decor" aria-hidden="true">
+            <svg class="hero-decor__defs" width="0" height="0" focusable="false">
+                <symbol id="deco-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+                <symbol id="deco-gear" viewBox="0 0 24 24"><path d="M10.41 5.39 L10.78 2.88 L13.22 2.88 L13.59 5.39 L15.55 6.20 L17.58 4.69 L19.31 6.42 L17.80 8.45 L18.61 10.41 L21.12 10.78 L21.12 13.22 L18.61 13.59 L17.80 15.55 L19.31 17.58 L17.58 19.31 L15.55 17.80 L13.59 18.61 L13.22 21.12 L10.78 21.12 L10.41 18.61 L8.45 17.80 L6.42 19.31 L4.69 17.58 L6.20 15.55 L5.39 13.59 L2.88 13.22 L2.88 10.78 L5.39 10.41 L6.20 8.45 L4.69 6.42 L6.42 4.69 L8.45 6.20 Z M15 12a3 3 0 1 0-6 0 3 3 0 0 0 6 0z"/></symbol>
+                <symbol id="deco-chip" viewBox="0 0 24 24"><path d="M7 7h10v10H7z M10 10h4v4h-4z M9 3v4 M12 3v4 M15 3v4 M9 17v4 M12 17v4 M15 17v4 M3 9h4 M3 12h4 M3 15h4 M17 9h4 M17 12h4 M17 15h4"/></symbol>
+                <symbol id="deco-braces" viewBox="0 0 24 24"><path d="M9 4C6 4 6 6 6 8v1c0 1.5-1 3-3 3 2 0 3 1.5 3 3v1c0 2 0 4 3 4 M15 4c3 0 3 2 3 4v1c0 1.5 1 3 3 3-2 0-3 1.5-3 3v1c0 2 0 4-3 4"/></symbol>
+            </svg>
+            <span class="deco deco--1"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-wrench"/></svg></span>
+            <span class="deco deco--2"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-gear"/></svg></span>
+            <span class="deco deco--3"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-chip"/></svg></span>
+            <span class="deco deco--4"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-braces"/></svg></span>
+            <span class="deco deco--5"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-chip"/></svg></span>
+            <span class="deco deco--6"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-braces"/></svg></span>
+            <span class="deco deco--7"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-wrench"/></svg></span>
+            <span class="deco deco--8"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-gear"/></svg></span>
+        </div>
         <a class="scroll-cue scroll-cue--back" href="/" aria-label="Back to Home">
             <span class="scroll-cue__bob" aria-hidden="true">
                 <svg viewBox="0 0 24 24" focusable="false">
@@ -142,54 +160,55 @@
             </button>
         </section>
 
+
         <div class="skills-grid">
             <section class="card skill-category" id="front-end">
                 <h2>Front-End Development</h2>
                 <ul class="skill-list">
-                    <li><span class="skill-name">HTML</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                    <li><span class="skill-name">CSS</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                    <li><span class="skill-name">JavaScript</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                    <li><span class="skill-name">React.js</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                    <li><span class="skill-name">Bootstrap</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li class="skill-chip skill-chip--html5"><span class="skill-box"><span class="skill-text"><span class="skill-name">HTML</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--css3"><span class="skill-box"><span class="skill-text"><span class="skill-name">CSS</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--javascript"><span class="skill-box"><span class="skill-text"><span class="skill-name">JavaScript</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--react"><span class="skill-box"><span class="skill-text"><span class="skill-name">React.js</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--bootstrap"><span class="skill-box"><span class="skill-text"><span class="skill-name">Bootstrap</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
                 </ul>
             </section>
 
             <section class="card skill-category" id="back-end">
                 <h2>Back-End / Server-Side</h2>
                 <ul class="skill-list">
-                    <li><span class="skill-name">PHP</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                    <li><span class="skill-name">Laravel (PHP)</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                    <li><span class="skill-name">MySQL</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li class="skill-chip skill-chip--php"><span class="skill-box"><span class="skill-text"><span class="skill-name">PHP</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--laravel"><span class="skill-box"><span class="skill-text"><span class="skill-name">Laravel (PHP)</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--mysql"><span class="skill-box"><span class="skill-text"><span class="skill-name">MySQL</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
                 </ul>
             </section>
 
             <section class="card skill-category" id="programming">
                 <h2>Programming</h2>
                 <ul class="skill-list">
-                    <li><span class="skill-name">Java</span><span class="skill-level skill-level--advanced">Advanced</span></li>
-                    <li><span class="skill-name">C#</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                    <li><span class="skill-name">Python</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li class="skill-chip skill-chip--java"><span class="skill-box"><span class="skill-text"><span class="skill-name">Java</span><span class="skill-meta"><span class="skill-dots skill-dots--advanced" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--advanced">Advanced</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--csharp"><span class="skill-box"><span class="skill-text"><span class="skill-name">C#</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--python"><span class="skill-box"><span class="skill-text"><span class="skill-name">Python</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
                 </ul>
             </section>
 
             <section class="card skill-category" id="game-development">
                 <h2>Game Development</h2>
                 <ul class="skill-list">
-                    <li><span class="skill-name">Unity Engine</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                    <li><span class="skill-name">Godot Engine</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                    <li><span class="skill-name">C# Game Scripting</span><span class="skill-level skill-level--proficient">Proficient</span></li>
+                    <li class="skill-chip skill-chip--unity"><span class="skill-box"><span class="skill-text"><span class="skill-name">Unity Engine</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--godot"><span class="skill-box"><span class="skill-text"><span class="skill-name">Godot Engine</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--csharp"><span class="skill-box"><span class="skill-text"><span class="skill-name">C# Game Scripting</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
                 </ul>
             </section>
 
             <section class="card skill-category" id="tools">
                 <h2>Tools</h2>
                 <ul class="skill-list">
-                    <li><span class="skill-name">Git</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                    <li><span class="skill-name">GitHub</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                    <li><span class="skill-name">Docker Desktop</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                    <li><span class="skill-name">Figma</span><span class="skill-level skill-level--familiar">Familiar</span></li>
-                    <li><span class="skill-name">Command Line Interface (CLI)</span><span class="skill-level skill-level--proficient">Proficient</span></li>
-                    <li><span class="skill-name">Vercel</span><span class="skill-level skill-level--familiar">Familiar</span></li>
+                    <li class="skill-chip skill-chip--git"><span class="skill-box"><span class="skill-text"><span class="skill-name">Git</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--github"><span class="skill-box"><span class="skill-text"><span class="skill-name">GitHub</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--docker"><span class="skill-box"><span class="skill-text"><span class="skill-name">Docker Desktop</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--figma"><span class="skill-box"><span class="skill-text"><span class="skill-name">Figma</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--cli"><span class="skill-box"><span class="skill-text"><span class="skill-name">Command Line Interface (CLI)</span><span class="skill-meta"><span class="skill-dots skill-dots--proficient" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--proficient">Proficient</span></span></span></span></li>
+                    <li class="skill-chip skill-chip--vercel"><span class="skill-box"><span class="skill-text"><span class="skill-name">Vercel</span><span class="skill-meta"><span class="skill-dots skill-dots--familiar" aria-hidden="true"><i></i><i></i><i></i></span><span class="skill-level skill-level--familiar">Familiar</span></span></span></span></li>
                 </ul>
             </section>
         </div>
@@ -214,7 +233,7 @@
                         <span class="cert-tag">Financial Management</span>
                     </div>
                     <p class="cert-more"><a href="https://web.certificate.wfglobal.org/en/certificate?certificateId=6a04850b8b44bd81aa7138a6" target="_blank"
-                        rel="noreferrer">View certificate</a></p>
+                        rel="noreferrer">View certificate<span class="visually-hidden">: Proficiency Certificate</span></a></p>
                 </div>
             </article>
 
@@ -230,7 +249,7 @@
                         <span class="cert-tag">Financial Management</span>
                     </div>
                     <p class="cert-more"><a href="https://web.certificate.wfglobal.org/en/certificate?certificateId=69f36a6cb36cdf49a0e65cd6" target="_blank"
-                        rel="noreferrer">View certificate</a></p>
+                        rel="noreferrer">View certificate<span class="visually-hidden">: Certificate of Content Completion</span></a></p>
                 </div>
             </article>
 
@@ -247,7 +266,7 @@
                         <span class="cert-tag">C2 Proficient</span>
                     </div>
                     <p class="cert-more"><a href="https://cert.efset.org/r9hm2w" target="_blank"
-                        rel="noreferrer">View certificate</a></p>
+                        rel="noreferrer">View certificate<span class="visually-hidden">: EF SET English Certificate, 78/100</span></a></p>
                 </div>
             </article>
 
@@ -263,7 +282,7 @@
                         <span class="cert-tag">Web Development</span>
                     </div>
                     <p class="cert-more"><a href="https://courses.buri.io/view/user/certificate/1fe48931-54ce-41f7-97d3-73d42e5f85e1/pdf" target="_blank"
-                        rel="noreferrer">View certificate</a></p>
+                        rel="noreferrer">View certificate<span class="visually-hidden">: Principles of Web Development</span></a></p>
                 </div>
             </article>
 
@@ -279,7 +298,7 @@
                         <span class="cert-tag">Python</span>
                     </div>
                     <p class="cert-more"><a href="https://courses.buri.io/view/user/certificate/d388ef03-62b6-4aa3-8420-b3363871e914/pdf" target="_blank"
-                        rel="noreferrer">View certificate</a></p>
+                        rel="noreferrer">View certificate<span class="visually-hidden">: Programming for Beginners Using Python</span></a></p>
                 </div>
             </article>
         </div>

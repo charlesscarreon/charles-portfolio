@@ -21,6 +21,8 @@
             }
         } catch (error) { /* storage blocked: keep the dark default */ }
     </script>
+    <!-- Tells the stylesheet which way the page transition moves; see transitions.js. -->
+    <script src="transitions.js"></script>
     <!-- Color-agnostic no-CSS fallback (only matters when styles.css fails to
          load). No colors or CSS custom properties, so it survives an empty
          stylesheet. Every selector below is redefined by styles.css, which is
@@ -156,6 +158,22 @@
     <a class="skip-link" href="#main">Skip to main content</a>
 
     <section class="hero" id="projects-hero" aria-label="Projects introduction">
+        <div class="hero-decor" aria-hidden="true">
+            <svg class="hero-decor__defs" width="0" height="0" focusable="false">
+                <symbol id="deco-controller" viewBox="0 0 24 24"><path d="M7 7h10a4 4 0 0 1 4 4l1 5a2.5 2.5 0 0 1-4.3 1.6L16 16H8l-1.7 1.6A2.5 2.5 0 0 1 2 16l1-5a4 4 0 0 1 4-4z M8 10v3 M6.5 11.5h3 M15.5 10.5h.01 M17.5 12.5h.01"/></symbol>
+                <symbol id="deco-cube" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z M4 7.5l8 4.5 8-4.5 M12 12v9"/></symbol>
+                <symbol id="deco-gear" viewBox="0 0 24 24"><path d="M10.41 5.39 L10.78 2.88 L13.22 2.88 L13.59 5.39 L15.55 6.20 L17.58 4.69 L19.31 6.42 L17.80 8.45 L18.61 10.41 L21.12 10.78 L21.12 13.22 L18.61 13.59 L17.80 15.55 L19.31 17.58 L17.58 19.31 L15.55 17.80 L13.59 18.61 L13.22 21.12 L10.78 21.12 L10.41 18.61 L8.45 17.80 L6.42 19.31 L4.69 17.58 L6.20 15.55 L5.39 13.59 L2.88 13.22 L2.88 10.78 L5.39 10.41 L6.20 8.45 L4.69 6.42 L6.42 4.69 L8.45 6.20 Z M15 12a3 3 0 1 0-6 0 3 3 0 0 0 6 0z"/></symbol>
+                <symbol id="deco-puzzle" viewBox="0 0 24 24"><path d="M4 8h5a3 3 0 1 1 6 0h5v4a3 3 0 1 1 0 6v2H4z"/></symbol>
+            </svg>
+            <span class="deco deco--1"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-controller"/></svg></span>
+            <span class="deco deco--2"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-cube"/></svg></span>
+            <span class="deco deco--3"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-gear"/></svg></span>
+            <span class="deco deco--4"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-puzzle"/></svg></span>
+            <span class="deco deco--5"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-gear"/></svg></span>
+            <span class="deco deco--6"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-puzzle"/></svg></span>
+            <span class="deco deco--7"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-controller"/></svg></span>
+            <span class="deco deco--8"><svg viewBox="0 0 24 24" focusable="false"><use href="#deco-cube"/></svg></span>
+        </div>
         <a class="scroll-cue scroll-cue--back" href="/#featured" aria-label="Back to Home">
             <span class="scroll-cue__bob" aria-hidden="true">
                 <svg viewBox="0 0 24 24" focusable="false">
@@ -208,6 +226,11 @@
         </section>
         <div class="project-grid">
             <article class="card project" id="toolkit">
+                <div class="tech-tiles" aria-hidden="true">
+                    <span class="tech-tile tech-tile--csharp" data-name="C#"></span>
+                    <span class="tech-tile tech-tile--dotnet" data-name=".NET"></span>
+                    <span class="tech-tile tech-tile--unity" data-name="Unity"></span>
+                </div>
                 <h2>964's C# Game Development Toolkit</h2>
                 <p>
                     A set of reusable modules for C# game projects, covering display names, timers, settings, save
@@ -220,7 +243,7 @@
                 </p>
                 <dl class="meta">
                     <dt>Date</dt><dd>2026 November</dd>
-                    <dt>Technologies</dt><dd>C#, .NET, Unity</dd>
+                    <dt>Technologies</dt><dd><ul class="tech-list"><li>C#</li><li>.NET</li><li>Unity</li></ul></dd>
                     <dt>Type</dt><dd>Library</dd>
                     <dt>Status</dt><dd>Ongoing (v0.1.0)</dd>
                     <dt>Role</dt><dd>Owner &amp; Maintainer</dd>
@@ -292,6 +315,10 @@
             <article class="card project" id="outrun">
                 <img class="project-thumb" src="images/projects/outrun/outrun-key-art.webp" width="1200" height="675"
                      alt="OUTRUN official artwork" loading="lazy" decoding="async">
+                <div class="tech-tiles" aria-hidden="true">
+                    <span class="tech-tile tech-tile--unity" data-name="Unity"></span>
+                    <span class="tech-tile tech-tile--csharp" data-name="C#"></span>
+                </div>
                 <h2>OUTRUN</h2>
                 <p>
                     A 2.5D isometric chase game. The player rides an e-bike through city traffic while a police
@@ -304,7 +331,7 @@
                 </p>
                 <dl class="meta">
                     <dt>Date</dt><dd>2026 October</dd>
-                    <dt>Technologies</dt><dd>Unity, C#</dd>
+                    <dt>Technologies</dt><dd><ul class="tech-list"><li>Unity</li><li>C#</li></ul></dd>
                     <dt>Type</dt><dd>Game</dd>
                     <dt>Status</dt><dd>In development (v0.3.3)</dd>
                     <dt>Role</dt><dd>Game Designer &amp; Lead Developer</dd>
@@ -371,6 +398,11 @@
             </article>
 
             <article class="card project" id="triggr">
+                <div class="tech-tiles" aria-hidden="true">
+                    <span class="tech-tile tech-tile--unity" data-name="Unity"></span>
+                    <span class="tech-tile tech-tile--csharp" data-name="C#"></span>
+                    <span class="tech-tile tech-tile--photon" data-name="Photon"></span>
+                </div>
                 <h2>TRIGGR</h2>
                 <p>
                     A Windows multiplayer shooting game built in about 12 hours. Each room supports up to 20 players,
@@ -382,7 +414,7 @@
                 </p>
                 <dl class="meta">
                     <dt>Date</dt><dd>2026 October 10 – 11</dd>
-                    <dt>Technologies</dt><dd>Unity 6.3, C#, Photon</dd>
+                    <dt>Technologies</dt><dd><ul class="tech-list"><li>Unity 6.3</li><li>C#</li><li>Photon</li></ul></dd>
                     <dt>Type</dt><dd>Multiplayer Game</dd>
                     <dt>Status</dt><dd>Unreleased Prototype</dd>
                     <dt>Role</dt><dd>Game Developer</dd>
@@ -434,6 +466,12 @@
             <article class="card project" id="muted">
                 <img class="project-thumb" src="images/projects/muted/muted-gameplay.webp" width="1200" height="667"
                      alt="MUTED gameplay." loading="lazy" decoding="async">
+                <div class="tech-tiles" aria-hidden="true">
+                    <span class="tech-tile tech-tile--unity" data-name="Unity"></span>
+                    <span class="tech-tile tech-tile--csharp" data-name="C#"></span>
+                    <span class="tech-tile tech-tile--python" data-name="Python"></span>
+                    <span class="tech-tile tech-tile--onnx" data-name="ONNX"></span>
+                </div>
                 <h2>MUTED</h2>
                 <p>
                     A webcam-controlled game driven by hand gestures, built as a thesis. It compares two model
@@ -446,7 +484,7 @@
                 </p>
                 <dl class="meta">
                     <dt>Date</dt><dd>2026 October</dd>
-                    <dt>Technologies</dt><dd>Unity, C#, Python, ONNX Runtime</dd>
+                    <dt>Technologies</dt><dd><ul class="tech-list"><li>Unity</li><li>C#</li><li>Python</li><li>ONNX Runtime</li></ul></dd>
                     <dt>Type</dt><dd>Thesis</dd>
                     <dt>Status</dt><dd>Defended</dd>
                     <dt>Role</dt><dd>Lead Developer</dd>
@@ -522,6 +560,11 @@
                         <span>Top 8 National</span>
                     </p>
                 </div>
+                <div class="tech-tiles" aria-hidden="true">
+                    <span class="tech-tile tech-tile--nextjs" data-name="Next.js"></span>
+                    <span class="tech-tile tech-tile--tailwindcss" data-name="Tailwind CSS"></span>
+                    <span class="tech-tile tech-tile--typescript" data-name="TypeScript"></span>
+                </div>
                 <h2>Lunas</h2>
                 <p>
                     A web-based emergency medical information system. A patient's medical history is reached by
@@ -535,7 +578,7 @@
                 </p>
                 <dl class="meta">
                     <dt>Date</dt><dd>2026 May</dd>
-                    <dt>Technologies</dt><dd>Next.js, Tailwind CSS, TypeScript</dd>
+                    <dt>Technologies</dt><dd><ul class="tech-list"><li>Next.js</li><li>Tailwind CSS</li><li>TypeScript</li></ul></dd>
                     <dt>Type</dt><dd>Web application</dd>
                     <dt>Status</dt><dd>Prototype</dd>
                     <dt>Role</dt><dd>Front-End Developer</dd>
