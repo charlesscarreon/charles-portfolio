@@ -1233,7 +1233,8 @@ html.home.js .hero > .hero-trail {
     flex-direction: column;
     padding: 1.1rem;
     border-radius: 0.75rem;
-    transition: transform 180ms ease;
+    transition: transform 180ms ease, background-color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 html.dialog-capable .project {
@@ -1267,6 +1268,7 @@ html.dialog-capable .project {
 /* Positioning context for the award pill, which overlaps the still rather
    than taking a line of its own between the image and the title. */
 .project-thumb-wrap {
+    --badge-off: calc(1.1rem + 1px);
     position: relative;
     margin-bottom: 0.9rem;
 }
@@ -1277,24 +1279,38 @@ html.dialog-capable .project {
 .project-badge {
     position: absolute;
     z-index: 1;
-    top: 0.7rem;
-    left: 0.7rem;
+    top: 0;
+    left: -0.35rem;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     margin: 0;
-    padding: 0.28rem 0.6rem 0.28rem 0.42rem;
+    padding: 0.26rem 0.65rem 0.26rem 0.38rem;
     border: 1px solid color-mix(in srgb, var(--accent-contrast) 22%, transparent);
     border-radius: 0.5rem;
     background-color: var(--accent);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
     color: var(--accent-contrast);
+    transform: translateY(-30%);
+    transform-origin: left top;
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     line-height: 1.2;
     text-transform: uppercase;
     white-space: nowrap;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Diagonal shine: a soft white band parked off the left edge, swept across
+   once when the card is hovered or focused. */
+.project-badge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.6) 50%, transparent 62%);
+    transform: translateX(-130%);
     pointer-events: none;
 }
 
@@ -1303,10 +1319,42 @@ html.dialog-capable .project {
     width: 0.8rem;
     height: 0.8rem;
     flex: none;
-    padding: 0.2rem;
+    padding: 0.18rem;
     border-radius: 0.35rem;
     background-color: var(--accent-contrast);
     color: var(--accent);
+}
+
+/* At rest the badge straddles the image's top-left corner. On hover it moves
+   past the card's own top-left corner, sticking out like the logo tiles do, grows and throws a deeper shadow. */
+@media (prefers-reduced-motion: no-preference) {
+    .project-badge {
+        transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .project:hover .project-badge::before,
+    .featured-card:hover .project-badge::before,
+    .project:has(a:focus-visible) .project-badge::before,
+    .featured-card:has(a:focus-visible) .project-badge::before {
+        transform: translateX(130%);
+        transition: transform 0.8s ease 0.2s;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .project:hover .project-badge,
+    .featured-card:hover .project-badge {
+        transform: translate(calc(-1 * var(--badge-off) - 0.55rem), calc(-1 * var(--badge-off) - 0.8rem)) scale(1.2);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.38);
+    }
+}
+
+.project:has(a:focus-visible) .project-badge,
+.featured-card:has(a:focus-visible) .project-badge {
+    transform: translate(calc(-1 * var(--badge-off) - 0.55rem), calc(-1 * var(--badge-off) - 0.8rem)) scale(1.2);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.38);
 }
 
 /* One still per card, so the project list is visual before it is textual. The
@@ -1329,6 +1377,7 @@ html.dialog-capable .project {
 /* Homepage featured cards use a thinner inset frame. The wrapper carries the
    border, so the image sits inside the card rather than becoming the frame. */
 .featured-card .project-thumb-wrap {
+    --badge-off: calc(0.85rem + 2px);
     padding: 0.25rem;
     border: 1px solid var(--border);
     border-radius: 0.6rem;
@@ -1338,6 +1387,260 @@ html.dialog-capable .project {
 .featured-card .project-thumb {
     border: 0;
     border-radius: 0.45rem;
+}
+
+/* ---------- Project cards: hover, tech tiles, quiet "More about" ---------- */
+
+/* Hovering or focusing a card tints it teal and turns its title teal. On
+   /projects the technology list turns into filled chips. On a pointer device,
+   logo tiles slide out of the card's right edge, one after another, and the
+   "More about" button fades in. Without hover (touch) the tiles are a small
+   row inside the card and the button stays visible. The tiles are decoration
+   only, so the real tool names stay as text in the Technologies line. */
+.project,
+.featured-card {
+    position: relative;
+}
+
+.featured-card {
+    transition: transform 180ms ease, background-color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+/* The whole homepage card opens the project: the link is stretched over it. */
+.featured-card__more a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.tech-tiles {
+    display: flex;
+    gap: 0.4rem;
+    margin: 0 0 0.7rem;
+}
+
+/* Each tile is a logo square. On a pointer device it widens on hover to a
+   rectangle that shows the tool's name beside the logo; the logo stays put and
+   the name opens out to its left. */
+.tech-tile {
+    --tile: 1.75rem;
+    display: flex;
+    flex: none;
+    flex-direction: row-reverse;
+    align-items: center;
+    box-sizing: border-box;
+    height: var(--tile);
+    border: 1px solid var(--border);
+    border-radius: 0.45rem;
+    background-color: var(--surface-2);
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.tech-tile::before {
+    content: "";
+    flex: none;
+    box-sizing: border-box;
+    width: calc(var(--tile) - 2px);
+    height: calc(var(--tile) - 2px);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 62%;
+}
+
+.tech-tile::after {
+    content: attr(data-name);
+    box-sizing: content-box;
+    max-width: 0;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    transition: max-width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.25s ease;
+}
+
+.tech-tile--unity::before { background-image: url("images/tech/unity-original.svg"); }
+.tech-tile--csharp::before { background-image: url("images/tech/csharp-original.svg"); }
+.tech-tile--dotnet::before { background-image: url("images/tech/dotnetcore-original.svg"); }
+.tech-tile--photon::before { background-image: url("images/tech/photonengine-original.svg"); }
+.tech-tile--python::before { background-image: url("images/tech/python-original.svg"); }
+.tech-tile--onnx::before { background-image: url("images/tech/onnx.svg"); }
+.tech-tile--nextjs::before { background-image: url("images/tech/nextjs-original.svg"); }
+.tech-tile--tailwindcss::before { background-image: url("images/tech/tailwindcss-original.svg"); }
+.tech-tile--typescript::before { background-image: url("images/tech/typescript-original.svg"); }
+
+/* These logos are black, so on the dark theme they are shown white. */
+html:not([data-theme="light"]) .tech-tile--unity::before,
+html:not([data-theme="light"]) .tech-tile--onnx::before,
+html:not([data-theme="light"]) .tech-tile--nextjs::before {
+    filter: invert(1);
+}
+
+/* The Technologies line is a list that reads like the old text at rest. */
+.tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tech-list li {
+    border-radius: 0.35rem;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.tech-list li:not(:last-child)::after {
+    content: ",";
+    content: "," / "";
+    transition: color 0.2s ease;
+}
+
+html.projects .project:has(a:focus-visible),
+.featured-card:has(a:focus-visible) {
+    transform: translateY(-0.25rem);
+    background-color: color-mix(in srgb, var(--accent) 8%, var(--surface));
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+        0 8px 28px color-mix(in srgb, var(--accent) 17%, transparent);
+}
+
+/* Dim the other cards while one is hovered or focused, as on the
+   certifications. Separate rules so a browser without :has() only loses this. */
+.featured-grid:has(.featured-card a:focus-visible) .featured-card:not(:has(a:focus-visible)),
+html.projects main:has(.project a:focus-visible) .project:not(:has(a:focus-visible)) {
+    opacity: 0.65;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .featured-grid:has(.featured-card:hover) .featured-card:not(:hover),
+    html.projects main:has(.project:hover) .project:not(:hover) {
+        opacity: 0.65;
+    }
+}
+
+html.projects .project:has(a:focus-visible) h2,
+.featured-card:has(a:focus-visible) h3 {
+    color: var(--accent);
+}
+
+html.projects .project:has(a:focus-visible) .tech-list li {
+    background-color: color-mix(in srgb, var(--accent) 16%, transparent);
+    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent-strong);
+}
+
+html.projects .project:has(a:focus-visible) .tech-list li::after {
+    color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    html.projects .project:hover,
+    .featured-card:hover {
+        background-color: color-mix(in srgb, var(--accent) 8%, var(--surface));
+        border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 17%, transparent);
+    }
+
+    .featured-card:hover {
+        transform: translateY(-0.25rem);
+        cursor: pointer;
+    }
+
+    html.projects .project:hover h2,
+    .featured-card:hover h3 {
+        color: var(--accent);
+    }
+
+    html.projects .project:hover .tech-list li {
+        background-color: color-mix(in srgb, var(--accent) 16%, transparent);
+        box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--accent) 16%, transparent);
+        color: var(--accent-strong);
+    }
+
+    html.projects .project:hover .tech-list li::after {
+        color: transparent;
+    }
+
+    /* The button is hidden at rest and fades in on hover or focus. Its space
+       is reserved, so the card does not jump. */
+    html.projects .project .links a.project-detail-open,
+    .featured-card__more a {
+        opacity: 0;
+        transform: translateY(0.35rem);
+        transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.15s ease,
+            box-shadow 0.15s ease;
+    }
+
+    html.projects .project:hover .links a.project-detail-open,
+    html.projects .project:has(a:focus-visible) .links a.project-detail-open,
+    html.projects .project .links a.project-detail-open:focus-visible,
+    .featured-card:hover .featured-card__more a,
+    .featured-card:has(a:focus-visible) .featured-card__more a,
+    .featured-card__more a:focus-visible {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Pointer devices with room for it: the tiles overlap the card's right edge
+   and slide out when the card is hovered or focused. */
+@media (hover: hover) and (pointer: fine) and (min-width: 620px) {
+    .tech-tiles {
+        position: absolute;
+        top: 1rem;
+        right: -0.9rem;
+        z-index: 2;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .tech-tile {
+        --tile: 2.5rem;
+        border-radius: 0.6rem;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(1.25rem) scale(0.9);
+        transition: opacity 0.35s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+            border-color 0.2s ease;
+        transition-delay: calc(var(--i, 0) * 90ms);
+    }
+
+    .tech-tile:nth-child(2) { --i: 1; }
+    .tech-tile:nth-child(3) { --i: 2; }
+    .tech-tile:nth-child(4) { --i: 3; }
+
+    html.projects .project:hover .tech-tile,
+    html.projects .project:has(a:focus-visible) .tech-tile,
+    .featured-card:hover .tech-tile,
+    .featured-card:has(a:focus-visible) .tech-tile {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+
+    /* Hovering a tile widens it into a rectangle with the name beside the
+       logo. Its delay is cleared so it responds at once. */
+    .tech-tile:hover {
+        border-color: var(--accent);
+        transition-delay: 0s;
+    }
+
+    .tech-tile:hover::after {
+        max-width: 14rem;
+        padding: 0 0.3rem 0 0.8rem;
+        opacity: 1;
+    }
 }
 
 /* Achievement lead images use a figure so the shared image class can be reused.
@@ -2754,6 +3057,14 @@ html[data-vt="up"]::view-transition-new(root) {
     .cert-card:has(a:focus-visible) .cert-thumb {
         transform: none;
     }
+
+    .featured-card:hover {
+        transform: none;
+    }
+
+    .featured-card:has(a:focus-visible) {
+        transform: none;
+    }
 }
 
 /* ---------- Print ---------- */
@@ -2768,6 +3079,7 @@ html[data-vt="up"]::view-transition-new(root) {
     .project-detail-open,
     .hero-decor,
     .hero-trail,
+    .tech-tiles,
     .contact-dialog {
         display: none !important;
     }
