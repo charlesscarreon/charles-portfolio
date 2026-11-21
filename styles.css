@@ -373,6 +373,26 @@ main > .card {
     margin-bottom: 0;
 }
 
+/* Homepage only: a longer gap so each section reads as its own topic. The
+   last section keeps the shorter gap above the footer. */
+html.home .section {
+    margin-bottom: 5rem;
+}
+
+html.home .section:last-child {
+    margin-bottom: 2.5rem;
+}
+
+@media (max-width: 760px) {
+    html.home .section {
+        margin-bottom: 3.5rem;
+    }
+
+    html.home .section:last-child {
+        margin-bottom: 2rem;
+    }
+}
+
 .projects-head,
 .skills-head,
 .certs-head,
@@ -431,6 +451,11 @@ main > .card {
 .featured-card__more {
     margin-top: auto;
     padding-top: 0.75rem;
+    text-decoration: none;
+}
+
+.featured-card__more a:hover {
+    text-decoration: none;
 }
 
 .featured-more {
@@ -1554,6 +1579,42 @@ html.dialog-capable .project-dialog:not([open]) {
     font-size: 0.95rem;
 }
 
+/* Homepage "View all" buttons: an outlined pill, quieter than the solid
+   primary button. They stay ordinary links, so with no CSS they read as
+   plain links. The arrow is decoration only and is not read aloud. */
+.featured-more .btn {
+    background-color: transparent;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    padding: 0.3rem 0.95rem;
+    font-size: 0.875rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.featured-more .btn::after {
+    content: "\2192";
+    content: "\2192" / "";
+    display: inline-block;
+    margin-left: 0.4em;
+    transition: transform 0.15s ease;
+}
+
+.featured-more .btn[href$="#write"]::after {
+    content: none;
+}
+
+.featured-more .btn:hover,
+.featured-more .btn:focus-visible {
+    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-color: var(--accent);
+    color: var(--hover);
+}
+
+.featured-more .btn:hover::after,
+.featured-more .btn:focus-visible::after {
+    transform: translateX(0.15rem);
+}
+
 /* ---------- Scratch embeds ---------- */
 
 .scratch-embed {
@@ -2071,7 +2132,9 @@ html.dialog-capable .project-dialog:not([open]) {
     }
 
     .section,
-    main > .card {
+    main > .card,
+    html.home .section,
+    html.home .section:last-child {
         margin-bottom: 1.5rem;
     }
 }

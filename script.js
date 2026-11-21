@@ -305,7 +305,13 @@
                 return;
             }
             var target = document.getElementById(window.location.hash.slice(1));
-            if (!target || target.classList.contains("project-dialog")) {
+            /* A project panel is hidden until opened, so it has no position of
+               its own. Settle on the project card that contains it instead, so
+               the page behind the opened panel sits on that card. */
+            if (target && target.classList.contains("project-dialog")) {
+                target = target.closest ? target.closest(".project") : null;
+            }
+            if (!target) {
                 return;
             }
             scrollToTarget(function () {
