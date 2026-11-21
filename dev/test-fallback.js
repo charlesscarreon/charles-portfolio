@@ -92,7 +92,7 @@ function resolvePath(pathname) {
     if (decoded.includes("\0")) return null;
     const normalized = path.normalize(decoded);
     if (normalized === "\\" || normalized === "/" || normalized === ".") {
-        return path.join(ROOT, "index.template.html");
+        return path.join(ROOT, "homepage.template.html");
     }
     const full = path.resolve(ROOT, "." + normalized);
     if (full !== ROOT && !full.startsWith(ROOT + path.sep)) {

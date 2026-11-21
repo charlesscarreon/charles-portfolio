@@ -1,7 +1,7 @@
 // GET / (rewritten to this function in vercel.json)
 // Serves the homepage, with the Recommendations section filled in from the database.
 // Any problem at all falls back to the plain template, so the homepage never breaks.
-// The page layout comes from index.template.html in the project root.
+// The page layout comes from homepage.template.html in the project root.
 
 const fs = require('fs');
 const path = require('path');
@@ -15,8 +15,8 @@ const MAX_CHARS = 450;
 
 function readTemplate() {
   const candidates = [
-    path.join(process.cwd(), 'index.template.html'),
-    path.join(__dirname, '..', 'index.template.html')
+    path.join(process.cwd(), 'homepage.template.html'),
+    path.join(__dirname, '..', 'homepage.template.html')
   ];
   for (let i = 0; i < candidates.length; i++) {
     try { return fs.readFileSync(candidates[i], 'utf8'); } catch (e) { /* try the next path */ }

@@ -37,7 +37,7 @@
       ]
     },
     {
-      "source": "/index.template",
+      "source": "/homepage.template",
       "headers": [
         {
           "key": "X-Robots-Tag",
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "source": "/index.template.html",
+      "source": "/homepage.template.html",
       "headers": [
         {
           "key": "X-Robots-Tag",
@@ -74,7 +74,7 @@
       "includeFiles": "recommendations.template.html"
     },
     "api/home.js": {
-      "includeFiles": "index.template.html"
+      "includeFiles": "homepage.template.html"
     }
   }
 }
