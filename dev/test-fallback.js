@@ -144,6 +144,16 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    /* /recommendations is rendered by a function on Vercel. Locally, serve the template
+       (the empty-state version of the page). */
+    if (pathname === "/recommendations") {
+        let template = resolvePath("/recommendations.template.html");
+        if (template && isFile(template)) {
+            sendFile(res, template, cssOff, jsOff, redirectOff);
+            return;
+        }
+    }
+
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     res.end("404 Not Found");
 });

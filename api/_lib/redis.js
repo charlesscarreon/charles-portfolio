@@ -36,4 +36,4 @@ async function hgetall(key) {
   return toObject(await command('HGETALL', key));
 }
 
-module.exports = { pipeline, command, hgetall };
+module.exports = { pipeline, command, hgetall, toObject };

@@ -17,6 +17,35 @@
           "value": "geolocation=(), camera=(), microphone=()"
         }
       ]
+    },
+    {
+      "source": "/recommendations.template",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/recommendations.template.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/recommendations",
+      "destination": "/api/recommendations"
+    }
+  ],
+  "functions": {
+    "api/recommendations.js": {
+      "includeFiles": "recommendations.template.html"
+    }
+  }
 }

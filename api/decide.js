@@ -8,6 +8,7 @@ const config = require('./_lib/config');
 const redis = require('./_lib/redis');
 const tokens = require('./_lib/tokens');
 const { relationshipLine } = require('./_lib/ownerMail');
+const { rebuildPublic } = require('./_lib/publicList');
 const { esc, respond } = require('./_lib/html');
 
 function field(req, name) {
@@ -130,10 +131,14 @@ module.exports = async function handler(req, res) {
       commands.push(['ZADD', config.PREFIX + 'published', String(now.getTime()), id]);
     }
     await redis.pipeline(commands);
+    if (approving) {
+      // Refresh the public list. A failure is logged; the decision itself is already saved.
+      await rebuildPublic().catch(function (e) { console.error('public list rebuild failed:', e && e.message); });
+    }
 
     return respond(res, 200, approving ? 'Approved' : 'Rejected',
       approving
-        ? '<h1>Approved</h1><p>The recommendation is marked as published. It will appear on the recommendations page once the public list is switched on.</p>'
+        ? '<h1>Approved</h1><p>The recommendation is marked as published. It will appear on the recommendations page within a minute.</p>'
         : '<h1>Rejected</h1><p>The recommendation will stay private.</p>');
   } catch (error) {
     console.error('decide failed:', error && error.message);
