@@ -1,6 +1,6 @@
 # UI Update: Feature Log
 
-Copy of the Claude doc "UI Update: Feature Log", saved 2026-11-21. The doc is the live version; this file is a backup inside the repo and was last refreshed on 2026-11-21. Statuses below say what is built; features 5 and 7 are still waiting for the logo files.
+Copy of the Claude doc "UI Update: Feature Log", saved 2026-11-21. The doc is the live version; this file is a backup inside the repo and was last refreshed on 2026-11-21. Statuses below say what is built; features 5 and 7 are built (2026-11-22).
 
 ## Ground rules
 
@@ -108,7 +108,7 @@ Status: **built** on 2026-11-21. Homepage only.
 
 ### Feature 5: Projects hover effect
 
-Status: planned, not started. Inspired by the services cards on [axcelaph.com](https://axcelaph.com/), restyled to match this site (teal accent, dark default, light theme kept).
+Status: **built** on 2026-11-22. Project cards show logo tiles that slide out on hover and expand to their name, a quiet More about button, a lift, glow and dimming of the other cards, and the Lunas award badge on the image corner. Inspired by the services cards on [axcelaph.com](https://axcelaph.com/), restyled to match this site (teal accent, dark default, light theme kept).
 
 **What the reference does** (from Charles's screenshots; the page's CSS and script could not be read, so timing and easing are not known):
 
@@ -170,7 +170,7 @@ Status: **built** on 2026-11-21 (`script.js`). A fix to existing behavior, tied 
 
 ### Feature 7: Skills section and proficiency levels
 
-Status: direction chosen on 2026-11-21, not started. Charles dislikes the look of the skills section and the proficiency levels but has no rework in mind.
+Status: **built** on 2026-11-22 (awaiting review): logo chips with three level dots and one legend, on `/skills` and the homepage. Direction chosen on 2026-11-21. Charles dislikes the look of the skills section and the proficiency levels but has no rework in mind.
 
 **Today:** on `/skills` there are five category cards (Front-End, Back-End, Programming, Game Development, Tools) with 20 skills. Each skill is a row with the name on the left and a colored pill on the right: Familiar (blue), Proficient (yellow) or Advanced (green). The homepage shows a smaller version with two groups. The three colors compete with the teal accent, and repeating a word-pill on every row makes the list look busy.
 
@@ -223,13 +223,13 @@ Status: **built** on 2026-11-21, with changes after review (see "Built as change
 
 ## On hold: earlier recommendations
 
-These were proposed earlier and are not scheduled. A new message from Charles on the same area replaces the matching item here.
+Decided on 2026-11-22, after Features 1 to 8 were built.
 
-- Hero: shorter, with the portrait or an accent glow, an "Open to work" badge and three key facts.
-- Section headings: a small numbered label above each heading, such as "01 — About".
-- Cards: project, achievement, experience and certification cards with consistent borders, accent bars and date chips. **Project cards are now covered by Feature 5 above.**
-- Typography and spacing: a tighter heading scale and monospace for dates and labels.
-- Recommendations: quote cards with an initials avatar and a relationship tag.
+- Hero shorter, with an "Open to work" badge and three key facts: **rejected.** The hero rework (Feature 1) already covers what Charles wants.
+- Numbered section labels such as "01 — About": **rejected.** Too similar to other portfolios, adds nothing of note, and does not match the site's UI.
+- Cards for achievements and experience (consistent borders, accent bars, date chips): **later**, after all the recorded features are done. Project cards are covered by Feature 5.
+- Typography and spacing (tighter heading scale, monospace for dates and labels): **later.** The other UI work already changes the text, so it is revisited afterwards.
+- Recommendation quote cards with an initials avatar and a relationship tag: **later**, for the same reason as the other cards.
 
 ## Built as changed
 
@@ -238,3 +238,5 @@ Changes that were agreed after review and are not in the original plans above.
 - **Hero background (Feature 1):** each icon has no label. On top of the icons, faint circuit traces (straight lines, right angles, square pads) show only in a soft circle around the mouse, with a glow and small pulses; the light is full strength to the middle of the hero and gone by 85% of the way down, so the boundary with the content stays dark. A few traces run on past the bottom of the hero and also show only near the pointer. Every few seconds a random trace lights up and a bright segment runs along it, like data being sent. Reduced motion: no pulses and no data transfer. Touch screens: no cursor effect.
 - **Certificates (Feature 8):** the image frame is a fixed 16:9 on every card with no background, padding or border. The image fills it without stretching, and on hover it grows out to the card's top and side edges. The two Wadhwani images were edited by Charles.
 - **Get in touch button and panel:** the hero button keeps its text "Get in touch". Hovering lifts it and shows a second, panel-coloured button behind it, and the two act as one. Clicking grows the panel out of that second button; closing (Close button, outside click or Esc) shrinks it back, then the teal button slides down. The panel heading is "I'd love to hear from you", the subject is "Portfolio Inquiry", and the message box is smaller. The panel layout was redesigned (icon, intro line, labelled fields, divider above the action).
+- **Project cards (Feature 5):** the logo tiles slide out of the card's right edge, slowly and one after another, and each widens on hover to show its name. The card lifts 0.25rem and gets a thin teal ring and a soft teal shadow; the other cards dim to 65% opacity, as on the certificates. The Lunas award badge rests on the image's top-left corner (its left edge just outside the image, the image's top edge through it) and, on hover, moves past the card's top-left corner, grows 20% and shines once. Same behaviour on the homepage featured cards and on `/projects`.
+- **Skills (Feature 7):** instead of rows with level pills, every skill is a logo chip. On a pointer device only the logo shows; on hover a small label above it shows the name, three level dots (one for Familiar, two for Proficient, three for Advanced) and the level word. The label never covers the other logos in the row. On touch screens every chip shows in full. The level word stays in the markup, so it also shows with no CSS. There is no legend, since the level is written out on hover.

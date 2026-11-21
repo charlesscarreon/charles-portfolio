@@ -2405,60 +2405,200 @@ html.dialog-capable .project-dialog:not([open]) {
     font-size: 1.05rem;
 }
 
+/* Skills are a list of logos. On a pointer device each logo sits in a small
+   square and, on hover, a small label pops up above it with the name and
+   level. The label never covers the other logos in the row.
+   On touch screens and anywhere without hover, every chip is shown in full.
+   The level word is real text in the markup, so it also shows with no CSS. */
 .skill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.skill-list li {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.15rem 0.75rem;
-    padding: 0.4rem 0;
-    line-height: 1.35;
-    border-bottom: 1px solid var(--border);
+.skill-chip {
+    --logo: none;
+    max-width: 100%;
 }
 
-.skill-list li:last-child {
-    border-bottom: 0;
+.skill-box {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 0.35rem 0.8rem 0.35rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background-color: var(--surface-2);
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skill-box::before {
+    content: "";
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: var(--logo) center / contain no-repeat;
+}
+
+.skill-text {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.6rem;
+    line-height: 1.25;
 }
 
 .skill-name {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-strong);
 }
 
+.skill-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .skill-level {
-    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
-    color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    border-radius: 999px;
-    padding: 0.12rem 0.55rem;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    line-height: 1.2;
+    color: var(--dot);
 }
 
-.skill-level--familiar {
-    background-color: var(--familiar-bg);
-    border-color: var(--familiar-border);
-    color: var(--familiar-text);
+.skill-dots {
+    display: inline-flex;
+    flex: none;
+    gap: 0.18rem;
 }
 
-.skill-level--proficient {
-    background-color: var(--proficient-bg);
-    border-color: var(--proficient-border);
-    color: var(--proficient-text);
+.skill-dots i {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background-color: color-mix(in srgb, var(--muted) 38%, transparent);
 }
 
-.skill-level--advanced {
-    background-color: var(--advanced-bg);
-    border-color: var(--advanced-border);
-    color: var(--advanced-text);
+.skill-meta:has(.skill-dots--familiar) { --dot: var(--familiar-text); }
+.skill-meta:has(.skill-dots--proficient) { --dot: var(--proficient-text); }
+.skill-meta:has(.skill-dots--advanced) { --dot: var(--advanced-text); }
+
+.skill-dots--familiar i:nth-child(-n + 1),
+.skill-dots--proficient i:nth-child(-n + 2),
+.skill-dots--advanced i:nth-child(-n + 3) {
+    background-color: var(--dot);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .skill-chip {
+        position: relative;
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .skill-box {
+        box-sizing: border-box;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+    }
+
+    /* The name and level become a small label that pops up above the logo.
+       It sits above every chip (z-index) even while it fades out, and never
+       covers the logos in its own row. */
+    .skill-text {
+        position: absolute;
+        z-index: 5;
+        bottom: calc(100% + 0.55rem);
+        left: 50%;
+        margin: 0;
+        padding: 0.4rem 0.7rem;
+        border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+        border-radius: 0.5rem;
+        background-color: var(--surface);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translate(-50%, 0.3rem);
+    }
+
+    .skill-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        width: 0.55rem;
+        height: 0.55rem;
+        border: solid color-mix(in srgb, var(--accent) 45%, var(--border));
+        border-width: 0 1px 1px 0;
+        background-color: var(--surface);
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .skill-chip:hover .skill-text,
+    .skill-chip:focus-within .skill-text {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+    }
+
+    .skill-chip:hover .skill-box,
+    .skill-chip:focus-within .skill-box {
+        border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+        background-color: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+        box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .skill-text {
+        transition: opacity 0.18s ease, transform 0.22s ease, visibility 0s linear 0.22s;
+    }
+
+    .skill-chip:hover .skill-text,
+    .skill-chip:focus-within .skill-text {
+        transition-delay: 0s;
+    }
+}
+
+/* Logos (Devicon, original variants). The black marks are inverted on the
+   dark theme so they stay visible. */
+.skill-chip--html5 { --logo: url("images/tech/html5-original.svg"); }
+.skill-chip--css3 { --logo: url("images/tech/css3-original.svg"); }
+.skill-chip--javascript { --logo: url("images/tech/javascript-original.svg"); }
+.skill-chip--react { --logo: url("images/tech/react-original.svg"); }
+.skill-chip--bootstrap { --logo: url("images/tech/bootstrap-original.svg"); }
+.skill-chip--php { --logo: url("images/tech/php-original.svg"); }
+.skill-chip--laravel { --logo: url("images/tech/laravel-original.svg"); }
+.skill-chip--mysql { --logo: url("images/tech/mysql-original.svg"); }
+.skill-chip--java { --logo: url("images/tech/java-original.svg"); }
+.skill-chip--csharp { --logo: url("images/tech/csharp-original.svg"); }
+.skill-chip--python { --logo: url("images/tech/python-original.svg"); }
+.skill-chip--unity { --logo: url("images/tech/unity-original.svg"); }
+.skill-chip--godot { --logo: url("images/tech/godot-original.svg"); }
+.skill-chip--git { --logo: url("images/tech/git-original.svg"); }
+.skill-chip--github { --logo: url("images/tech/github-original.svg"); }
+.skill-chip--docker { --logo: url("images/tech/docker-original.svg"); }
+.skill-chip--figma { --logo: url("images/tech/figma-original.svg"); }
+.skill-chip--vercel { --logo: url("images/tech/vercel-original.svg"); }
+
+html:not([data-theme="light"]) .skill-chip--unity .skill-box::before,
+html:not([data-theme="light"]) .skill-chip--github .skill-box::before,
+html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
+    filter: invert(1);
+}
+
+/* No Devicon mark for the command line, so a small terminal prompt is drawn
+   in the text colour instead. */
+.skill-chip--cli .skill-box::before {
+    background: var(--text-strong);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 17 6-6-6-6'/%3E%3Cpath d='M12 19h8'/%3E%3C/svg%3E") center / 80% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 17 6-6-6-6'/%3E%3Cpath d='M12 19h8'/%3E%3C/svg%3E") center / 80% no-repeat;
 }
 
 /* ---------- Certifications ---------- */
