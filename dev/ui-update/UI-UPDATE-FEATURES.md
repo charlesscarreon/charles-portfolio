@@ -1,6 +1,6 @@
 # UI Update: Feature Log
 
-Copy of the Claude doc "UI Update: Feature Log", saved 2026-11-21. The doc is the live version; this file is a backup inside the repo. Nothing below has been built yet.
+Copy of the Claude doc "UI Update: Feature Log", saved 2026-11-21. The doc is the live version; this file is a backup inside the repo and was last refreshed on 2026-11-21. Statuses below say what is built; features 5 and 7 are still waiting for the logo files.
 
 ## Ground rules
 
@@ -15,7 +15,7 @@ Copy of the Claude doc "UI Update: Feature Log", saved 2026-11-21. The doc is th
 
 ### Feature 1: Floating objects in the hero backgrounds
 
-Status: planned on 2026-11-21, not started. Charles finds the heroes boring and wants floating objects behind them, different on each page.
+Status: **built** on 2026-11-21 (branch `feature/ui-update`), with changes after review (see "Built as changed" at the end). Charles finds the heroes boring and wants floating objects behind them, different on each page.
 
 **Decisions (2026-11-21)**
 
@@ -49,7 +49,7 @@ Status: planned on 2026-11-21, not started. Charles finds the heroes boring and 
 
 ### Feature 2: Page slide-and-fade transitions
 
-Status: feasible, discussed on 2026-11-21, not started. Charles asked whether it is possible and whether it would be smooth.
+Status: **built** and confirmed working on 2026-11-21. It needs `transitions.js` (linked from the head of every page) and the "Page transitions" section of `styles.css`. The theme switch is not kept in place, because it sits in a different spot of the sidebar on each page.
 
 **The idea**
 
@@ -83,7 +83,7 @@ Homepage to a subpage (forward) and a subpage back to the homepage stay horizont
 
 ### Feature 3: Longer gap between homepage sections
 
-Status: planned on 2026-11-21, not started. Homepage only.
+Status: **built** on 2026-11-21. Homepage only.
 
 - **Gap:** about 80 px between sections on desktop, up from 40 px, and about 56 px on phones. Space only, with no divider line.
 - **Why:** each section (About, Projects, Achievements, Skills, Experience, Recommendations) reads as its own topic.
@@ -97,7 +97,7 @@ Status: planned on 2026-11-21, not started. Homepage only.
 
 ### Feature 4: Quieter "View all" buttons
 
-Status: planned on 2026-11-21, not started. Homepage only.
+Status: **built** on 2026-11-21. Homepage only.
 
 - **Today:** each homepage section ends with a solid teal pill (View all projects, achievements, skills and certifications, experience, recommendations). Together with the "Write a recommendation" pill they are the loudest items on the page.
 - **New look:** an outlined pill with teal text, a thin teal border and a small arrow (for example "View all projects →"). On hover or focus it fills lightly with teal. Slightly smaller padding than now.
@@ -157,7 +157,7 @@ Status: planned, not started. Inspired by the services cards on [axcelaph.com](h
 
 ### Feature 6: "More about" lands on the right card
 
-Status: cause found on 2026-11-21, fix planned, not started. A fix to existing behavior, tied to the featured project cards on the homepage.
+Status: **built** on 2026-11-21 (`script.js`). A fix to existing behavior, tied to the featured project cards on the homepage.
 
 - **Problem:** the homepage "More about OUTRUN / MUTED / Lunas" links go to `/projects#outrun-detail` (and the matching MUTED and Lunas panels). The panel opens, but the page behind it stays at the top of `/projects`, in the hero, instead of at that project's card.
 - **Cause:** the script that settles the page position for a deep link deliberately skips any target that is a project panel (`.project-dialog`), because the panel is hidden until opened and has no position of its own. So no scroll happens, and the panel opens over the hero.
@@ -200,7 +200,7 @@ Status: direction chosen on 2026-11-21, not started. Charles dislikes the look o
 
 ### Feature 8: Certifications hover
 
-Status: planned on 2026-11-21, not started. Applies to the five certificate cards on `/skills` and the three on the homepage.
+Status: **built** on 2026-11-21, with changes after review (see "Built as changed" at the end). Applies to the five certificate cards on `/skills` and the three on the homepage.
 
 **Behavior**
 
@@ -230,3 +230,11 @@ These were proposed earlier and are not scheduled. A new message from Charles on
 - Cards: project, achievement, experience and certification cards with consistent borders, accent bars and date chips. **Project cards are now covered by Feature 5 above.**
 - Typography and spacing: a tighter heading scale and monospace for dates and labels.
 - Recommendations: quote cards with an initials avatar and a relationship tag.
+
+## Built as changed
+
+Changes that were agreed after review and are not in the original plans above.
+
+- **Hero background (Feature 1):** each icon has no label. On top of the icons, faint circuit traces (straight lines, right angles, square pads) show only in a soft circle around the mouse, with a glow and small pulses; the light is full strength to the middle of the hero and gone by 85% of the way down, so the boundary with the content stays dark. A few traces run on past the bottom of the hero and also show only near the pointer. Every few seconds a random trace lights up and a bright segment runs along it, like data being sent. Reduced motion: no pulses and no data transfer. Touch screens: no cursor effect.
+- **Certificates (Feature 8):** the image frame is a fixed 16:9 on every card with no background, padding or border. The image fills it without stretching, and on hover it grows out to the card's top and side edges. The two Wadhwani images were edited by Charles.
+- **Get in touch button and panel:** the hero button keeps its text "Get in touch". Hovering lifts it and shows a second, panel-coloured button behind it, and the two act as one. Clicking grows the panel out of that second button; closing (Close button, outside click or Esc) shrinks it back, then the teal button slides down. The panel heading is "I'd love to hear from you", the subject is "Portfolio Inquiry", and the message box is smaller. The panel layout was redesigned (icon, intro line, labelled fields, divider above the action).

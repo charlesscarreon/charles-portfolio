@@ -2657,6 +2657,76 @@ html.dialog-capable .project-dialog:not([open]) {
     }
 }
 
+/* ---------- Page transitions ---------- */
+
+/* Cross-document view transitions: when one page of the site loads another,
+   the old page slides away while it fades, then the new one slides in. The
+   direction comes from transitions.js (data-vt on the html element): going
+   forward from the homepage slides left, back to the homepage slides right,
+   and between subpages the move is up or down by the order of the sections on
+   the homepage. Without that attribute, or without script, it is a plain
+   fade. Browsers without view transitions load pages as before, and visitors
+   who prefer reduced motion get no transition at all. */
+@media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+        navigation: auto;
+    }
+}
+
+::view-transition-old(root) {
+    animation: vt-out 0.2s ease-in both;
+}
+
+::view-transition-new(root) {
+    animation: vt-in 0.3s ease-out 0.1s both;
+}
+
+html[data-vt="forward"]::view-transition-old(root) {
+    --vt-x: -4rem;
+}
+
+html[data-vt="forward"]::view-transition-new(root) {
+    --vt-x: 4rem;
+}
+
+html[data-vt="back"]::view-transition-old(root) {
+    --vt-x: 4rem;
+}
+
+html[data-vt="back"]::view-transition-new(root) {
+    --vt-x: -4rem;
+}
+
+html[data-vt="down"]::view-transition-old(root) {
+    --vt-y: -4rem;
+}
+
+html[data-vt="down"]::view-transition-new(root) {
+    --vt-y: 4rem;
+}
+
+html[data-vt="up"]::view-transition-old(root) {
+    --vt-y: 4rem;
+}
+
+html[data-vt="up"]::view-transition-new(root) {
+    --vt-y: -4rem;
+}
+
+@keyframes vt-out {
+    to {
+        opacity: 0;
+        transform: translate(var(--vt-x, 0), var(--vt-y, 0));
+    }
+}
+
+@keyframes vt-in {
+    from {
+        opacity: 0;
+        transform: translate(var(--vt-x, 0), var(--vt-y, 0));
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
