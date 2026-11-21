@@ -49,7 +49,7 @@ function resolvePath(pathname) {
     if (decoded.includes("\0")) return null;
     const normalized = path.normalize(decoded);
     if (normalized === "\\" || normalized === "/" || normalized === ".") {
-        return path.join(ROOT, "index.html");
+        return path.join(ROOT, "homepage.template.html");
     }
     const full = path.resolve(ROOT, "." + normalized);
     if (full !== ROOT && !full.startsWith(ROOT + path.sep)) {
@@ -95,6 +95,16 @@ const server = http.createServer((req, res) => {
     if (fallback && isFile(fallback)) {
         sendFile(res, fallback);
         return;
+    }
+
+    /* /recommendations is rendered by a function on Vercel. Locally, serve the template
+       (the empty-state version of the page). */
+    if (pathname === "/recommendations") {
+        let template = resolvePath("/recommendations.template.html");
+        if (template && isFile(template)) {
+            sendFile(res, template);
+            return;
+        }
     }
 
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });

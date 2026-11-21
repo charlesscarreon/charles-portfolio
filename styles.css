@@ -1405,6 +1405,35 @@ html.dialog-capable .project-dialog:not([open]) {
     margin-bottom: 0.35rem;
 }
 
+.recommendation + .recommendation {
+    margin-top: 1rem;
+}
+
+.recommendation__text {
+    margin: 0;
+}
+
+.recommendation__text p {
+    color: var(--text);
+    margin: 0 0 0.75rem;
+}
+
+.recommendation__author {
+    margin: 1rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.recommendation__author strong {
+    color: var(--text-strong);
+    font-size: 1rem;
+}
+
+.recommendation__links {
+    margin: 0.5rem 0 0;
+    font-size: 0.9rem;
+}
+
 .recommendation-form {
     max-width: 42rem;
     margin-top: 1rem;
@@ -1423,6 +1452,7 @@ html.dialog-capable .project-dialog:not([open]) {
 }
 
 .recommendation-form input,
+.recommendation-form select,
 .recommendation-form textarea {
     box-sizing: border-box;
     width: 100%;
@@ -1432,6 +1462,23 @@ html.dialog-capable .project-dialog:not([open]) {
     color: var(--text);
     font: inherit;
     padding: 0.65rem 0.75rem;
+}
+
+.recommendation-form__check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.recommendation-form .recommendation-form__check input {
+    flex: none;
+    width: auto;
+    margin-top: 0.2rem;
+}
+
+.recommendation-form .recommendation-form__check label {
+    margin-bottom: 0;
+    font-weight: 400;
 }
 
 .recommendation-form textarea {

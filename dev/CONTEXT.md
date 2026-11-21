@@ -4,7 +4,7 @@ This document provides context about the portfolio project for human readers and
 
 ## Last Updated
 
-November 19, 2026
+November 21, 2026
 
 ## Project Summary
 
@@ -29,6 +29,8 @@ The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public 
 
 - Pure static HTML5, CSS3, and vanilla JavaScript only.
 - No frameworks, no npm packages, no build step, no `package.json`. Do not add dependencies.
+- Scoped exception for the Recommendations feature only: server-side functions in `api/` (Node.js on Vercel, no `package.json`, no npm packages, plain `fetch` to Upstash Redis and Resend) are allowed. Static pages stay pure HTML, CSS, and ES5 JavaScript. The exception covers server code only and does not allow a build step or dependencies.
+- Contract for any page that needs the server (the recommendations pages): it must work with no JavaScript and no CSS. Forms are real HTML forms with `action` and `method="post"`; every result page is server-rendered; JavaScript may only enhance. The `/recommendations` list is rendered by a function, with a snapshot file kept in the repo as the fallback when the database is down. Test it in all four combinations (`?css=0`, `?js=0`, both, neither) plus lynx or w3m, slow 3G, and reader mode.
 - Single global stylesheet `styles.css` with CSS custom properties.
 - Single `script.js` written as an IIFE with `"use strict"`, ES5-compatible (no modules, no modern syntax).
 - JavaScript must remain progressive enhancement: the site must work without it.
@@ -82,7 +84,8 @@ Work in progress or planned to be done immediately.
 - Homepage card spacing and frame polish: completed with the same `270dfde feat: refine homepage skills and certificate cards` commit. It adds space above the certificate grid and gives the homepage skills card, certificate cards, and featured project cards a thinner inset frame.
 - TRIGGR project entry: completed, committed, and pushed by Charles on `feature/homepage-rework`, then merged into remote `main`. Local `main` is up to date with the remote merge. It adds a text-only project card and detail dialog on `/projects`, reorders the existing projects by reverse completion chronology, and updates JSON-LD positions to match. The copy uses neutral third-person wording and states that the game was built by a three-person team.
 - Phase 4 achievements page: completed and merged through PR #6 on 2026-11-18. The local `feature/achievements-page` branch and local `main` are up to date with the remote merge. The results from that round are recorded under Completed Changes.
-- Recommendations basic UI: implemented and verified on `feature/recommendations-page` as of 2026-11-19, uncommitted. This round adds the page and homepage section with an empty state and a static write form. It adds no recommendation data, storage, submission behavior, or JavaScript changes.
+- Recommendations basic UI: completed and merged through PR #9. It added the page and homepage section with an empty state and a static write form, with no recommendation data, storage, submission behavior, or JavaScript changes.
+- Recommendations backend: built on `feature/recommendations-page`. Upstash Redis and Resend are connected, `charlescarreon.dev` is verified for sending (SPF, DKIM and DMARC pass), and the flow works on a Vercel preview: submit, writer confirmation, owner decision, public list, admin page with hide and delete, featured top three on the homepage. Still to do: the 24-hour reminder and weekly digest (daily cron), rate limits beyond the basic throttle, the owner-only JSON export with a repo snapshot fallback, and the full no-JS and no-CSS test pass. See the plan under Planned Changes.
 
 ## Planned Changes
 
@@ -152,7 +155,7 @@ This high-level note was recorded before the basic UI round. It is superseded by
 
 ### Recommendations basic UI (`feature/recommendations-page`)
 
-DECISIONS RECORDED 2026-11-19. IMPLEMENTED 2026-11-19 on `feature/recommendations-page`, verified and uncommitted. The TRIGGR commit has been pushed and merged into remote `main`, and local `main` has been updated. Do not create another branch, run checkout, pull, merge, reset, or push.
+DECISIONS RECORDED 2026-11-19. IMPLEMENTED 2026-11-19 and merged through PR #9.
 
 - Build the basic UI only. Recommendation structure, storage, and a real submission method are deferred.
 - Add `recommendations.html` with the shared page pattern: `no-js home recommendations`, a hero with `id="recommendations-hero"`, a back cue to `/#recommendations`, shared theme switch, shared footer contacts, no Instagram, full metadata, canonical URL, Open Graph, Twitter Card, and `WebPage` JSON-LD.
@@ -162,6 +165,30 @@ DECISIONS RECORDED 2026-11-19. IMPLEMENTED 2026-11-19 on `feature/recommendation
 - Add scoped CSS only for the empty state and static form. Leave global card styles unchanged.
 - Add a sixth `sitemap.xml` entry for `/recommendations`. Leave `script.js`, the skills page, the projects page, and all images unchanged.
 - Verify with `node --check script.js`, a temporary static check, a temporary browser check, the existing phase 6 homepage checks, the achievements regression check, `git diff --check`, and `git status --short --branch`. Leave staging and committing to Charles.
+
+### Recommendations backend (`feature/recommendations-page`)
+
+PLAN RECORDED 2026-11-21 in the Claude doc "Recommendations Page: Implementation Plan". Charles runs every git command that writes; Claude only gives the commands.
+
+- Flow: a writer submits a testimony, confirms by email that they wrote it, and the owner approves it from a link in a second email. Nothing publishes without the owner's approval. The owner manages everything afterwards from a private admin page.
+- Stack: Vercel functions in `api/`; Upstash Redis (Marketplace, free plan, region `iad1`, eviction off) over its REST API; Resend (free plan) sending from `recommendations@charlescarreon.dev`; one daily Vercel cron job for the 24-hour reminder, the weekly digest, and the 48-hour cleanup of unconfirmed entries.
+- Environment variables (Production and Preview): `KV_REST_API_URL`, `KV_REST_API_TOKEN`, `KV_REST_API_READ_ONLY_TOKEN` (for public reads), `RESEND_API_KEY`, `OWNER_EMAIL`, `ADMIN_SECRET`. Redis keys start with `recs:<environment>:` so preview tests never mix with real data. The one free Redis database may be shared with other features, so keep prefixes and watch the 500K commands per month budget.
+- Spam limits, token handling, and the email threading rules are in the plan doc. Resend generates each email's Message-ID, so the reminder threading must read it back from the send result and be tested in a real Gmail inbox.
+- Backup: an owner-only export of published testimonies as a JSON file kept in the repo, used as the page's fallback and as a way to restore or leave the database.
+- Domain risk: `charlescarreon.dev` is free for the first year and email sending depends on it. If it is not renewed by 20 Nov 2027, sending must move to another domain, and the write form shows a "submissions closed" message. Published testimonies keep showing on `charlescarreon.vercel.app` once the redirect is removed.
+- Built and verified on a Vercel preview 2026-11-21. Files in `api/`: `submit.js` (POST only; honeypot field `website`; validation; per-IP and per-email throttle; stores an Unconfirmed entry for 48 hours; emails the writer a confirm link and a status link), `confirm.js` (GET shows a confirm button and changes nothing; POST marks the entry Awaiting, keeps it with no expiry, adds it to the `recs:<env>:awaiting` sorted set, and emails the owner once), `decide.js` (one link per entry with Approve and Reject buttons and an "are you sure" step; approving adds the entry to `recs:<env>:published` and rebuilds the public copy), `admin.js` (the owner's private page at `/admin`), `recommendations.js` (renders `/recommendations` with approved entries), `home.js` (renders the homepage), and shared helpers in `api/_lib/` (`config.js`, `redis.js`, `mail.js`, `tokens.js`, `html.js`, `validate.js`, `ownerMail.js`, `publicList.js`, `entries.js`, `admin.js`, `render.js`).
+- The public page: `recommendations.html` was renamed to `recommendations.template.html`, because a static file takes precedence over a rewrite in `vercel.json`. `vercel.json` rewrites `/recommendations` to `api/recommendations.js` and bundles the template into that function with `includeFiles`. The function writes approved entries between the `<!-- recommendations:list -->` markers; with none, the template's empty state shows. The template stays public at `/recommendations.template` with a noindex header and the real canonical. `dev/serve.js` and `dev/test-fallback.js` serve the template at `/recommendations` locally (empty state only). The page is cached 30 seconds at the edge and never cached on error.
+- Homepage: the homepage is also rendered by a function, for the same static-precedence reason. `index.html` was renamed to `homepage.template.html` (a first rename to `index.template.html` still let a static file answer `/`; `homepage.template.html` fixed it). `vercel.json` rewrites `/` to `api/home.js` and bundles the template with `includeFiles`. The function fills the section between the `<!-- recommendations:home -->` markers with the featured picks in order, or the newest three published entries when none are picked; messages over 450 characters are shortened with a link to `/recommendations#r-<id>`. On any error it serves the plain template uncached. Outside production it sets an `X-Recommendations-Home` response header saying how many entries it used. `dev/serve.js` and `dev/test-fallback.js` serve the template at `/` locally (empty state only).
+- Admin page: `/admin` (rewritten to `api/admin.js`) is private, noindex and never cached. Sign-in uses the `ADMIN_SECRET` variable (at least 16 characters, Production and Preview); the session is a signed cookie lasting 5 days (HttpOnly, SameSite=Strict, Secure on deployments), failed logins are limited to 10 per 15 minutes per IP, and every POST checks the same origin. It lists Pending, Published, Hidden and Rejected entries and offers Approve, Reject, Hide, Unhide and Delete (delete asks for confirmation), plus Approve instead on rejected entries. Hiding or deleting removes the entry from the public page and from the top three.
+- Featured top three: the owner picks up to three published entries and orders them on the admin page (Feature, Move up, Move down, Remove from top), stored as a JSON list of ids at `recs:<env>:featured`. The public copy now holds `{entries, featured}` and the homepage uses it.
+- Public data: approved entries are copied to one JSON value at `recs:<env>:public`, rebuilt on every approval, holding only name, role, organization, relationship line, message, date and (if the writer opted in) profile links. The page reads it with the read-only token.
+- Owner email: one email to `OWNER_EMAIL` with the full entry, the private profile links, and one decision link (valid 30 days). Resend replaces any custom Message-ID with its own Amazon SES one, so the reminder must look up the real Message-ID with Resend's retrieve-email call (the `message_id` field) and be tested in a real Gmail inbox.
+- Form fields: required name, email, "how do you know Charles?" (seven fixed options), message (50 to 1200 characters, at most two links) and consent checkbox; optional role, organization, LinkedIn and Facebook links (https, on those sites only) and a "show my links" checkbox (unticked by default; links are always shown to the owner, published only if ticked).
+- Entry storage: Redis hash `recs:<env>:entry:<id>`; confirm and decision tokens are found through `recs:<env>:confirm:` and `decide:` keys holding the token's hash; tokens are never stored raw; the IP is stored only as a keyed hash.
+- Throttle (basic): production 5 submissions per IP per hour and one per email per 10 minutes; preview 50 per hour and a 10-second cooldown. The plan's timing check (signed timestamp) is deferred because it needs the form served by a function (now possible, since the page is rendered by one). Daily and site-wide limits are still to do.
+- Preview links in emails point at the preview deployment address; production emails use `https://charlescarreon.dev` (set in `api/_lib/config.js`; change it there if the domain changes).
+- Next: the daily cron job with the 24-hour same-thread reminder and weekly digest; the owner-only JSON export and repo snapshot fallback; remaining rate limits; the full no-JS and no-CSS test pass and the accessibility check.
+- Test endpoint: a temporary `api/setup-test.js` passed its check and was deleted. The `SETUP_TEST_TOKEN` variable must also be removed from Vercel.
 
 ### SEO and identity (from audit)
 

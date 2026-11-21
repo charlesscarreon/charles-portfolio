@@ -1,0 +1,52 @@
+// Shared settings for the recommendations backend.
+
+const ENV = process.env.VERCEL_ENV || 'local';
+const IS_PROD = ENV === 'production';
+
+// Every Redis key starts with this, so preview and local tests never touch real data.
+const PREFIX = 'recs:' + ENV + ':';
+
+// Address used in emailed links. If the domain changes, change it here.
+const BASE_URL = IS_PROD
+  ? 'https://charlescarreon.dev'
+  : 'https://' + (process.env.VERCEL_URL || 'localhost:3000');
+
+const FROM = 'Portfolio Recommendations <recommendations@charlescarreon.dev>';
+
+// Field limits (characters).
+const LIMITS = {
+  name: 80,
+  role: 80,
+  organization: 100,
+  url: 200,
+  email: 254,
+  messageMin: 50,
+  messageMax: 1200,
+  maxLinksInMessage: 2
+};
+
+// Spam limits. Production values; preview and local are relaxed so testing is easy.
+const RATE = {
+  perIpPerHour: IS_PROD ? 5 : 50,
+  emailCooldownSeconds: IS_PROD ? 600 : 10
+};
+
+// Approve and Reject links in the owner's email work for 30 days.
+const DECISION_LINK_TTL_SECONDS = 30 * 24 * 60 * 60;
+
+// Unconfirmed submissions disappear after 48 hours.
+const UNCONFIRMED_TTL_SECONDS = 48 * 60 * 60;
+
+// "How do you know Charles?" Options are written for the writer (first person).
+// "line" is what visitors see next to the testimony.
+const RELATIONSHIPS = {
+  classmate: { label: "I was Charles's classmate", line: 'Classmate of Charles' },
+  project: { label: 'I worked with Charles on a project or team', line: 'Worked with Charles on a project or team' },
+  organization: { label: 'I worked with Charles at the same organization', line: 'Worked with Charles at the same organization' },
+  mentor: { label: "I was Charles's teacher or mentor", line: 'Teacher or mentor of Charles' },
+  supervisor: { label: "I was Charles's supervisor or manager", line: 'Supervisor or manager of Charles' },
+  user: { label: 'I used something Charles built', line: 'Used something Charles built' },
+  other: { label: 'Other', line: 'Knows Charles' }
+};
+
+module.exports = { ENV, IS_PROD, PREFIX, BASE_URL, FROM, LIMITS, RATE, UNCONFIRMED_TTL_SECONDS, DECISION_LINK_TTL_SECONDS, RELATIONSHIPS };

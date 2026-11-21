@@ -17,6 +17,64 @@
           "value": "geolocation=(), camera=(), microphone=()"
         }
       ]
+    },
+    {
+      "source": "/recommendations.template",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/recommendations.template.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/homepage.template",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
+      "source": "/homepage.template.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/home"
+    },
+    {
+      "source": "/recommendations",
+      "destination": "/api/recommendations"
+    },
+    {
+      "source": "/admin",
+      "destination": "/api/admin"
+    }
+  ],
+  "functions": {
+    "api/recommendations.js": {
+      "includeFiles": "recommendations.template.html"
+    },
+    "api/home.js": {
+      "includeFiles": "homepage.template.html"
+    }
+  }
 }
