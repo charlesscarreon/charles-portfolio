@@ -96,6 +96,8 @@ module.exports = async function handler(req, res) {
         'confirmedAt', now.toISOString(),
         'decideHash', tokens.hashToken(decideToken)],
       ['PERSIST', entryKey],
+      // Keep the writer's status link working as long as the entry exists.
+      ['PERSIST', config.PREFIX + 'status:' + entry.statusHash],
       ['EXPIRE', confirmKey, String(KEEP_CONFIRM_LINK_SECONDS)],
       ['SET', config.PREFIX + 'decide:' + tokens.hashToken(decideToken), id, 'EX', linkTtl],
       ['ZADD', config.PREFIX + 'awaiting', String(now.getTime()), id]

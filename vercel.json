@@ -41,6 +41,10 @@
     {
       "source": "/recommendations",
       "destination": "/api/recommendations"
+    },
+    {
+      "source": "/admin",
+      "destination": "/api/admin"
     }
   ],
   "functions": {

@@ -8,7 +8,7 @@ const config = require('./_lib/config');
 const redis = require('./_lib/redis');
 const tokens = require('./_lib/tokens');
 const { relationshipLine } = require('./_lib/ownerMail');
-const { rebuildPublic } = require('./_lib/publicList');
+const entries = require('./_lib/entries');
 const { esc, respond } = require('./_lib/html');
 
 function field(req, name) {
@@ -73,11 +73,12 @@ module.exports = async function handler(req, res) {
     const entry = await redis.hgetall(entryKey);
     if (!entry.id) return invalidPage(res);
 
-    if (entry.state === 'published' || entry.state === 'rejected') {
+    if (entry.state === 'published' || entry.state === 'rejected' || entry.state === 'hidden') {
       return respond(res, 200, 'Already decided',
         '<h1>Already decided</h1><p>This recommendation was ' +
-        (entry.state === 'published' ? 'approved and published' : 'rejected') +
-        ' on ' + esc(entry.decidedAt || 'an earlier date') + '. Nothing was changed.</p>');
+        (entry.state === 'rejected' ? 'rejected' : 'approved') +
+        ' on ' + esc(entry.decidedAt || 'an earlier date') + '. Nothing was changed. ' +
+        'You can manage it from the admin page.</p>');
     }
     if (entry.state !== 'awaiting') return invalidPage(res);
 
@@ -117,24 +118,9 @@ module.exports = async function handler(req, res) {
         '<p><a href="' + esc(backLink) + '">No, go back</a></p>');
     }
 
-    // Step 3: record the decision.
-    const now = new Date();
-    const commands = [
-      ['HSET', entryKey,
-        'state', approving ? 'published' : 'rejected',
-        'decidedAt', now.toISOString(),
-        'decision', approving ? 'approved' : 'rejected'],
-      ['ZREM', config.PREFIX + 'awaiting', id]
-    ];
-    if (approving) {
-      commands[0].push('publishedAt', now.toISOString());
-      commands.push(['ZADD', config.PREFIX + 'published', String(now.getTime()), id]);
-    }
-    await redis.pipeline(commands);
-    if (approving) {
-      // Refresh the public list. A failure is logged; the decision itself is already saved.
-      await rebuildPublic().catch(function (e) { console.error('public list rebuild failed:', e && e.message); });
-    }
+    // Step 3: record the decision (the shared code also refreshes the public list).
+    if (approving) await entries.approve(id);
+    else await entries.reject(id);
 
     return respond(res, 200, approving ? 'Approved' : 'Rejected',
       approving
