@@ -138,7 +138,7 @@ module.exports = async function handler(req, res) {
 
     return respond(res, 200, approving ? 'Approved' : 'Rejected',
       approving
-        ? '<h1>Approved</h1><p>The recommendation is marked as published. It will appear on the recommendations page within a minute.</p>'
+        ? '<h1>Approved</h1><p>The recommendation is marked as published. It will appear on the recommendations page within about half a minute.</p>'
         : '<h1>Rejected</h1><p>The recommendation will stay private.</p>');
   } catch (error) {
     console.error('decide failed:', error && error.message);

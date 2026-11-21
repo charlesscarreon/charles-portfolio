@@ -101,7 +101,9 @@ module.exports = async function handler(req, res) {
 
   res.status(200);
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  // A short shared cache keeps the page fast. Errors are never cached.
-  res.setHeader('Cache-Control', loaded ? 'public, s-maxage=60, stale-while-revalidate=300' : 'no-store');
+  // A short shared cache keeps the page fast and the database reads low. A copy is never
+  // served more than 30 seconds old, so an approval shows up within about half a minute.
+  // Errors are never cached.
+  res.setHeader('Cache-Control', loaded ? 'public, s-maxage=30' : 'no-store');
   return res.send(html);
 };
