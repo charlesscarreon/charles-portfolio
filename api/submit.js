@@ -68,10 +68,8 @@ module.exports = async function handler(req, res) {
 
     const id = tokens.newId();
     const confirmToken = tokens.newToken();
-    const statusToken = tokens.newToken();
     const entryKey = config.PREFIX + 'entry:' + id;
     const confirmKey = config.PREFIX + 'confirm:' + tokens.hashToken(confirmToken);
-    const statusKey = config.PREFIX + 'status:' + tokens.hashToken(statusToken);
     const ttl = String(config.UNCONFIRMED_TTL_SECONDS);
 
     await redis.pipeline([
@@ -91,15 +89,12 @@ module.exports = async function handler(req, res) {
         'consent', '1',
         'consentAt', new Date().toISOString(),
         'ipHash', tokens.hmac(clientIp(req)),
-        'confirmHash', tokens.hashToken(confirmToken),
-        'statusHash', tokens.hashToken(statusToken)],
+        'confirmHash', tokens.hashToken(confirmToken)],
       ['EXPIRE', entryKey, ttl],
-      ['SET', confirmKey, id, 'EX', ttl],
-      ['SET', statusKey, id, 'EX', ttl]
+      ['SET', confirmKey, id, 'EX', ttl]
     ]);
 
     const link = config.BASE_URL + '/api/confirm?token=' + encodeURIComponent(confirmToken);
-    const statusLink = config.BASE_URL + '/api/status?token=' + encodeURIComponent(statusToken);
     try {
       await sendMail({
         to: v.email,
@@ -110,13 +105,11 @@ module.exports = async function handler(req, res) {
           'To confirm that you wrote it, open this link and press the confirm button:\n' +
           link + '\n\n' +
           'The link works for 48 hours. Until you confirm, nothing is shared with anyone.\n\n' +
-          'You can check where your recommendation stands at any time here:\n' +
-          statusLink + '\n\n' +
           'If you did not write this, ignore this email and the submission will be deleted automatically.\n'
       });
     } catch (mailError) {
       // Remove the entry so a failed send leaves nothing behind.
-      await redis.pipeline([['DEL', entryKey], ['DEL', confirmKey], ['DEL', statusKey], ['DEL', emailKey]]).catch(function () {});
+      await redis.pipeline([['DEL', entryKey], ['DEL', confirmKey], ['DEL', emailKey]]).catch(function () {});
       throw mailError;
     }
 

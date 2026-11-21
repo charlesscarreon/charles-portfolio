@@ -97,7 +97,6 @@ async function remove(id) {
   const commands = [['DEL', entryKey(id)]];
   Object.keys(SETS).forEach(function (name) { commands.push(['ZREM', SETS[name], id]); });
   if (e.confirmHash) commands.push(['DEL', P + 'confirm:' + e.confirmHash]);
-  if (e.statusHash) commands.push(['DEL', P + 'status:' + e.statusHash]);
   if (e.decideHash) commands.push(['DEL', P + 'decide:' + e.decideHash]);
   await redis.pipeline(commands);
   await refresh();
