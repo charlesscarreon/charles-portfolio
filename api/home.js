@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const { loadPublic, homeSelection } = require('./_lib/publicList');
 const { renderEntry } = require('./_lib/render');
+const config = require('./_lib/config');
 
 const START = '<!-- recommendations:home -->';
 const END = '<!-- /recommendations:home -->';
@@ -44,10 +45,16 @@ module.exports = async function handler(req, res) {
 
   let html = template;
   let cache = 'public, s-maxage=30';
+  // Says what the function did, so a plain homepage can be explained. Error details are
+  // only included outside production.
+  let outcome = 'none';
   try {
-    const picks = homeSelection(await loadPublic());
+    const data = await loadPublic();
+    const picks = homeSelection(data);
     const from = template.indexOf(START);
     const to = template.indexOf(END);
+    outcome = 'entries=' + data.entries.length + ' featured=' + data.featured.length + ' picks=' + picks.length +
+      (from === -1 || to <= from ? ' markers=missing' : '');
     if (picks.length && from !== -1 && to > from) {
       const cards = picks.map(function (e) { return renderEntry(e, { max: MAX_CHARS }); }).join('\n');
       html = template.slice(0, from) + cards + '\n' + BUTTONS + template.slice(to + END.length);
@@ -55,10 +62,12 @@ module.exports = async function handler(req, res) {
   } catch (error) {
     console.error('homepage recommendations failed:', error && error.message);
     cache = 'no-store';
+    outcome = 'error' + (config.IS_PROD ? '' : ': ' + String((error && error.message) || error).slice(0, 120));
   }
 
   res.status(200);
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', cache);
+  res.setHeader('X-Recommendations-Home', outcome.replace(/[^\x20-\x7E]/g, ' '));
   return res.send(html);
 };
