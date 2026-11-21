@@ -1,12 +1,14 @@
 // /api/confirm
 // GET  ?token=...  shows a page with a confirm button (opening the link changes nothing,
 //                  so email scanners that pre-open links cannot confirm by accident).
-// POST token=...   marks the entry as "awaiting" (writer confirmed they wrote it).
+// POST token=...   marks the entry "awaiting", keeps it, and emails the owner once.
 // Safe to repeat: confirming twice just shows the same result.
 
 const config = require('./_lib/config');
 const redis = require('./_lib/redis');
 const tokens = require('./_lib/tokens');
+const { sendMail } = require('./_lib/mail');
+const { buildOwnerEmail } = require('./_lib/ownerMail');
 const { esc, respond } = require('./_lib/html');
 
 const KEEP_CONFIRM_LINK_SECONDS = 30 * 24 * 60 * 60;
@@ -29,6 +31,30 @@ function invalidPage(res) {
     'You can submit your recommendation again from the recommendations page.</p>');
 }
 
+// Tells the owner. A failure here must not undo the writer's confirmation, so the entry
+// is flagged and the problem is logged; a later daily job can retry flagged entries.
+async function notifyOwner(entry, entryKey, approveToken, rejectToken) {
+  try {
+    const owner = process.env.OWNER_EMAIL;
+    if (!owner) throw new Error('OWNER_EMAIL is not set');
+    const mail = buildOwnerEmail(entry, approveToken, rejectToken);
+    const messageId = '<recommendation-' + entry.id + '@charlescarreon.dev>';
+    const result = await sendMail({
+      to: owner,
+      subject: mail.subject,
+      text: mail.text,
+      headers: { 'Message-ID': messageId }
+    });
+    await redis.command('HSET', entryKey,
+      'ownerMailAt', new Date().toISOString(),
+      'ownerMailId', String(result.id || ''),
+      'ownerMessageId', messageId);
+  } catch (error) {
+    console.error('owner email failed:', error && error.message);
+    await redis.command('HSET', entryKey, 'ownerMailFailed', '1').catch(function () {});
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     res.setHeader('Allow', 'GET, POST');
@@ -44,22 +70,19 @@ module.exports = async function handler(req, res) {
     if (!id) return invalidPage(res);
 
     const entryKey = config.PREFIX + 'entry:' + id;
-    const entry = await redis.command('HGETALL', entryKey);
-    // HGETALL returns a flat [field, value, ...] list; empty if the entry is gone.
-    if (!entry || !entry.length) return invalidPage(res);
-    const state = entry[entry.indexOf('state') + 1];
+    const entry = await redis.hgetall(entryKey);
+    if (!entry.id) return invalidPage(res);
 
-    if (state !== 'unconfirmed') {
+    if (entry.state !== 'unconfirmed') {
       return respond(res, 200, 'Already confirmed',
         '<h1>Already confirmed</h1><p>You have already confirmed this recommendation. Thank you! ' +
         'It will be reviewed before anything is published.</p>');
     }
 
     if (req.method === 'GET') {
-      const name = entry[entry.indexOf('name') + 1];
       return respond(res, 200, 'Confirm your recommendation',
         '<h1>Confirm your recommendation</h1>' +
-        '<p>Hi ' + esc(name) + ', press the button to confirm that you wrote the recommendation you submitted for Charles S. Carreon.</p>' +
+        '<p>Hi ' + esc(entry.name) + ', press the button to confirm that you wrote the recommendation you submitted for Charles S. Carreon.</p>' +
         '<form method="post" action="/api/confirm">' +
         '<input type="hidden" name="token" value="' + esc(token) + '">' +
         '<button type="submit" class="btn">Yes, I wrote this</button>' +
@@ -67,14 +90,26 @@ module.exports = async function handler(req, res) {
         '<p>If you did not write it, just close this page. It will be deleted automatically.</p>');
     }
 
-    // POST: mark as awaiting the owner's decision and keep the entry permanently.
+    // POST: mark as awaiting the owner's decision, keep the entry, and create the
+    // owner's Approve and Reject tokens (stored only as hashes).
+    const approveToken = tokens.newToken();
+    const rejectToken = tokens.newToken();
     const now = new Date();
+    const linkTtl = String(config.DECISION_LINK_TTL_SECONDS);
     await redis.pipeline([
-      ['HSET', entryKey, 'state', 'awaiting', 'confirmedAt', now.toISOString()],
+      ['HSET', entryKey,
+        'state', 'awaiting',
+        'confirmedAt', now.toISOString(),
+        'approveHash', tokens.hashToken(approveToken),
+        'rejectHash', tokens.hashToken(rejectToken)],
       ['PERSIST', entryKey],
       ['EXPIRE', confirmKey, String(KEEP_CONFIRM_LINK_SECONDS)],
+      ['SET', config.PREFIX + 'approve:' + tokens.hashToken(approveToken), id, 'EX', linkTtl],
+      ['SET', config.PREFIX + 'reject:' + tokens.hashToken(rejectToken), id, 'EX', linkTtl],
       ['ZADD', config.PREFIX + 'awaiting', String(now.getTime()), id]
     ]);
+
+    await notifyOwner(entry, entryKey, approveToken, rejectToken);
 
     return respond(res, 200, 'Confirmed',
       '<h1>Thank you, confirmed</h1>' +

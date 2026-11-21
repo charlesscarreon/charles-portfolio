@@ -31,6 +31,9 @@ const RATE = {
   emailCooldownSeconds: IS_PROD ? 600 : 10
 };
 
+// Approve and Reject links in the owner's email work for 30 days.
+const DECISION_LINK_TTL_SECONDS = 30 * 24 * 60 * 60;
+
 // Unconfirmed submissions disappear after 48 hours.
 const UNCONFIRMED_TTL_SECONDS = 48 * 60 * 60;
 
@@ -46,4 +49,4 @@ const RELATIONSHIPS = {
   other: { label: 'Other', line: 'Knows Charles' }
 };
 
-module.exports = { ENV, IS_PROD, PREFIX, BASE_URL, FROM, LIMITS, RATE, UNCONFIRMED_TTL_SECONDS, RELATIONSHIPS };
+module.exports = { ENV, IS_PROD, PREFIX, BASE_URL, FROM, LIMITS, RATE, UNCONFIRMED_TTL_SECONDS, DECISION_LINK_TTL_SECONDS, RELATIONSHIPS };

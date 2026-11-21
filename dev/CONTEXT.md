@@ -85,7 +85,7 @@ Work in progress or planned to be done immediately.
 - TRIGGR project entry: completed, committed, and pushed by Charles on `feature/homepage-rework`, then merged into remote `main`. Local `main` is up to date with the remote merge. It adds a text-only project card and detail dialog on `/projects`, reorders the existing projects by reverse completion chronology, and updates JSON-LD positions to match. The copy uses neutral third-person wording and states that the game was built by a three-person team.
 - Phase 4 achievements page: completed and merged through PR #6 on 2026-11-18. The local `feature/achievements-page` branch and local `main` are up to date with the remote merge. The results from that round are recorded under Completed Changes.
 - Recommendations basic UI: completed and merged through PR #9. It added the page and homepage section with an empty state and a static write form, with no recommendation data, storage, submission behavior, or JavaScript changes.
-- Recommendations backend: Phase 1 (foundations) completed 2026-11-21 on `feature/recommendations-page`. Upstash Redis and Resend are connected, `charlescarreon.dev` is verified for sending (SPF, DKIM and DMARC pass), and a test round trip worked. Next is Phase 2 (submit and confirm). See the plan under Planned Changes.
+- Recommendations backend: Phase 1 (foundations) completed 2026-11-21 on `feature/recommendations-page`. Upstash Redis and Resend are connected, `charlescarreon.dev` is verified for sending (SPF, DKIM and DMARC pass), and a test round trip worked. Phase 2 (submit and confirm) completed 2026-11-21 and verified on a preview; next is Phase 3 (owner approval). See the plan under Planned Changes.
 
 ## Planned Changes
 
@@ -168,7 +168,7 @@ DECISIONS RECORDED 2026-11-19. IMPLEMENTED 2026-11-19 and merged through PR #9.
 
 ### Recommendations backend (`feature/recommendations-page`)
 
-PLAN RECORDED 2026-11-21 in the Claude doc "Recommendations Page: Implementation Plan" (six phases). Phase 1 is done. Charles runs every git command that writes; Claude only gives the commands.
+PLAN RECORDED 2026-11-21 in the Claude doc "Recommendations Page: Implementation Plan" (six phases). Phases 1 and 2 are done. Charles runs every git command that writes; Claude only gives the commands.
 
 - Flow: a writer submits a testimony, confirms by email that they wrote it, and the owner approves it from a link in a second email. Nothing publishes without the owner's approval. A private status page shows the writer where it stands.
 - Stack: Vercel functions in `api/`; Upstash Redis (Marketplace, free plan, region `iad1`, eviction off) over its REST API; Resend (free plan) sending from `recommendations@charlescarreon.dev`; one daily Vercel cron job for the 24-hour reminder, the weekly digest, and the 48-hour cleanup of unconfirmed entries.
@@ -176,6 +176,12 @@ PLAN RECORDED 2026-11-21 in the Claude doc "Recommendations Page: Implementation
 - Spam limits, token handling, and the email threading rules are in the plan doc. Resend generates each email's Message-ID, so the reminder threading must read it back from the send result and be tested in a real Gmail inbox.
 - Backup: an owner-only export of published testimonies as a JSON file kept in the repo, used as the page's fallback and as a way to restore or leave the database.
 - Domain risk: `charlescarreon.dev` is free for the first year and email sending depends on it. If it is not renewed by 20 Nov 2027, sending must move to another domain, and the write form shows a "submissions closed" message. Published testimonies keep showing on `charlescarreon.vercel.app` once the redirect is removed.
+- Phase 2 (submit and confirm) built and verified on a Vercel preview 2026-11-21. Files: `api/submit.js` (POST only; honeypot field `website`; validation; per-IP and per-email throttle; stores an Unconfirmed entry for 48 hours; emails the writer a confirm link), `api/confirm.js` (GET shows a confirm button and changes nothing; POST marks the entry Awaiting, keeps it with no expiry, and adds it to the `recs:<env>:awaiting` sorted set; repeat clicks are harmless), and shared helpers in `api/_lib/` (`config.js`, `redis.js`, `mail.js`, `tokens.js`, `html.js`, `validate.js`). The form in `recommendations.html` is a real POST form to `/api/submit`.
+- Form fields: required name, email, "how do you know Charles?" (seven fixed options), message (50 to 1200 characters, at most two links) and consent checkbox; optional role, organization, LinkedIn and Facebook links (https, on those sites only) and a "show my links" checkbox (unticked by default; links are always shown to the owner, published only if ticked).
+- Entry storage: Redis hash `recs:<env>:entry:<id>` with 18 fields after confirmation; confirm token found through `recs:<env>:confirm:<token hash>`; tokens stored only as hashes; IP stored only as a keyed hash.
+- Throttle (Phase 2, minimal): production 5 submissions per IP per hour and one per email per 10 minutes; preview 50 per hour and a 10-second cooldown. The plan's timing check (signed timestamp) moved to Phase 4/5 because it needs the form served by a function. Daily and site-wide limits arrive in Phase 5.
+- Preview links in emails point at the preview deployment address; production emails use `https://charlescarreon.dev` (set in `api/_lib/config.js`; change it there if the domain changes).
+- Next: Phase 3 (owner approval email with Approve and Reject links through a confirmation page; 24-hour same-thread reminder).
 - Test endpoint: a temporary `api/setup-test.js` passed the Phase 1 check and was deleted. The `SETUP_TEST_TOKEN` variable must also be removed from Vercel.
 
 ### SEO and identity (from audit)

@@ -24,4 +24,16 @@ async function command() {
   return results[0];
 }
 
-module.exports = { pipeline, command };
+// Redis returns a hash as a flat [field, value, ...] list. This turns it into an object
+// (an empty object when the key does not exist).
+function toObject(flat) {
+  const out = {};
+  for (let i = 0; flat && i < flat.length; i += 2) out[flat[i]] = flat[i + 1];
+  return out;
+}
+
+async function hgetall(key) {
+  return toObject(await command('HGETALL', key));
+}
+
+module.exports = { pipeline, command, hgetall };
