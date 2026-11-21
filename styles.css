@@ -1751,23 +1751,23 @@ html.dialog-capable .project-dialog:not([open]) {
 }
 
 .cert-card {
+    --cert-pad: 0.9rem;
     display: flex;
     flex-direction: column;
-    padding: 0.9rem;
+    padding: var(--cert-pad);
     border-radius: 0.75rem;
     background-color: var(--surface-2);
     border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
 }
 
 .cert-thumb-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 8rem;
-    padding: 0.35rem;
+    /* The frame is always the same 16:9 shape, whatever the image size. The
+       image fills it without stretching (any extra is trimmed) and the frame
+       has no background, padding or border of its own. */
+    aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: 0.5rem;
-    background-color: var(--surface);
+    transition: margin 0.25s ease, border-radius 0.25s ease;
 }
 
 .cert-thumb {
@@ -1775,18 +1775,12 @@ html.dialog-capable .project-dialog:not([open]) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center top;
+    object-position: center;
 }
 
 /* Homepage certificate cards use the same inset frame as featured projects. */
 .cert-grid--home .cert-card {
-    padding: 0.85rem;
-}
-
-.cert-grid--home .cert-thumb-wrap {
-    padding: 0.25rem;
-    border: 1px solid var(--border);
-    border-radius: 0.6rem;
+    --cert-pad: 0.85rem;
 }
 
 .cert-card h3 {
@@ -1832,20 +1826,110 @@ html.dialog-capable .project-dialog:not([open]) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--accent);
-    color: var(--accent-contrast);
-    border: 1px solid transparent;
+    min-height: 1.625rem;
+    background-color: transparent;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
     border-radius: 999px;
-    padding: 0.35rem 0.9rem;
-    font-size: 0.85rem;
+    padding: 0.15rem 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: opacity 0.18s ease, transform 0.18s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.cert-more a:hover,
+.cert-more a:focus-visible {
+    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
+    border-color: var(--accent);
+    color: var(--hover);
     text-decoration: none;
 }
 
-.cert-more a:hover {
-    background-color: var(--accent-strong);
-    color: var(--accent-contrast);
-    border-color: transparent;
+/* The whole card is one link: the existing button link is stretched over
+   the card. This is plain CSS, so it needs no script, and with no CSS the
+   button is simply an ordinary visible link. */
+.cert-card {
+    position: relative;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.cert-more a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.cert-thumb {
+    transition: transform 0.3s ease;
+}
+
+/* Highlight one certificate on keyboard focus too. The button itself always
+   shows on focus (see below), so a browser without :has() still reveals it. */
+.cert-card:has(a:focus-visible) {
+    transform: translateY(-0.25rem);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+        0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.cert-card:has(a:focus-visible) .cert-thumb {
+    transform: scale(1.04);
+}
+
+.cert-card:has(a:focus-visible) .cert-thumb-wrap {
+    margin: calc(var(--cert-pad) * -1) calc(var(--cert-pad) * -1) calc(var(--cert-pad) * -0.125);
+    border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0;
+}
+
+.cert-grid:has(.cert-card a:focus-visible) .cert-card:not(:has(a:focus-visible)) {
+    opacity: 0.65;
+}
+
+/* Pointer devices: the button stays out of sight until the card is hovered
+   or focused. Its space is reserved, so the cards do not jump. Touch screens
+   and anything without hover keep the quiet button visible. */
+@media (hover: hover) and (pointer: fine) {
+    .cert-card:hover {
+        transform: translateY(-0.25rem);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+        cursor: pointer;
+    }
+
+    .cert-card:hover .cert-thumb {
+        transform: scale(1.04);
+    }
+
+    /* The image grows out to the card's top and side edges. The negative
+       margins equal the card padding. The frame keeps its 16:9 shape, so it
+       grows 1.125x the padding in height; the bottom margin pulls that back
+       up so the text below does not move. */
+    .cert-card:hover .cert-thumb-wrap {
+        margin: calc(var(--cert-pad) * -1) calc(var(--cert-pad) * -1) calc(var(--cert-pad) * -0.125);
+        border-radius: calc(0.75rem - 1px) calc(0.75rem - 1px) 0 0;
+    }
+
+    .cert-more a {
+        opacity: 0;
+        transform: translateY(0.35rem);
+    }
+
+    .cert-card:hover .cert-more a,
+    .cert-more a:focus-visible {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Dim the other certificates while one is hovered. Kept as its own rule so a
+   browser without :has() only loses this dimming. */
+@media (hover: hover) and (pointer: fine) {
+    .cert-grid:has(.cert-card:hover) .cert-card:not(:hover) {
+        opacity: 0.65;
+    }
 }
 
 /* ---------- Footer ---------- */
@@ -2153,6 +2237,17 @@ html.dialog-capable .project-dialog:not([open]) {
 
     .project:hover,
     .project:focus-within {
+        transform: none;
+    }
+
+    .cert-card:hover,
+    .cert-card:hover .cert-thumb,
+    .cert-more a {
+        transform: none;
+    }
+
+    .cert-card:has(a:focus-visible),
+    .cert-card:has(a:focus-visible) .cert-thumb {
         transform: none;
     }
 }
