@@ -184,6 +184,354 @@
         update();
     }
 
+    /* ---------- Hero background: floating objects and circuit traces ---------- */
+    function initHeroDecor() {
+        var layer = document.querySelector(".hero-decor");
+        if (!layer) {
+            return;
+        }
+
+        var items = layer.querySelectorAll(".deco");
+        var width = layer.offsetWidth;
+        var height = layer.offsetHeight;
+        if (!items.length || !width || !height || !layer.style || !layer.style.setProperty) {
+            return;
+        }
+
+        function rand(min, max) {
+            return min + Math.random() * (max - min);
+        }
+
+        /* The hero text is at most 46rem (736px) wide and centred. When the
+           window leaves room beside it, the objects stay in those side bands;
+           on narrow screens they sit behind the text, a little fainter. */
+        function scatter() {
+            var isHome = doc.classList.contains("home");
+            var column = Math.min(736, width - 32);
+            var side = (width - column) / 2;
+            var bands = side >= 100;
+            var first = Math.random() < 0.5 ? 0 : 1;
+            var placed = [];
+            var i, k, tries, size, w, h, x, y, onRight, rotation, clear, other;
+
+            for (i = 0; i < items.length; i++) {
+                size = Math.round(isHome ? rand(34, 66) : rand(28, 48));
+                items[i].style.setProperty("--s", size + "px");
+                w = items[i].offsetWidth || size;
+                h = items[i].offsetHeight || size;
+                onRight = (i + first) % 2 === 1;
+
+                for (tries = 0; tries < 16; tries++) {
+                    if (bands) {
+                        x = rand(8, Math.max(8, side - w - 8));
+                        if (onRight) {
+                            x += width - side;
+                        }
+                    } else {
+                        x = rand(0, Math.max(0, width - w));
+                    }
+                    y = isHome
+                        ? rand(height * 0.04, Math.max(height * 0.04, height * 0.94 - h))
+                        : rand(0, Math.max(0, height - h));
+
+                    clear = true;
+                    for (k = 0; k < placed.length; k++) {
+                        other = placed[k];
+                        if (Math.abs(other.x + other.w / 2 - x - w / 2) < (other.w + w) / 2 + 12
+                            && Math.abs(other.y + other.h / 2 - y - h / 2) < (other.h + h) / 2 + 12) {
+                            clear = false;
+                            break;
+                        }
+                    }
+                    if (clear) {
+                        break;
+                    }
+                }
+                placed.push({ x: x, y: y, w: w, h: h });
+
+                rotation = rand(-25, 25);
+                items[i].style.setProperty("--x", (x / width * 100).toFixed(2) + "%");
+                items[i].style.setProperty("--y", (y / height * 100).toFixed(2) + "%");
+                items[i].style.setProperty("--r0", rotation.toFixed(1) + "deg");
+                items[i].style.setProperty("--r1", (rotation + rand(-30, 30)).toFixed(1) + "deg");
+                items[i].style.setProperty("--dx", Math.round(rand(-22, 22)) + "px");
+                items[i].style.setProperty("--dy", Math.round(rand(-22, 22)) + "px");
+                items[i].style.setProperty("--dur", rand(18, 28).toFixed(1) + "s");
+                items[i].style.setProperty("--delay", "-" + rand(0, 20).toFixed(1) + "s");
+                items[i].style.setProperty("--o", (bands ? rand(0.12, 0.2) : rand(0.09, 0.14)).toFixed(2));
+            }
+        }
+
+        /* Circuit traces on a grid: every line is horizontal or vertical,
+           every turn a right angle, and each trace ends in a square pad. */
+        function drawCircuit() {
+            var NS = "http://www.w3.org/2000/svg";
+            var step = 28;
+            var cols = Math.floor(width / step);
+            var rows = Math.floor(height / step);
+            var traces = [];
+            if (!document.createElementNS || cols < 4 || rows < 2) {
+                return traces;
+            }
+
+            var svg = document.createElementNS(NS, "svg");
+            svg.setAttribute("class", "hero-circuit");
+            svg.setAttribute("width", width);
+            svg.setAttribute("height", height);
+            svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+            svg.setAttribute("aria-hidden", "true");
+            svg.setAttribute("focusable", "false");
+
+            var count = Math.min(150, Math.round(cols * rows / 11));
+            var lines = ["", "", ""];
+            var pads = "";
+            var t, x, y, d, horizontal, segments, s, length, next, moved, startX, startY;
+
+            for (t = 0; t < count; t++) {
+                x = Math.floor(rand(0, cols + 1)) * step;
+                y = Math.floor(rand(0, rows + 1)) * step;
+                d = "M" + x + " " + y;
+                startX = x;
+                startY = y;
+                pads += "M" + (x - 3) + " " + (y - 3) + "h6v6h-6z";
+                horizontal = Math.random() < 0.5;
+                segments = 2 + Math.floor(rand(0, 4));
+                moved = false;
+
+                for (s = 0; s < segments; s++) {
+                    length = (1 + Math.floor(rand(0, 4))) * step * (Math.random() < 0.5 ? -1 : 1);
+                    if (horizontal) {
+                        next = Math.max(0, Math.min(width, x + length));
+                        if (next !== x) {
+                            d += "H" + next;
+                            x = next;
+                            moved = true;
+                        }
+                    } else {
+                        next = Math.max(0, Math.min(height, y + length));
+                        if (next !== y) {
+                            d += "V" + next;
+                            y = next;
+                            moved = true;
+                        }
+                    }
+                    horizontal = !horizontal;
+                }
+
+                if (moved) {
+                    traces.push({ d: d, sx: startX, sy: startY, ex: x, ey: y });
+                    lines[t % 3] += d;
+                    pads += "M" + (x - 3) + " " + (y - 3) + "h6v6h-6z";
+                }
+            }
+
+            var base = document.createElementNS(NS, "path");
+            base.setAttribute("class", "hero-circuit__base");
+            base.setAttribute("d", lines.join("") + pads);
+            svg.appendChild(base);
+
+            var n, pulse;
+            for (n = 0; n < 3; n++) {
+                pulse = document.createElementNS(NS, "path");
+                pulse.setAttribute("class", "hero-circuit__pulse");
+                pulse.setAttribute("d", lines[n]);
+                svg.appendChild(pulse);
+            }
+
+            layer.insertBefore(svg, layer.firstChild);
+            return traces;
+        }
+
+        /* Every so often, at a random place, one trace lights up and a short
+           bright segment runs along it, like data being sent. */
+        function startFlows(traces) {
+            var NS = "http://www.w3.org/2000/svg";
+            if (!traces.length || !document.createElementNS
+                || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+                return;
+            }
+
+            var svg = document.createElementNS(NS, "svg");
+            svg.setAttribute("class", "hero-flow");
+            svg.setAttribute("width", width);
+            svg.setAttribute("height", height);
+            svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+            svg.setAttribute("aria-hidden", "true");
+            svg.setAttribute("focusable", "false");
+            layer.appendChild(svg);
+
+            function pad(x, y) {
+                return "M" + (x - 3) + " " + (y - 3) + "h6v6h-6z";
+            }
+
+            function run() {
+                var box = layer.getBoundingClientRect();
+                var trace, line, dash, length, time;
+
+                if (!document.hidden && box.bottom > 0 && box.top < window.innerHeight) {
+                    trace = traces[Math.floor(Math.random() * traces.length)];
+                    line = document.createElementNS(NS, "path");
+                    line.setAttribute("class", "hero-flow__line");
+                    line.setAttribute("d", trace.d + pad(trace.sx, trace.sy) + pad(trace.ex, trace.ey));
+                    dash = document.createElementNS(NS, "path");
+                    dash.setAttribute("class", "hero-flow__dash");
+                    dash.setAttribute("d", trace.d);
+                    svg.appendChild(line);
+                    svg.appendChild(dash);
+
+                    length = dash.getTotalLength ? dash.getTotalLength() : 200;
+                    time = Math.max(1.1, Math.min(2.6, length / 150));
+                    line.style.setProperty("--flow-time", time.toFixed(2) + "s");
+                    dash.style.setProperty("--flow-time", time.toFixed(2) + "s");
+                    dash.style.setProperty("--len", length.toFixed(1) + "px");
+
+                    window.setTimeout(function () {
+                        if (line.parentNode) {
+                            line.parentNode.removeChild(line);
+                        }
+                        if (dash.parentNode) {
+                            dash.parentNode.removeChild(dash);
+                        }
+                    }, time * 1000 + 300);
+                }
+
+                window.setTimeout(run, rand(2200, 6500));
+            }
+
+            window.setTimeout(run, 1500);
+        }
+
+        /* A few traces run on past the bottom of the hero, into the gap above
+           the content. They sit in the side bands, clear of the text. */
+        function drawTrail() {
+            var hero = layer.parentNode;
+            var NS = "http://www.w3.org/2000/svg";
+            var step = 28;
+            var trailHeight = 80;
+            if (!hero || !document.createElementNS) {
+                return;
+            }
+
+            var column = Math.min(736, width - 32);
+            var side = (width - column) / 2;
+            var bands = side >= 100;
+            var count = bands ? 8 : 3;
+            var d = "";
+            var t, x, y, jog, mid, end, onRight;
+
+            for (t = 0; t < count; t++) {
+                if (bands) {
+                    onRight = t % 2 === 1;
+                    x = Math.floor(rand(0.5, side / step - 0.5)) * step;
+                    if (onRight) {
+                        x = width - x;
+                    }
+                } else {
+                    x = Math.floor(rand(1, width / step - 1)) * step;
+                }
+                x = Math.round(x / step) * step;
+                mid = Math.round(rand(16, 44));
+                end = Math.round(rand(52, 76));
+                jog = (Math.random() < 0.5 ? -1 : 1) * step * (1 + Math.floor(rand(0, 2)));
+                y = 0;
+                d += "M" + x + " " + y + "V" + mid + "H" + (x + jog) + "V" + end;
+                d += "M" + (x + jog - 3) + " " + (end - 3) + "h6v6h-6z";
+            }
+
+            var trail = document.createElement("div");
+            trail.className = "hero-trail";
+            trail.setAttribute("aria-hidden", "true");
+            var svg = document.createElementNS(NS, "svg");
+            svg.setAttribute("width", width);
+            svg.setAttribute("height", trailHeight);
+            svg.setAttribute("viewBox", "0 0 " + width + " " + trailHeight);
+            svg.setAttribute("focusable", "false");
+            var path = document.createElementNS(NS, "path");
+            path.setAttribute("d", d);
+            svg.appendChild(path);
+            trail.appendChild(svg);
+            hero.appendChild(trail);
+            return trail;
+        }
+
+        /* A glow and the nearby traces follow the mouse while it is over the
+           hero. Only for a real pointer that can hover, never on touch. */
+        function followPointer(trail) {
+            if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+                || !window.requestAnimationFrame) {
+                return;
+            }
+
+            var px = 0;
+            var py = 0;
+            var queued = false;
+            var lit = false;
+
+            function update() {
+                queued = false;
+                var box = layer.getBoundingClientRect();
+                var x = px - box.left;
+                var y = py - box.top;
+                var inside = x >= 0 && x <= box.width && y >= -30 && y <= box.height + 60;
+                var tbox, strength;
+
+                if (inside) {
+                    /* Full light down to the middle of the hero, easing to
+                       nothing by 85% of the way down, before the boundary
+                       with the content. */
+                    strength = (y - box.height * 0.5) / (box.height * 0.35);
+                    strength = Math.max(0, Math.min(1, strength));
+                    strength = 1 - strength * strength * (3 - 2 * strength);
+                    layer.style.setProperty("--mx", x.toFixed(0) + "px");
+                    layer.style.setProperty("--my", y.toFixed(0) + "px");
+                    layer.style.setProperty("--lit", strength.toFixed(2));
+                    if (trail) {
+                        tbox = trail.getBoundingClientRect();
+                        trail.style.setProperty("--mx", (px - tbox.left).toFixed(0) + "px");
+                        trail.style.setProperty("--my", (py - tbox.top).toFixed(0) + "px");
+                        trail.style.setProperty("--lit", strength.toFixed(2));
+                    }
+                    if (!lit) {
+                        lit = true;
+                        layer.classList.add("is-lit");
+                        if (trail) {
+                            trail.classList.add("is-lit");
+                        }
+                    }
+                } else if (lit) {
+                    lit = false;
+                    layer.classList.remove("is-lit");
+                    if (trail) {
+                        trail.classList.remove("is-lit");
+                    }
+                }
+            }
+
+            function queue() {
+                if (!queued) {
+                    queued = true;
+                    window.requestAnimationFrame(update);
+                }
+            }
+
+            document.addEventListener("mousemove", function (event) {
+                px = event.clientX;
+                py = event.clientY;
+                queue();
+            });
+            window.addEventListener("scroll", queue, { passive: true });
+            document.documentElement.addEventListener("mouseleave", function () {
+                px = -9999;
+                queue();
+            });
+        }
+
+        scatter();
+        startFlows(drawCircuit());
+        followPointer(drawTrail());
+        layer.classList.add("is-ready");
+    }
+
     /* ---------- Cover hero: scroll-linked shrink and direction cues ---------- */
     function initHeroCollapse() {
         var hero = document.querySelector(".hero");
@@ -471,38 +819,171 @@
         var close = dialog.querySelector("[data-contact-close]");
         var send = dialog.querySelector("[data-contact-send]");
 
-        function open() {
+        var reduceMotion = window.matchMedia
+            && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        /* The button is wrapped so a second, panel-coloured button can sit
+           behind it. On hover the teal button lifts and shows it below. */
+        var wrap = document.createElement("span");
+        wrap.className = "btn-reveal";
+        trigger.parentNode.insertBefore(wrap, trigger);
+        wrap.appendChild(trigger);
+        trigger.classList.add("btn-reveal__front");
+
+        var back = document.createElement("span");
+        back.className = "btn-reveal__back";
+        back.setAttribute("aria-hidden", "true");
+        wrap.appendChild(back);
+
+        var launching = false;
+
+        /* The panel clipped down to the button's box, as a clip-path. */
+        function buttonClip(from) {
+            var box = dialog.getBoundingClientRect();
+            return "inset(" + Math.max(0, from.top - box.top) + "px "
+                + Math.max(0, box.right - from.right) + "px "
+                + Math.max(0, box.bottom - from.bottom) + "px "
+                + Math.max(0, from.left - box.left) + "px round " + (from.height / 2) + "px)";
+        }
+
+        function open(from) {
             if (!dialog.open) {
                 dialog.showModal();
             }
             if (message && message.focus) {
-                message.focus();
+                try { message.focus({ preventScroll: true }); } catch (error) { message.focus(); }
             }
+
+            if (!from || reduceMotion || !dialog.animate) {
+                return;
+            }
+
+            /* The panel grows out of the button: it is clipped to the
+               button's box at first, and the clip opens up to the full panel.
+               The panel and the button are the same colour, so it reads as
+               one shape expanding. */
+            var startClip = buttonClip(from);
+            var timing = { duration: 460, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" };
+
+            dialog.animate([
+                { clipPath: startClip },
+                { clipPath: "inset(0px 0px 0px 0px round 14px)" }
+            ], timing);
+            dialog.animate([
+                { opacity: 0 },
+                { opacity: 1, offset: 0.2 },
+                { opacity: 1 }
+            ], timing);
+
+            var body = dialog.querySelector(".contact-dialog__body");
+            if (body) {
+                body.animate([
+                    { opacity: 0 },
+                    { opacity: 0, offset: 0.4 },
+                    { opacity: 1 }
+                ], timing);
+            }
+
+            try {
+                dialog.animate([{ opacity: 0 }, { opacity: 1 }],
+                    { duration: 320, pseudoElement: "::backdrop" });
+            } catch (error) { /* no animated backdrop: the dialog still opens */ }
         }
 
-        trigger.addEventListener("click", function (event) {
+        /* The panel expands out of the button behind the teal one. The two
+           buttons act as one, so a click on either, or Enter on the link, does
+           the same. */
+        function launch(event) {
             event.preventDefault();
-            open();
+            if (launching || dialog.open) {
+                return;
+            }
+            launching = true;
+            var from = wrap.getBoundingClientRect();
+            wrap.classList.add("is-open");
+            open(from);
+        }
+
+        wrap.addEventListener("click", launch);
+
+        /* Closing is the opening played backwards: the panel shrinks back into
+           the button behind the teal one, then the teal button slides down. */
+        var closing = false;
+
+        function closeAnimated() {
+            if (!dialog.open || closing) {
+                return;
+            }
+            if (reduceMotion || !dialog.animate) {
+                dialog.close();
+                return;
+            }
+
+            closing = true;
+            var timing = { duration: 380, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" };
+            var animations = [
+                dialog.animate([
+                    { clipPath: "inset(0px 0px 0px 0px round 14px)" },
+                    { clipPath: buttonClip(wrap.getBoundingClientRect()) }
+                ], timing),
+                dialog.animate([
+                    { opacity: 1 },
+                    { opacity: 1, offset: 0.8 },
+                    { opacity: 0 }
+                ], timing)
+            ];
+
+            var body = dialog.querySelector(".contact-dialog__body");
+            if (body) {
+                animations.push(body.animate([
+                    { opacity: 1 },
+                    { opacity: 0, offset: 0.4 },
+                    { opacity: 0 }
+                ], timing));
+            }
+
+            try {
+                animations.push(dialog.animate([{ opacity: 1 }, { opacity: 0 }],
+                    { duration: 380, fill: "forwards", pseudoElement: "::backdrop" }));
+            } catch (error) { /* no animated backdrop */ }
+
+            animations[0].onfinish = function () {
+                dialog.close();
+                var i;
+                for (i = 0; i < animations.length; i++) {
+                    animations[i].cancel();
+                }
+                closing = false;
+            };
+        }
+
+        dialog.addEventListener("close", function () {
+            launching = false;
+            wrap.classList.remove("is-open");
+        });
+
+        /* Escape goes through the same animation as the Close button. */
+        dialog.addEventListener("cancel", function (event) {
+            event.preventDefault();
+            closeAnimated();
         });
 
         if (close) {
-            close.addEventListener("click", function () {
-                dialog.close();
-            });
+            close.addEventListener("click", closeAnimated);
         }
 
         /* The dialog itself has no padding, so a click that targets it lands on
            the backdrop rather than on its contents. */
         dialog.addEventListener("click", function (event) {
             if (event.target === dialog) {
-                dialog.close();
+                closeAnimated();
             }
         });
 
         if (send) {
             send.addEventListener("click", function () {
                 var body = message ? message.value : "Hi Charles,";
-                var value = subject && subject.value ? subject.value : "Portfolio inquiry";
+                var value = subject && subject.value ? subject.value : "Portfolio Inquiry";
                 window.location.href = "mailto:charlesserranocarreon+portfolio@gmail.com?subject="
                     + encodeURIComponent(value) + "&body=" + encodeURIComponent(body);
             });
@@ -517,6 +998,7 @@
     initSkipLink();
     initGalleries();
     initHeroCollapse();
+    initHeroDecor();
     initToc();
     initProjectDialogs();
     initContactDialog();

@@ -78,6 +78,9 @@ body {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.65;
+    /* The hero background layer is as wide as the window; this keeps its edge
+       from ever adding a sideways scrollbar. */
+    overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -487,6 +490,7 @@ html.home .section:last-child {
 
 .hero {
     position: relative;
+    isolation: isolate;
     max-width: 46rem;
     margin: 0 auto 3rem;
     padding: 2.5rem clamp(1rem, 4vw, 1.25rem) 0;
@@ -602,6 +606,283 @@ html.home .section:last-child {
 
     html.home main {
         padding-top: 2.5rem;
+    }
+}
+
+/* ---------- Hero background: faint floating objects ---------- */
+
+/* One decorative layer sits behind each hero's text. It is as wide as the
+   window, so the objects can fill the empty sides of the narrow subpage
+   heroes. The objects never take clicks and are hidden from screen readers.
+   Without script they keep the fixed layout below; script.js scatters them
+   afresh on every visit. */
+.hero-decor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    z-index: -1;
+    width: 100vw;
+    transform: translateX(-50%);
+    overflow: hidden;
+    pointer-events: none;
+    /* Everything in the layer fades out toward the bottom edge, so the hero
+       never ends in a hard line. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent);
+}
+
+/* Traces that run on past the bottom of the hero into the gap above the
+   content, a small bridge into the page. They belong to the hero, so they
+   scroll away with it. */
+.hero-trail {
+    position: absolute;
+    top: calc(100% - 3.5rem);
+    left: 50%;
+    z-index: -1;
+    width: 100vw;
+    height: 5rem;
+    transform: translateX(-50%);
+    overflow: hidden;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 30%, transparent);
+}
+
+.hero-trail svg {
+    display: block;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1px;
+    stroke-linecap: square;
+    shape-rendering: crispEdges;
+    /* Like the circuit traces, these show only in a soft circle around the
+       pointer; script.js sets --mx and --my. */
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    -webkit-mask-image: radial-gradient(circle 170px at var(--mx, -999px) var(--my, -999px),
+        #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+    mask-image: radial-gradient(circle 170px at var(--mx, -999px) var(--my, -999px),
+        #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+}
+
+.hero-trail.is-lit svg {
+    opacity: calc(0.7 * var(--lit, 1));
+}
+
+.hero-decor__defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.hero-decor__defs path {
+    vector-effect: non-scaling-stroke;
+}
+
+.deco {
+    position: absolute;
+    left: var(--x, 5%);
+    top: var(--y, 20%);
+    color: var(--accent);
+    animation: deco-drift var(--dur, 22s) ease-in-out var(--delay, 0s) infinite;
+}
+
+.deco svg {
+    display: block;
+    width: var(--s, 40px);
+    height: var(--s, 40px);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: var(--o, 0.16);
+    transform: rotate(var(--r0, 0deg));
+    animation: deco-turn var(--dur, 22s) ease-in-out var(--delay, 0s) infinite;
+}
+
+/* With script, the objects fade in once they have been placed. */
+html.js .deco svg {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+html.js .hero-decor.is-ready .deco svg {
+    opacity: var(--o, 0.16);
+}
+
+
+.deco--1 { --x: 4%; --y: 20%; --s: 44px; --r0: -12deg; --r1: 8deg; --dx: 14px; --dy: -12px; --dur: 21s; --delay: -3s; --o: 0.18; }
+.deco--2 { --x: 90%; --y: 12%; --s: 36px; --r0: 14deg; --r1: -6deg; --dx: -10px; --dy: 14px; --dur: 25s; --delay: -9s; --o: 0.15; }
+.deco--3 { --x: 12%; --y: 62%; --s: 30px; --r0: 6deg; --r1: 24deg; --dx: 12px; --dy: 10px; --dur: 19s; --delay: -6s; --o: 0.14; }
+.deco--4 { --x: 84%; --y: 56%; --s: 48px; --r0: -20deg; --r1: -4deg; --dx: -14px; --dy: -10px; --dur: 27s; --delay: -14s; --o: 0.18; }
+.deco--5 { --x: 22%; --y: 8%; --s: 28px; --r0: 18deg; --r1: 2deg; --dx: 8px; --dy: 12px; --dur: 23s; --delay: -11s; --o: 0.13; }
+.deco--6 { --x: 74%; --y: 68%; --s: 32px; --r0: -8deg; --r1: 12deg; --dx: -12px; --dy: 8px; --dur: 20s; --delay: -2s; --o: 0.14; }
+.deco--7 { --x: 94%; --y: 38%; --s: 28px; --r0: 10deg; --r1: -14deg; --dx: -8px; --dy: -14px; --dur: 26s; --delay: -17s; --o: 0.13; }
+.deco--8 { --x: 2%; --y: 46%; --s: 34px; --r0: -16deg; --r1: -30deg; --dx: 10px; --dy: -8px; --dur: 24s; --delay: -8s; --o: 0.15; }
+
+@keyframes deco-drift {
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(var(--dx, 10px), var(--dy, 10px));
+    }
+}
+
+@keyframes deco-turn {
+    0%,
+    100% {
+        transform: rotate(var(--r0, 0deg));
+    }
+
+    50% {
+        transform: rotate(var(--r1, 10deg));
+    }
+}
+
+/* Circuit traces: straight lines and right angles only. They are invisible
+   until the pointer is over the hero, then show in a soft circle around it,
+   with a glow and small pulses running along the traces. script.js draws the
+   traces and updates --mx and --my. */
+.hero-decor::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle 200px at var(--mx, -999px) var(--my, -999px),
+        rgba(45, 212, 167, 0.06), transparent 70%);
+    background: radial-gradient(circle 200px at var(--mx, -999px) var(--my, -999px),
+        color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.hero-circuit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    fill: none;
+    stroke: var(--accent);
+    shape-rendering: crispEdges;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    -webkit-mask-image: radial-gradient(circle 170px at var(--mx, -999px) var(--my, -999px),
+        #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+    mask-image: radial-gradient(circle 170px at var(--mx, -999px) var(--my, -999px),
+        #000 0%, rgba(0, 0, 0, 0.4) 40%, transparent 100%);
+}
+
+.hero-circuit__base {
+    stroke-width: 1px;
+    stroke-linejoin: miter;
+    stroke-linecap: square;
+    opacity: 0.35;
+}
+
+.hero-circuit__pulse {
+    stroke: var(--accent);
+    stroke-width: 1.5px;
+    stroke-linecap: square;
+    stroke-dasharray: 8 172;
+    opacity: 0.6;
+    animation: circuit-pulse 3.2s linear infinite;
+}
+
+.hero-circuit__pulse:nth-of-type(3) {
+    animation-duration: 4.1s;
+    animation-delay: -1.3s;
+}
+
+.hero-circuit__pulse:nth-of-type(4) {
+    animation-duration: 2.7s;
+    animation-delay: -2.2s;
+}
+
+/* Now and then a trace lights up and a short bright segment runs along it,
+   like data being sent. script.js picks the trace and the place at random. */
+.hero-flow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    fill: none;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+}
+
+.hero-flow__line {
+    stroke: var(--accent);
+    stroke-width: 1px;
+    opacity: 0;
+    shape-rendering: crispEdges;
+    animation: flow-line var(--flow-time, 2s) ease-in-out forwards;
+}
+
+.hero-flow__dash {
+    stroke: var(--accent-strong);
+    stroke-width: 2px;
+    stroke-dasharray: var(--seg, 18px) var(--len, 200px);
+    opacity: 0.75;
+    animation: flow-run var(--flow-time, 2s) cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+}
+
+@keyframes flow-line {
+    0% {
+        opacity: 0;
+    }
+
+    20%,
+    80% {
+        opacity: 0.28;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes flow-run {
+    from {
+        stroke-dashoffset: var(--seg, 18px);
+    }
+
+    to {
+        stroke-dashoffset: calc(var(--len, 200px) * -1);
+    }
+}
+
+@keyframes circuit-pulse {
+    to {
+        stroke-dashoffset: -180;
+    }
+}
+
+/* --lit is 1 in the upper part of the hero and has fallen to 0 well before
+   its bottom edge, so the light dims the further down the pointer goes and
+   nothing is lit along the boundary. */
+.hero-decor.is-lit::before {
+    opacity: var(--lit, 1);
+}
+
+.hero-decor.is-lit .hero-circuit {
+    opacity: calc(0.68 * var(--lit, 1));
+}
+
+/* The home hero shrinks as the page scrolls; the objects fade out with it. */
+html.home.js .hero > .hero-decor,
+html.home.js .hero > .hero-trail {
+    width: 100vw;
+    max-width: none;
+    opacity: calc(1 - var(--hero-progress, 0));
+}
+
+@media (max-width: 640px) {
+    .deco--6,
+    .deco--7,
+    .deco--8 {
+        display: none;
     }
 }
 
@@ -1361,18 +1642,79 @@ html.dialog-capable .project-dialog:not([open]) {
     padding: clamp(1.25rem, 4vw, 1.75rem);
 }
 
-.contact-dialog__to {
-    margin: 0.75rem 0 1rem;
+.contact-dialog[open] {
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+    background-image: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, var(--surface)),
+        var(--surface) 10rem);
+}
+
+.contact-dialog__head {
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+.contact-dialog__heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    min-width: 0;
+}
+
+.contact-dialog__icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: 0.75rem;
+    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+}
+
+.contact-dialog__icon svg {
+    display: block;
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+.contact-dialog__head h3 {
+    font-size: 1.25rem;
+    line-height: 1.3;
+}
+
+.contact-dialog__intro {
+    margin: 0.3rem 0 0;
     color: var(--muted);
     font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.contact-dialog__form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 .contact-dialog__label {
     display: block;
     margin-bottom: 0.35rem;
     color: var(--muted);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.contact-dialog__value {
+    margin: 0;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text);
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
 }
 
 .contact-dialog__input,
@@ -1387,15 +1729,36 @@ html.dialog-capable .project-dialog:not([open]) {
     padding: 0.65rem 0.75rem;
 }
 
+.contact-dialog__input:focus-visible,
+.contact-dialog__textarea:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
 .contact-dialog__textarea {
-    min-height: 9rem;
+    min-height: 6rem;
     resize: vertical;
 }
 
 .contact-dialog__actions {
     display: flex;
     justify-content: flex-end;
-    margin: 1rem 0 0;
+    margin: 1.4rem 0 0;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--border);
+}
+
+.contact-dialog__actions .btn::after {
+    content: "\2192";
+    content: "\2192" / "";
+    display: inline-block;
+    margin-left: 0.45em;
+    transition: transform 0.15s ease;
+}
+
+.contact-dialog__actions .btn:hover::after {
+    transform: translateX(0.15rem);
 }
 
 /* Phones: the panel becomes the screen instead of a card with a scrollbar
@@ -1570,6 +1933,77 @@ html.dialog-capable .project-dialog:not([open]) {
 .btn {
     border: none;
     cursor: pointer;
+    /* A <button> does not inherit the page font on its own, so it would look
+       heavier and different from a link-styled .btn. */
+    font-family: inherit;
+}
+
+/* Get in touch reveal. script.js wraps the button and puts a panel-coloured
+   button, with no text, directly behind it. When the wrapper is hovered or
+   focused, the teal button lifts a little and the button behind it shows
+   below. The two act as one. While the panel is open (or opening or closing)
+   the lifted state is held, because the panel grows out of, and shrinks back
+   into, the button behind. When it is done the teal button slides back down.
+   Without script the button is a plain link. */
+.btn-reveal {
+    position: relative;
+    display: inline-block;
+    border-radius: 999px;
+    vertical-align: top;
+}
+
+.btn-reveal__front {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.15s ease;
+}
+
+.btn-reveal__back {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+    border-radius: 999px;
+    background-color: var(--surface);
+    background-color: color-mix(in srgb, var(--accent) 9%, var(--surface));
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, border-color 0.15s ease;
+}
+
+.btn-reveal:has(.btn:focus-visible) {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+
+.btn-reveal:has(.btn:focus-visible) .btn-reveal__front,
+.btn-reveal.is-open .btn-reveal__front {
+    transform: translateY(-0.7rem);
+}
+
+.btn-reveal:has(.btn:focus-visible) .btn-reveal__back,
+.btn-reveal.is-open .btn-reveal__back {
+    opacity: 1;
+}
+
+.btn-reveal.is-open .btn-reveal__front {
+    background-color: var(--accent-strong);
+}
+
+.btn-reveal.is-open .btn-reveal__back {
+    border-color: var(--accent);
+}
+
+/* The two buttons act as one: hovering either gives the same result. */
+@media (hover: hover) and (pointer: fine) {
+    .btn-reveal:hover .btn-reveal__front {
+        transform: translateY(-0.7rem);
+        background-color: var(--accent-strong);
+    }
+
+    .btn-reveal:hover .btn-reveal__back {
+        opacity: 1;
+        border-color: var(--accent);
+    }
 }
 
 /* Hero call to action: a single primary button, sized up so it reads as the
@@ -2262,6 +2696,8 @@ html.dialog-capable .project-dialog:not([open]) {
     .gallery-nav,
     .toc,
     .project-detail-open,
+    .hero-decor,
+    .hero-trail,
     .contact-dialog {
         display: none !important;
     }
