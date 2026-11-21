@@ -1,6 +1,7 @@
 // /api/decide
-// GET  ?action=approve|reject&token=...  shows the entry and one button (changes nothing).
-// POST action + token                    records the owner's decision.
+// GET  ?token=...            shows the entry with Approve and Reject buttons (changes nothing).
+// POST token + action        asks "are you sure?" (changes nothing).
+// POST token + action + confirm=yes   records the owner's decision.
 // Safe to repeat: once decided, the same page just reports the decision.
 
 const config = require('./_lib/config');
@@ -61,11 +62,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const action = field(req, 'action');
     const token = field(req, 'token');
-    if ((action !== 'approve' && action !== 'reject') || !token || token.length > 200) return invalidPage(res);
+    if (!token || token.length > 200) return invalidPage(res);
 
-    const id = await redis.command('GET', config.PREFIX + action + ':' + tokens.hashToken(token));
+    const id = await redis.command('GET', config.PREFIX + 'decide:' + tokens.hashToken(token));
     if (!id) return invalidPage(res);
 
     const entryKey = config.PREFIX + 'entry:' + id;
@@ -80,21 +80,43 @@ module.exports = async function handler(req, res) {
     }
     if (entry.state !== 'awaiting') return invalidPage(res);
 
-    const approving = action === 'approve';
+    const backLink = '/api/decide?token=' + encodeURIComponent(token);
+    const action = field(req, 'action');
+    const chosen = action === 'approve' || action === 'reject';
 
-    if (req.method === 'GET') {
-      return respond(res, 200, approving ? 'Approve recommendation' : 'Reject recommendation',
-        '<h1>' + (approving ? 'Approve' : 'Reject') + ' this recommendation?</h1>' +
+    // Step 1: show the entry with both buttons.
+    if (req.method === 'GET' || !chosen) {
+      return respond(res, 200, 'Approve or reject',
+        '<h1>Approve or reject this recommendation?</h1>' +
         entryDetails(entry) +
         '<form method="post" action="/api/decide">' +
-        '<input type="hidden" name="action" value="' + esc(action) + '">' +
         '<input type="hidden" name="token" value="' + esc(token) + '">' +
-        '<button type="submit" class="btn">' +
-        (approving ? 'Yes, approve and publish' : 'Yes, reject') +
-        '</button></form>' +
-        '<p>Nothing changes until you press the button.</p>');
+        '<button type="submit" name="action" value="approve" class="btn">Approve</button> ' +
+        '<button type="submit" name="action" value="reject" class="btn">Reject</button>' +
+        '</form>' +
+        '<p>Nothing changes until you press a button and confirm.</p>');
     }
 
+    const approving = action === 'approve';
+
+    // Step 2: ask "are you sure?".
+    if (field(req, 'confirm') !== 'yes') {
+      return respond(res, 200, 'Are you sure?',
+        '<h1>Are you sure you want to ' + (approving ? 'approve and publish' : 'reject') + ' this recommendation?</h1>' +
+        '<p>From ' + esc(entry.name) + '. ' +
+        (approving
+          ? 'Approving marks it as published.'
+          : 'Rejecting keeps it private.') + '</p>' +
+        '<form method="post" action="/api/decide">' +
+        '<input type="hidden" name="token" value="' + esc(token) + '">' +
+        '<input type="hidden" name="action" value="' + esc(action) + '">' +
+        '<input type="hidden" name="confirm" value="yes">' +
+        '<button type="submit" class="btn">' + (approving ? 'Yes, approve and publish' : 'Yes, reject') + '</button>' +
+        '</form>' +
+        '<p><a href="' + esc(backLink) + '">No, go back</a></p>');
+    }
+
+    // Step 3: record the decision.
     const now = new Date();
     const commands = [
       ['HSET', entryKey,

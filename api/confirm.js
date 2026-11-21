@@ -33,22 +33,17 @@ function invalidPage(res) {
 
 // Tells the owner. A failure here must not undo the writer's confirmation, so the entry
 // is flagged and the problem is logged; a later daily job can retry flagged entries.
-async function notifyOwner(entry, entryKey, approveToken, rejectToken) {
+async function notifyOwner(entry, entryKey, decideToken) {
   try {
     const owner = process.env.OWNER_EMAIL;
     if (!owner) throw new Error('OWNER_EMAIL is not set');
-    const mail = buildOwnerEmail(entry, approveToken, rejectToken);
-    const messageId = '<recommendation-' + entry.id + '@charlescarreon.dev>';
-    const result = await sendMail({
-      to: owner,
-      subject: mail.subject,
-      text: mail.text,
-      headers: { 'Message-ID': messageId }
-    });
+    const mail = buildOwnerEmail(entry, decideToken);
+    // The email service replaces any Message-ID we set, so we keep its own email id
+    // and look the real Message-ID up from it when the reminder is sent.
+    const result = await sendMail({ to: owner, subject: mail.subject, text: mail.text });
     await redis.command('HSET', entryKey,
       'ownerMailAt', new Date().toISOString(),
-      'ownerMailId', String(result.id || ''),
-      'ownerMessageId', messageId);
+      'ownerMailId', String(result.id || ''));
   } catch (error) {
     console.error('owner email failed:', error && error.message);
     await redis.command('HSET', entryKey, 'ownerMailFailed', '1').catch(function () {});
@@ -91,25 +86,22 @@ module.exports = async function handler(req, res) {
     }
 
     // POST: mark as awaiting the owner's decision, keep the entry, and create the
-    // owner's Approve and Reject tokens (stored only as hashes).
-    const approveToken = tokens.newToken();
-    const rejectToken = tokens.newToken();
+    // owner's decision token (stored only as a hash).
+    const decideToken = tokens.newToken();
     const now = new Date();
     const linkTtl = String(config.DECISION_LINK_TTL_SECONDS);
     await redis.pipeline([
       ['HSET', entryKey,
         'state', 'awaiting',
         'confirmedAt', now.toISOString(),
-        'approveHash', tokens.hashToken(approveToken),
-        'rejectHash', tokens.hashToken(rejectToken)],
+        'decideHash', tokens.hashToken(decideToken)],
       ['PERSIST', entryKey],
       ['EXPIRE', confirmKey, String(KEEP_CONFIRM_LINK_SECONDS)],
-      ['SET', config.PREFIX + 'approve:' + tokens.hashToken(approveToken), id, 'EX', linkTtl],
-      ['SET', config.PREFIX + 'reject:' + tokens.hashToken(rejectToken), id, 'EX', linkTtl],
+      ['SET', config.PREFIX + 'decide:' + tokens.hashToken(decideToken), id, 'EX', linkTtl],
       ['ZADD', config.PREFIX + 'awaiting', String(now.getTime()), id]
     ]);
 
-    await notifyOwner(entry, entryKey, approveToken, rejectToken);
+    await notifyOwner(entry, entryKey, decideToken);
 
     return respond(res, 200, 'Confirmed',
       '<h1>Thank you, confirmed</h1>' +

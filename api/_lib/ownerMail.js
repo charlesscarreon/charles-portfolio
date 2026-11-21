@@ -3,8 +3,8 @@
 
 const { RELATIONSHIPS, BASE_URL } = require('./config');
 
-function decisionLink(action, token) {
-  return BASE_URL + '/api/decide?action=' + action + '&token=' + encodeURIComponent(token);
+function decisionLink(token) {
+  return BASE_URL + '/api/decide?token=' + encodeURIComponent(token);
 }
 
 function relationshipLine(entry) {
@@ -12,7 +12,7 @@ function relationshipLine(entry) {
   return r ? r.line : 'Knows Charles';
 }
 
-function buildOwnerEmail(entry, approveToken, rejectToken) {
+function buildOwnerEmail(entry, decideToken) {
   const lines = [
     'A writer has confirmed a recommendation. It is not public until you approve it.',
     '',
@@ -29,14 +29,11 @@ function buildOwnerEmail(entry, approveToken, rejectToken) {
     '',
     entry.message,
     '',
-    'Approve (publishes it):',
-    decisionLink('approve', approveToken),
+    'Approve or reject it here:',
+    decisionLink(decideToken),
     '',
-    'Reject (keeps it private):',
-    decisionLink('reject', rejectToken),
-    '',
-    'Each link opens a page with a button, and nothing changes until you press it.',
-    'The links work for 30 days.'
+    'The link opens a page with Approve and Reject buttons. Nothing changes until you press one and confirm.',
+    'The link works for 30 days.'
   ];
   return { subject: 'Recommendation: ' + entry.name, text: lines.join('\n') };
 }
