@@ -130,23 +130,65 @@
         <section id="write" class="section" aria-labelledby="write-heading">
             <h2 id="write-heading">Write a recommendation</h2>
             <p id="write-note" class="recommendation-form__note">
-                Submission is not connected yet. This form is a preview of the write area.
+                Fields marked required must be filled in. After you submit, you will get an email asking you to
+                confirm that you wrote this. Nothing is published until you confirm and Charles approves it.
             </p>
-            <form class="recommendation-form" aria-describedby="write-note">
+            <form class="recommendation-form" method="post" action="/api/submit" aria-describedby="write-note">
                 <div class="recommendation-form__field">
-                    <label for="recommendation-name">Name</label>
-                    <input id="recommendation-name" name="name" type="text" autocomplete="name">
+                    <label for="recommendation-name">Name (required)</label>
+                    <input id="recommendation-name" name="name" type="text" autocomplete="name" maxlength="80" required>
                 </div>
                 <div class="recommendation-form__field">
-                    <label for="recommendation-relationship">Role or relationship</label>
-                    <input id="recommendation-relationship" name="role" type="text">
+                    <label for="recommendation-email">Email (required, never published)</label>
+                    <input id="recommendation-email" name="email" type="email" autocomplete="email" maxlength="254" required>
                 </div>
                 <div class="recommendation-form__field">
-                    <label for="recommendation-message">Recommendation</label>
-                    <textarea id="recommendation-message" name="recommendation" rows="6"></textarea>
+                    <label for="recommendation-know">How do you know Charles? (required)</label>
+                    <select id="recommendation-know" name="relationship" required>
+                        <option value="">Choose one</option>
+                        <option value="classmate">I was Charles's classmate</option>
+                        <option value="project">I worked with Charles on a project or team</option>
+                        <option value="organization">I worked with Charles at the same organization</option>
+                        <option value="mentor">I was Charles's teacher or mentor</option>
+                        <option value="supervisor">I was Charles's supervisor or manager</option>
+                        <option value="user">I used something Charles built</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="recommendation-form__field">
+                    <label for="recommendation-role">Your role (optional)</label>
+                    <input id="recommendation-role" name="role" type="text" maxlength="80">
+                </div>
+                <div class="recommendation-form__field">
+                    <label for="recommendation-organization">Your organization (optional)</label>
+                    <input id="recommendation-organization" name="organization" type="text" maxlength="100">
+                </div>
+                <div class="recommendation-form__field">
+                    <label for="recommendation-message">Your recommendation (required, 50 to 1200 characters)</label>
+                    <textarea id="recommendation-message" name="message" rows="6" minlength="50" maxlength="1200" required></textarea>
+                </div>
+                <div class="recommendation-form__field">
+                    <label for="recommendation-linkedin">LinkedIn profile (optional)</label>
+                    <input id="recommendation-linkedin" name="linkedin" type="url" inputmode="url" maxlength="200" placeholder="https://www.linkedin.com/in/...">
+                </div>
+                <div class="recommendation-form__field">
+                    <label for="recommendation-facebook">Facebook profile (optional)</label>
+                    <input id="recommendation-facebook" name="facebook" type="url" inputmode="url" maxlength="200" placeholder="https://www.facebook.com/...">
+                </div>
+                <div class="recommendation-form__field recommendation-form__check">
+                    <input id="recommendation-show-links" name="show_links" type="checkbox">
+                    <label for="recommendation-show-links">Show my profile links next to my recommendation. Leave this unticked to keep them private; Charles will still see them when reviewing.</label>
+                </div>
+                <div class="recommendation-form__field recommendation-form__check">
+                    <input id="recommendation-consent" name="consent" type="checkbox" required>
+                    <label for="recommendation-consent">I agree that my name, role, organization and recommendation may be published on this website (required).</label>
+                </div>
+                <div class="visually-hidden" aria-hidden="true">
+                    <label for="recommendation-website">Leave this field empty</label>
+                    <input id="recommendation-website" name="website" type="text" tabindex="-1" autocomplete="off">
                 </div>
                 <div class="recommendation-form__actions">
-                    <button type="button" class="btn recommendation-form__submit" disabled>Submit recommendation</button>
+                    <button type="submit" class="btn recommendation-form__submit">Submit recommendation</button>
                 </div>
             </form>
         </section>

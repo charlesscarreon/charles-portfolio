@@ -1423,6 +1423,7 @@ html.dialog-capable .project-dialog:not([open]) {
 }
 
 .recommendation-form input,
+.recommendation-form select,
 .recommendation-form textarea {
     box-sizing: border-box;
     width: 100%;
@@ -1432,6 +1433,23 @@ html.dialog-capable .project-dialog:not([open]) {
     color: var(--text);
     font: inherit;
     padding: 0.65rem 0.75rem;
+}
+
+.recommendation-form__check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.recommendation-form .recommendation-form__check input {
+    flex: none;
+    width: auto;
+    margin-top: 0.2rem;
+}
+
+.recommendation-form .recommendation-form__check label {
+    margin-bottom: 0;
+    font-weight: 400;
 }
 
 .recommendation-form textarea {
