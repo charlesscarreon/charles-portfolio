@@ -4,7 +4,7 @@
 ![HTML](https://img.shields.io/badge/HTML-CSS-orange)
 ![JavaScript](https://img.shields.io/badge/JavaScript-yellow)
 
-My personal portfolio as a Computer Science student and aspiring software developer. It showcases my projects, skills, and experience.
+My personal portfolio as a Computer Science student and software developer. It showcases my projects, skills, and experience.
 
 Built with **pure static HTML, CSS, and JavaScript**, with no frameworks, build steps, or external dependencies.
 

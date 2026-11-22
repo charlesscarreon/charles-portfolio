@@ -2,6 +2,8 @@
 // It shows everything, including the private profile links, plus the decision links.
 
 const { RELATIONSHIPS, BASE_URL } = require('./config');
+const { renderEmail, visibilityTag, linkHtml } = require('./emailTemplate');
+const { esc } = require('./html');
 
 function decisionLink(token) {
   return BASE_URL + '/api/decide?token=' + encodeURIComponent(token);
@@ -12,7 +14,7 @@ function relationshipLine(entry) {
   return r ? r.line : 'Knows Charles';
 }
 
-function buildOwnerEmail(entry, decideToken) {
+function buildOwnerEmail(entry, decideToken, options) {
   const lines = [
     'A writer has confirmed a recommendation. It is not public until you approve it.',
     '',
@@ -35,7 +37,29 @@ function buildOwnerEmail(entry, decideToken) {
     'The link opens a page with Approve and Reject buttons. Nothing changes until you press one and confirm.',
     'The link works for 30 days.'
   ];
-  return { subject: 'Recommendation: ' + entry.name, text: lines.join('\n') };
+  const isPublic = entry.showLinks === '1';
+  const none = '<span style="color:#5f6877">(none given)</span>';
+  const profile = function (url) { return url ? linkHtml(url) + visibilityTag(isPublic) : none; };
+  const html = renderEmail(Object.assign({
+    preheader: entry.name + ' has confirmed a recommendation. It is not public until you approve it.',
+    heading: 'Recommendation awaiting your review',
+    intro: [entry.name + ' has confirmed the recommendation below. It will not be published until you approve it.'],
+    quote: { text: entry.message, by: entry.name + ' · ' + relationshipLine(entry) },
+    details: [
+      ['Email', esc(entry.email)],
+      ['Role', entry.role ? esc(entry.role) : none],
+      ['Organization', entry.organization ? esc(entry.organization) : none],
+      ['LinkedIn', profile(entry.linkedin)],
+      ['Facebook', profile(entry.facebook)]
+    ],
+    button: { label: 'Review this recommendation', url: decisionLink(decideToken) },
+    notes: [
+      'The link opens a page with Approve and Reject buttons. Nothing changes until you press one and confirm.',
+      'The link works for 30 days.'
+    ],
+    footer: ['You received this email because a recommendation was confirmed on charlescarreon.dev.']
+  }, options || {}));
+  return { subject: 'Recommendation: ' + entry.name, text: lines.join('\n'), html: html };
 }
 
 module.exports = { buildOwnerEmail, relationshipLine };

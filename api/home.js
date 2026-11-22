@@ -25,10 +25,10 @@ function readTemplate() {
 }
 
 const BUTTONS =
-  '<p class="links featured-more">' +
-  '<a class="btn" href="/recommendations">View all recommendations</a> ' +
-  '<a class="btn" href="/recommendations#write">Write a recommendation</a>' +
-  '</p>';
+  '<p class="recs-write"><a class="btn" href="/recommendations#write">Write a recommendation</a></p>' +
+  '<p class="featured-more"><a class="view-all" href="/recommendations">' +
+  '<span class="view-all__text">View all recommendations</span>' +
+  '<span class="view-all__head" aria-hidden="true"></span></a></p>';
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'HEAD') {

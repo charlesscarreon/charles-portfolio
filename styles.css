@@ -462,7 +462,7 @@ html.home .section:last-child {
 }
 
 .featured-more {
-    margin-top: 1.25rem;
+    margin-top: 0.4rem;
 }
 
 .skills-summary {
@@ -504,20 +504,6 @@ html.home .section:last-child {
     margin-bottom: 1.25rem;
 }
 
-/* The availability line belongs to the tagline as one thought, so it closes the
-   gap the tagline leaves instead of opening a new block. Browsers without
-   :has() simply keep the normal tagline spacing. */
-.hero .tagline:has(+ .hero-availability) {
-    margin-bottom: 0.4rem;
-}
-
-.hero-availability {
-    margin: 0 0 1.25rem;
-    color: var(--accent);
-    font-size: 0.95rem;
-    font-weight: 600;
-}
-
 .hero-cta {
     display: flex;
     flex-wrap: wrap;
@@ -549,6 +535,7 @@ html.home .section:last-child {
 
 .hero .contact a:hover {
     color: var(--hover);
+    text-decoration: none;
 }
 
 @supports (height: 100svh) {
@@ -582,16 +569,7 @@ html.home .section:last-child {
         margin-bottom: calc(1.25rem - 1.05rem * var(--hero-progress));
     }
 
-    html.home.js .hero .tagline:has(+ .hero-availability) {
-        margin-bottom: calc(0.4rem - 0.2rem * var(--hero-progress));
-    }
-
-    html.home.js .hero .hero-availability {
-        margin-bottom: calc(1.25rem - 0.65rem * var(--hero-progress));
-        font-size: calc(0.95rem - 0.1rem * var(--hero-progress));
-    }
-
-    html.home.js .hero > p:not(.tagline):not(.hero-availability):not(.hero-cta):not(.contact) {
+    html.home.js .hero > p:not(.tagline):not(.hero-cta):not(.contact) {
         font-size: calc(1rem - 0.08rem * var(--hero-progress));
     }
 
@@ -977,31 +955,6 @@ html.home.js .hero > .hero-trail {
 }
 
 /* Footer link groups: icons with visible labels, no literal separators */
-.footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    column-gap: 0.75rem;
-    row-gap: 0.25rem;
-}
-
-.footer-links a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.footer-links svg {
-    display: block;
-    width: 1rem;
-    height: 1rem;
-    flex: none;
-}
-
-.footer-links span {
-    overflow-wrap: anywhere;
-}
-
 /* ---------- Cards ---------- */
 
 .card {
@@ -1141,6 +1094,7 @@ html.home.js .hero > .hero-trail {
 .quick-facts {
     display: grid;
     grid-template-columns: max-content 1fr;
+    align-items: baseline;
     gap: 0.35rem 1rem;
     margin: 0 0 1.25rem;
     font-size: 0.92rem;
@@ -1152,7 +1106,6 @@ html.home.js .hero > .hero-trail {
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    padding-top: 0.12rem;
 }
 
 .quick-facts dd {
@@ -1171,11 +1124,23 @@ html.home.js .hero > .hero-trail {
     list-style: none;
 }
 
-.stat-row li {
+.stat-row > li {
+    position: relative;
     background-color: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: 0.6rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Each badge is a link to its evidence. The link fills the tile, keeps the
+   tile's text colours, and never underlines. */
+.stat-row__link,
+.stat-row__link:hover {
+    display: block;
     padding: 0.85rem 1rem;
+    border-radius: 0.6rem;
+    color: inherit;
+    text-decoration: none;
 }
 
 .stat-row__num {
@@ -1188,10 +1153,127 @@ html.home.js .hero > .hero-trail {
 
 .stat-row__label {
     display: block;
-    margin-top: 0.1rem;
+    margin-top: 0.3rem;
     color: var(--muted);
     font-size: 0.85rem;
     line-height: 1.35;
+}
+
+/* What is behind the number. Shown in full as a small line under the label by
+   default, so touch screens and the unstyled page lose nothing; on a pointer
+   device it becomes a label above the tile, like the skills labels. */
+.stat-row__detail {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+
+/* Keyboard focus only (:focus-visible). A mouse click also leaves focus on the
+   link, so :focus-within kept the highlight and label showing after coming
+   back from the linked page. */
+.stat-row > li:has(.stat-row__link:focus-visible) {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    background-color: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+/* The detail lists are real lists (a list inside the link). The block is centred as a unit and the bullets stay
+   aligned to the left. */
+.stat-row__list {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+}
+
+.stat-row__item {
+    display: block;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.stat-row__item::before {
+    content: "";
+    position: absolute;
+    left: 0.15rem;
+    top: 0.55em;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background-color: var(--accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .stat-row > li:hover {
+        border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+        background-color: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+        box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+
+    .stat-row__detail {
+        position: absolute;
+        z-index: 5;
+        bottom: calc(100% + 0.55rem);
+        left: 50%;
+        width: max-content;
+        max-width: min(17rem, 80vw);
+        margin: 0;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+        border-radius: 0.5rem;
+        background-color: var(--surface);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+        color: var(--text);
+        font-size: 0.82rem;
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translate(-50%, 0.3rem);
+    }
+
+    .stat-row__detail::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        width: 0.55rem;
+        height: 0.55rem;
+        border: solid color-mix(in srgb, var(--accent) 45%, var(--border));
+        border-width: 0 1px 1px 0;
+        background-color: var(--surface);
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .stat-row > li:hover .stat-row__detail,
+    .stat-row__link:focus-visible .stat-row__detail {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .stat-row > li:hover {
+        transform: translateY(-3px);
+    }
+
+    .stat-row > li {
+        transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .stat-row__detail {
+        transition: opacity 0.18s ease, transform 0.22s ease, visibility 0s linear 0.22s;
+    }
+
+    .stat-row > li:hover .stat-row__detail,
+    .stat-row__link:focus-visible .stat-row__detail {
+        transition-delay: 0s;
+    }
 }
 
 /* ---------- Alternative: larger card image details ---------- */
@@ -1490,36 +1572,29 @@ html:not([data-theme="light"]) .tech-tile--nextjs::before {
     list-style: none;
 }
 
-.tech-list li {
-    border-radius: 0.35rem;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
-}
-
 .tech-list li:not(:last-child)::after {
     content: ",";
     content: "," / "";
-    transition: color 0.2s ease;
 }
 
-html.projects .project:has(a:focus-visible),
+:is(html.projects, html.achievements) .project:has(a:focus-visible),
 .featured-card:has(a:focus-visible) {
     transform: translateY(-0.25rem);
-    background-color: color-mix(in srgb, var(--accent) 8%, var(--surface));
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
-        0 8px 28px color-mix(in srgb, var(--accent) 17%, transparent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+        0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 /* Dim the other cards while one is hovered or focused, as on the
    certifications. Separate rules so a browser without :has() only loses this. */
 .featured-grid:has(.featured-card a:focus-visible) .featured-card:not(:has(a:focus-visible)),
-html.projects main:has(.project a:focus-visible) .project:not(:has(a:focus-visible)) {
+:is(html.projects, html.achievements) main:has(.project a:focus-visible) .project:not(:has(a:focus-visible)) {
     opacity: 0.65;
 }
 
 @media (hover: hover) and (pointer: fine) {
     .featured-grid:has(.featured-card:hover) .featured-card:not(:hover),
-    html.projects main:has(.project:hover) .project:not(:hover) {
+    :is(html.projects, html.achievements) main:has(.project:hover) .project:not(:hover) {
         opacity: 0.65;
     }
 }
@@ -1529,23 +1604,12 @@ html.projects .project:has(a:focus-visible) h2,
     color: var(--accent);
 }
 
-html.projects .project:has(a:focus-visible) .tech-list li {
-    background-color: color-mix(in srgb, var(--accent) 16%, transparent);
-    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--accent) 16%, transparent);
-    color: var(--accent-strong);
-}
-
-html.projects .project:has(a:focus-visible) .tech-list li::after {
-    color: transparent;
-}
-
 @media (hover: hover) and (pointer: fine) {
-    html.projects .project:hover,
+    :is(html.projects, html.achievements) .project:hover,
     .featured-card:hover {
-        background-color: color-mix(in srgb, var(--accent) 8%, var(--surface));
-        border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
-            0 8px 28px color-mix(in srgb, var(--accent) 17%, transparent);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
     }
 
     .featured-card:hover {
@@ -1558,19 +1622,9 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
         color: var(--accent);
     }
 
-    html.projects .project:hover .tech-list li {
-        background-color: color-mix(in srgb, var(--accent) 16%, transparent);
-        box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--accent) 16%, transparent);
-        color: var(--accent-strong);
-    }
-
-    html.projects .project:hover .tech-list li::after {
-        color: transparent;
-    }
-
     /* The button is hidden at rest and fades in on hover or focus. Its space
        is reserved, so the card does not jump. */
-    html.projects .project .links a.project-detail-open,
+    :is(html.projects, html.achievements) .project .links a.project-detail-open,
     .featured-card__more a {
         opacity: 0;
         transform: translateY(0.35rem);
@@ -1578,9 +1632,9 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
             box-shadow 0.15s ease;
     }
 
-    html.projects .project:hover .links a.project-detail-open,
-    html.projects .project:has(a:focus-visible) .links a.project-detail-open,
-    html.projects .project .links a.project-detail-open:focus-visible,
+    :is(html.projects, html.achievements) .project:hover .links a.project-detail-open,
+    :is(html.projects, html.achievements) .project:has(a:focus-visible) .links a.project-detail-open,
+    :is(html.projects, html.achievements) .project .links a.project-detail-open:focus-visible,
     .featured-card:hover .featured-card__more a,
     .featured-card:has(a:focus-visible) .featured-card__more a,
     .featured-card__more a:focus-visible {
@@ -1620,8 +1674,8 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
     .tech-tile:nth-child(3) { --i: 2; }
     .tech-tile:nth-child(4) { --i: 3; }
 
-    html.projects .project:hover .tech-tile,
-    html.projects .project:has(a:focus-visible) .tech-tile,
+    :is(html.projects, html.achievements) .project:hover .tech-tile,
+    :is(html.projects, html.achievements) .project:has(a:focus-visible) .tech-tile,
     .featured-card:hover .tech-tile,
     .featured-card:has(a:focus-visible) .tech-tile {
         opacity: 1;
@@ -1640,6 +1694,313 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
         max-width: 14rem;
         padding: 0 0.3rem 0 0.8rem;
         opacity: 1;
+    }
+}
+
+/* The homepage Achievements card is one link to the achievements page. The
+   stretched link is for pointer users; keyboard users have "View all
+   achievements" below the card. At rest the tiles sit in a row under each
+   entry; on a pointer device they slide out of the card's right edge, each
+   set beside its own entry, when the card is hovered. */
+.achievements-card {
+    --card-pad: clamp(1.25rem, 3vw, 1.75rem);
+    position: relative;
+}
+
+.achievements-card__link {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.achievements-card .entry-list > li {
+    position: relative;
+}
+
+.achievements-card .tech-tiles {
+    margin: 0.7rem 0 0;
+}
+
+/* The role and team facts reuse the About Me fact list, tighter here. */
+.achievements-card .quick-facts {
+    grid-template-columns: 5.5rem 1fr;
+    margin: 0.5rem 0 0.9rem;
+}
+
+/* The placing in the first entry's heading stands out in the accent colour. */
+.entry-place {
+    color: var(--accent);
+}
+
+/* The tiles div now follows the last paragraph, so that paragraph is no
+   longer the last child and kept its bottom margin as an empty gap. */
+.achievements-card .entry-list > li > p:last-of-type {
+    margin-bottom: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .achievements-card {
+        transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+    .achievements-card:hover {
+        cursor: pointer;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+
+    .achievements-card:hover .tech-tile {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+
+    /* The line between the two entries lights up teal with a soft glow. */
+    .achievements-card .entry-list > li:first-child {
+        transition: border-color 0.25s ease;
+    }
+
+    .achievements-card .entry-list > li:first-child::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 1px;
+        background-color: var(--accent);
+        box-shadow: 0 0 5px 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 0 12px 2px color-mix(in srgb, var(--accent) 18%, transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .achievements-card:hover .entry-list > li:first-child::after {
+        opacity: 1;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 620px) {
+    .achievements-card .tech-tiles {
+        top: 1.1rem;
+        right: calc(-1 * var(--card-pad) - 0.9rem);
+        margin: 0;
+    }
+
+    .achievements-card .entry-list > li:first-child .tech-tiles {
+        top: 0;
+    }
+}
+
+/* ---------- Homepage Experience card ---------- */
+
+/* The two DEVCON Laguna roles sit under one organisation heading with a thin
+   vertical timeline (a line and a dot per role). Victowin has no timeline.
+   Each organisation lights up on its own when hovered. */
+.org-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+    margin-bottom: 0.6rem;
+}
+
+.org-head h3 {
+    margin: 0;
+}
+
+.org-head .location {
+    color: var(--muted);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.roles {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.role {
+    position: relative;
+    padding: 0 0 1rem 1.5rem;
+}
+
+.role:last-child {
+    padding-bottom: 0;
+}
+
+.role__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+}
+
+.role__head h3,
+.role__head h4 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.35;
+}
+
+.role__head time {
+    color: var(--muted);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* Education (the /experience page): the schools use the same dot-and-line
+   timeline, one line joining all four, with a muted line under each name. */
+.role__sub {
+    margin: 0.15rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.roles--timeline .role {
+    margin-bottom: 1.4rem;
+    padding-bottom: 0;
+}
+
+.roles--timeline .role:last-child {
+    margin-bottom: 0;
+}
+
+/* The gap between schools is a margin, not padding. The line still runs to
+   the next dot. */
+.roles--timeline .role:not(:last-child)::after {
+    bottom: calc(-1.4rem - 0.675rem);
+}
+
+/* Only the current school (the first) is a filled dot; the earlier ones are
+   empty dashed rings. */
+.roles--timeline .role:not(:first-child)::before {
+    border: 1.5px dashed var(--accent);
+    background-color: var(--surface);
+}
+
+/* Hovering the Education card outlines the whole card in teal, and the current
+   school (the college) turns its name teal. */
+@media (hover: hover) and (pointer: fine) {
+    .education-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent);
+    }
+
+    .education-card:hover .role:first-child h3 {
+        color: var(--accent);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .education-card {
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .education-card .role:first-child h3 {
+        transition: color 0.25s ease;
+    }
+}
+
+
+/* The job description is a bullet list with teal bullets. */
+.role__list {
+    margin: 0.25rem 0 0;
+    padding-left: 1.1rem;
+}
+
+.role__list li::marker {
+    color: var(--accent);
+}
+
+/* Timeline dots sit above the line. The first role is a filled teal dot and
+   the last is an empty dashed ring; the line between them is neutral. */
+.role::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0.375rem;
+    box-sizing: border-box;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background-color: var(--accent);
+    transition: box-shadow 0.25s ease;
+}
+
+.role:last-child::before {
+    border: 1.5px dashed var(--accent);
+    background-color: var(--surface);
+}
+
+.role:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: calc(0.3rem - 0.5px);
+    top: 0.675rem;
+    bottom: -0.675rem;
+    width: 1px;
+    background-color: var(--border);
+}
+
+/* A role with no timeline (Victowin) keeps the same indent but no dot. */
+.role--plain::before {
+    display: none;
+}
+
+/* Each organisation's entry gets room around it so its glow is not cramped.
+   The negative margins cancel that room, so nothing moves at rest. */
+.experience-card .entry-list > li {
+    position: relative;
+    margin: 0 -0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    border-radius: 0.6rem;
+    border-bottom: 0;
+}
+
+/* The divider between organisations is a straight line inset to the text
+   width, not a border, so it does not curve with the rounded corners. */
+.experience-card .entry-list > li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--border);
+}
+
+.experience-card .entry-list > li:first-child {
+    margin-top: -0.6rem;
+    padding-top: 0.6rem;
+}
+
+.experience-card .entry-list > li:last-child {
+    margin-bottom: -0.6rem;
+    padding-bottom: 0.6rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .experience-card .entry-list > li:hover {
+        background-color: color-mix(in srgb, var(--accent) 6%, transparent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+            0 6px 22px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    .experience-card .entry-list > li:hover .role::before {
+        box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .experience-card .entry-list > li {
+        transition: background-color 0.25s ease, box-shadow 0.25s ease;
     }
 }
 
@@ -2052,16 +2413,79 @@ html.dialog-capable .project-dialog:not([open]) {
     border-top: 1px solid var(--border);
 }
 
+/* "Open email app": a rounded rectangle that matches the panel's fields, with
+   an envelope in a small tile on the left (like the award badge) and the
+   badge's diagonal shine on hover. Plain CSS; the button is a real <button>
+   with a text label, so it reads the same with the stylesheet gone. */
+.contact-dialog__actions .btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.1rem 0.5rem 0.55rem;
+}
+
+.btn__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 1.8rem;
+    height: 1.8rem;
+    flex: none;
+    border-radius: 0.35rem;
+    background-color: var(--accent-contrast);
+    color: var(--accent);
+}
+
+.btn__icon svg {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+}
+
+.contact-dialog__actions .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.45) 50%, transparent 62%);
+    transform: translateX(-130%);
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .contact-dialog__actions .btn:hover::before,
+    .contact-dialog__actions .btn:focus-visible::before {
+        transform: translateX(130%);
+        transition: transform 0.8s ease;
+    }
+}
+
 .contact-dialog__actions .btn::after {
     content: "\2192";
     content: "\2192" / "";
     display: inline-block;
-    margin-left: 0.45em;
+    margin-left: -0.2rem;
     transition: transform 0.15s ease;
 }
 
 .contact-dialog__actions .btn:hover::after {
     transform: translateX(0.15rem);
+}
+
+/* Phones: the button fills the panel width, an easy tap target. */
+@media (max-width: 620px) {
+    .contact-dialog__actions {
+        display: block;
+    }
+
+    .contact-dialog__actions .btn {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* Phones: the panel becomes the screen instead of a card with a scrollbar
@@ -2096,8 +2520,25 @@ html.dialog-capable .project-dialog:not([open]) {
     margin-bottom: 0.35rem;
 }
 
+/* A published recommendation: a large faint quote mark, the message, then an
+   author row with an initials avatar, the name, the role and organization, the
+   relationship line and the date. The markup lives in api/_lib/render.js. */
+.recommendation {
+    position: relative;
+}
+
 .recommendation + .recommendation {
     margin-top: 1rem;
+}
+
+.recommendation::before {
+    content: "\201C";
+    display: block;
+    height: 2.2rem;
+    color: color-mix(in srgb, var(--accent) 30%, transparent);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 4.5rem;
+    line-height: 1;
 }
 
 .recommendation__text {
@@ -2110,19 +2551,91 @@ html.dialog-capable .project-dialog:not([open]) {
 }
 
 .recommendation__author {
-    margin: 1rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.85rem;
+    margin: 1.1rem 0 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
     color: var(--muted);
     font-size: 0.9rem;
 }
 
-.recommendation__author strong {
+.recommendation__avatar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background-color: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent-strong);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.recommendation__who {
+    flex: 1 1 12rem;
+    min-width: 0;
+    margin: 0;
+    line-height: 1.45;
+}
+
+.recommendation__who strong {
     color: var(--text-strong);
     font-size: 1rem;
 }
 
+/* The line breaks only matter when the stylesheet is missing. */
+.recommendation__who br {
+    display: none;
+}
+
+.recommendation__who span {
+    display: block;
+}
+
+.recommendation__date {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+    .recommendation__date {
+        flex-basis: 100%;
+        margin-left: calc(2.6rem + 0.85rem);
+    }
+}
+
 .recommendation__links {
-    margin: 0.5rem 0 0;
+    margin: 0.6rem 0 0 calc(2.6rem + 0.85rem);
     font-size: 0.9rem;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .recommendation {
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+}
+
+/* The same hover as the other cards: a teal border and glow, no lift. */
+@media (hover: hover) and (pointer: fine) {
+    .recommendation:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+}
+
+.recommendation:has(a:focus-visible) {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+        0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 .recommendation-form {
@@ -2130,8 +2643,53 @@ html.dialog-capable .project-dialog:not([open]) {
     margin-top: 1rem;
 }
 
-.recommendation-form__field + .recommendation-form__field {
+/* The note above the form: smaller than body text, smaller again on phones. */
+.recommendation-form__note {
+    font-size: 0.9rem;
+}
+
+@media (max-width: 520px) {
+    .recommendation-form__note {
+        font-size: 0.8rem;
+    }
+}
+
+/* Groups: each fieldset is one step of the form with a small heading. */
+.recommendation-form__group {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.recommendation-form__group + .recommendation-form__group,
+.recommendation-form__group + .recommendation-form__consent {
+    margin-top: 1.75rem;
+}
+
+.recommendation-form__group legend {
+    margin-bottom: 0.75rem;
+    padding: 0;
+    color: var(--text-strong);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+/* Two fields side by side on wide screens, stacked on phones. */
+.recommendation-form__row {
+    display: grid;
+    gap: 1rem;
+}
+
+.recommendation-form__row + .recommendation-form__row,
+.recommendation-form__row + .recommendation-form__field {
     margin-top: 1rem;
+}
+
+@media (min-width: 40rem) {
+    .recommendation-form__row {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 .recommendation-form label {
@@ -2178,7 +2736,118 @@ html.dialog-capable .project-dialog:not([open]) {
 }
 
 .recommendation-form__actions {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
+}
+
+.recommendation-form__hint {
+    margin: 0.6rem 0 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+/* Focus: teal border and a soft ring, the same accent as the card hover. The
+   global outline stays, so keyboard focus is still clearly visible. */
+.recommendation-form :is(input, textarea):focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.recommendation-form input[type="checkbox"] {
+    accent-color: var(--accent);
+}
+
+/* Consent sits in its own bordered box so it reads as a separate step. */
+.recommendation-form__consent {
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background-color: var(--surface);
+}
+
+/* "How do you know Charles?": a list of single-choice rows, each with a round
+   radio mark so it is clear that only one can be picked. The radio inputs stay
+   real (keyboard arrows, required, no-JavaScript submit); only the mark and
+   the row are drawn, and with no stylesheet the plain radios and labels show. */
+.recommendation-form__chips {
+    display: grid;
+    gap: 0.4rem;
+}
+
+@media (min-width: 40rem) {
+    .recommendation-form__chips {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.recommendation-form .recommendation-form__chip {
+    position: relative;
+    margin: 0;
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.recommendation-form .recommendation-form__chip input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.recommendation-form__chip span {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 0.4rem 0.75rem;
+    line-height: 1.3;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background-color: var(--surface-2);
+}
+
+.recommendation-form__chip span::before {
+    content: "";
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    box-sizing: border-box;
+    border: 2px solid var(--muted);
+    border-radius: 50%;
+    background-color: transparent;
+}
+
+.recommendation-form__chip input:checked + span {
+    border-color: var(--accent);
+    background-color: color-mix(in srgb, var(--accent) 10%, var(--surface-2));
+}
+
+.recommendation-form__chip input:checked + span::before {
+    border-color: var(--accent);
+    background-color: var(--accent);
+    box-shadow: inset 0 0 0 3px var(--surface-2);
+}
+
+.recommendation-form__chip input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .recommendation-form__chip:hover input:not(:checked) + span {
+        border-color: var(--accent);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .recommendation-form__chip span,
+    .recommendation-form :is(input, textarea) {
+        transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
 }
 
 .recommendation-form__submit:disabled {
@@ -2214,9 +2883,28 @@ html.dialog-capable .project-dialog:not([open]) {
     padding-top: 1.25rem;
 }
 
+/* Achievements: the "More about this achievement" button is on its own line
+   above the other links. The two rows are pinned to the bottom of the card
+   together, so the empty space of a shorter card sits above the buttons, and
+   the rows line up from card to card. */
+html.achievements .project .links:not(.links--more) {
+    margin-top: 0;
+    padding-top: 0.5rem;
+}
+
 .links a,
 .btn {
-    display: inline-block;
+    /* A flex box centres the label vertically. On touch and narrow screens a
+       rule near the top of this file gives buttons a 44px minimum height and
+       asks for inline-flex, but this later rule used to reset it to
+       inline-block, so the label sat at the top with the spare height below
+       it. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Top-aligned, so the line box does not reserve the text's descender space
+       under the button. */
+    vertical-align: top;
     background-color: var(--accent);
     color: var(--accent-contrast);
     border-radius: 999px;
@@ -2316,40 +3004,239 @@ html.dialog-capable .project-dialog:not([open]) {
     font-size: 0.95rem;
 }
 
-/* Homepage "View all" buttons: an outlined pill, quieter than the solid
-   primary button. They stay ordinary links, so with no CSS they read as
-   plain links. The arrow is decoration only and is not read aloud. */
-.featured-more .btn {
-    background-color: transparent;
+/* Homepage "View all" links: bare text, set in from the left edge, ending in a
+   right-pointing arrow. With a pointer, hovering or focusing the link grows a
+   line leftward from the first letter across the gap, and extends the arrow's
+   shaft rightward to the edge of the content area, the arrowhead riding at its
+   end. At rest the arrow is short. Without hover (touch) and on narrow screens
+   the arrow stays short and the left line is a short static one, so the link
+   still reads as a link. With no CSS it is an ordinary link. The arrow is
+   decoration only and is not read aloud. */
+.view-all,
+.view-all:hover {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.35rem 0;
     color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
-    padding: 0.3rem 0.95rem;
-    font-size: 0.875rem;
-    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
 }
 
-.featured-more .btn::after {
-    content: "\2192";
-    content: "\2192" / "";
-    display: inline-block;
-    margin-left: 0.4em;
-    transition: transform 0.15s ease;
-}
-
-.featured-more .btn[href$="#write"]::after {
-    content: none;
-}
-
-.featured-more .btn:hover,
-.featured-more .btn:focus-visible {
-    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
-    border-color: var(--accent);
+.view-all:hover,
+.view-all:focus-visible {
     color: var(--hover);
 }
 
-.featured-more .btn:hover::after,
-.featured-more .btn:focus-visible::after {
-    transform: translateX(0.15rem);
+/* The gap on the left, so the line has somewhere to grow. */
+/* The lines and the arrow are centred on the lowercase letters, which sit a
+   little below the middle of the line box, so they are nudged down by top. */
+.view-all::before {
+    content: "";
+    position: relative;
+    top: 0.15em;
+    flex: 0 0 clamp(2rem, 10%, 4rem);
+    min-width: 0;
+    height: 1px;
+    margin-right: 0.6rem;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+}
+
+.view-all__text {
+    flex: none;
+    margin-right: 0.6rem;
+    white-space: nowrap;
+}
+
+/* The arrow: a shaft that can lengthen, and a head at its end. The shaft is a
+   pseudo-element, which is always generated after the head element, so the
+   order values put the shaft first and the head last. */
+.view-all::after {
+    content: "";
+    position: relative;
+    top: 0.15em;
+    order: 1;
+    flex: 0 1 1.1rem;
+    min-width: 0;
+    height: 1px;
+    background-color: currentColor;
+}
+
+.view-all__head {
+    position: relative;
+    top: 0.15em;
+    order: 2;
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-left: -0.54rem;
+    margin-right: 0.1rem;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    transform: rotate(45deg);
+}
+
+.view-all:focus-visible::before {
+    transform: scaleX(1);
+}
+
+.view-all:focus-visible::after {
+    flex-basis: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .view-all:hover::before {
+        transform: scaleX(1);
+    }
+
+    .view-all:hover::after {
+        flex-basis: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .view-all::before {
+        transition: transform 0.35s ease;
+    }
+
+    .view-all::after {
+        transition: flex-basis 0.35s ease;
+    }
+}
+
+@media (hover: none), (max-width: 620px) {
+    .view-all {
+        min-height: 2.75rem;
+    }
+
+    .view-all::before {
+        flex: 0 0 1.25rem;
+        opacity: 0.6;
+        transform: scaleX(1);
+    }
+}
+
+/* Recommendations, nothing published yet: a ghost of a quote card with an
+   invitation, so the section reads as a place waiting for a first voice. It
+   is shown only while the list is empty; the page that renders the list
+   replaces it once there are real recommendations. */
+.recs-ghost {
+    padding: 1.5rem 1.25rem;
+    border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--border));
+    background-color: var(--surface);
+    text-align: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recs-ghost__preview {
+    max-width: 28rem;
+    margin: 0 auto 1.25rem;
+    text-align: left;
+}
+
+.recs-ghost__mark {
+    display: block;
+    height: 2.2rem;
+    color: color-mix(in srgb, var(--accent) 30%, transparent);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 4.5rem;
+    line-height: 1;
+}
+
+.recs-ghost__line,
+.recs-ghost__avatar,
+.recs-ghost__name {
+    display: block;
+    background-color: color-mix(in srgb, var(--muted) 20%, transparent);
+}
+
+.recs-ghost__line {
+    height: 0.6rem;
+    margin: 0.6rem 0 0;
+    border-radius: 999px;
+}
+
+.recs-ghost__line:nth-of-type(3) {
+    width: 92%;
+}
+
+.recs-ghost__line:nth-of-type(4) {
+    width: 58%;
+}
+
+.recs-ghost__author {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.recs-ghost__avatar {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+}
+
+.recs-ghost__name {
+    width: 6rem;
+    height: 0.5rem;
+    border-radius: 999px;
+}
+
+.recs-ghost__icon {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto 0.4rem;
+    color: var(--accent);
+}
+
+.recs-ghost__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+}
+
+.recs-steps {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem 0.5rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.recs-steps li + li::before {
+    content: "\2192";
+    content: "\2192" / "";
+    margin-right: 0.5rem;
+    color: var(--accent);
+}
+
+.recs-ghost .btn {
+    margin: 0;
+}
+
+.recs-ghost p:last-child {
+    margin-bottom: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .recs-ghost:hover {
+        border-style: solid;
+        border-color: var(--accent);
+        box-shadow: 0 6px 22px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+}
+
+/* The button under the published recommendations on the homepage. */
+.recs-write {
+    margin: 1.25rem 0 0;
 }
 
 /* ---------- Scratch embeds ---------- */
@@ -2601,6 +3488,89 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 17 6-6-6-6'/%3E%3Cpath d='M12 19h8'/%3E%3C/svg%3E") center / 80% no-repeat;
 }
 
+/* ---------- Skills card hover ---------- */
+
+/* On a pointer device, hovering the skills card gives it the certificates'
+   teal border and glow (no lift, so nothing below moves), sweeps a diagonal
+   shine across it once, then bobs the logos one by one in the same
+   left-to-right direction. The shine is a background on a pseudo-element, so the chip labels
+   that pop above the logos are never clipped. */
+.skills-card {
+    position: relative;
+}
+
+.skills-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    background: linear-gradient(110deg, transparent 38%,
+        color-mix(in srgb, var(--text-strong) 12%, transparent) 50%, transparent 62%);
+    background-repeat: no-repeat;
+    background-size: 200% 100%;
+    background-position: 130% 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes skills-shine {
+    0% { background-position: 130% 0; opacity: 1; }
+    100% { background-position: -30% 0; opacity: 1; }
+}
+
+@keyframes skills-bob {
+    0%, 100% { translate: 0 0; }
+    40% { translate: 0 -0.35rem; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .skills-card {
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    .skills-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+
+}
+
+/* Dim every other card on the homepage while one is hovered or focused:
+   projects, achievements, skills and certificates all count. On /skills the
+   skill cards and the certificate cards dim each other the same way. Separate
+   rules so a browser without :has() only loses the dimming. */
+@media (hover: hover) and (pointer: fine) {
+    :is(html.home, html.skills) main:has(:is(.featured-card, .achievements-card, .skills-card, .cert-card, .recommendation):hover)
+        :is(.featured-card, .achievements-card, .skills-card, .cert-card, .recommendation):not(:hover) {
+        opacity: 0.65;
+    }
+}
+
+:is(html.home, html.skills) main:has(:is(.featured-card, .cert-card, .recommendation) a:focus-visible)
+    :is(.featured-card, .achievements-card, .skills-card, .cert-card, .recommendation):not(:has(a:focus-visible)) {
+    opacity: 0.65;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .skills-card:hover::after {
+        animation: skills-shine 1.8s linear;
+    }
+
+    .skills-card:hover .skill-box::before {
+        animation: skills-bob 0.7s ease-in-out backwards;
+        animation-delay: calc(0.35s + var(--n, 0) * 90ms + var(--group, 0) * 550ms);
+    }
+
+    .skills-summary__group:nth-child(2) { --group: 1; }
+    .skill-chip:nth-child(2) { --n: 1; }
+    .skill-chip:nth-child(3) { --n: 2; }
+    .skill-chip:nth-child(4) { --n: 3; }
+    .skill-chip:nth-child(5) { --n: 4; }
+    .skill-chip:nth-child(6) { --n: 5; }
+}
+
 /* ---------- Certifications ---------- */
 
 .cert-grid {
@@ -2667,9 +3637,15 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
 }
 
 .cert-issuer {
-    margin: 0;
+    margin: 0.6rem 0 0;
     font-size: 0.85rem;
     color: var(--muted);
+}
+
+/* Organisation and date are two separate lines, so the line is always the
+   same height and the tags above it line up from card to card. */
+.cert-issuer span {
+    display: block;
 }
 
 .cert-card__footer {
@@ -2801,6 +3777,49 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
     }
 }
 
+/* Pointer devices: the issuer and date line sits in the row where the button
+   will appear. Both share one grid cell, so no space is reserved for the
+   button; on hover or focus the line fades out and the button fades in. */
+@media (hover: hover) and (pointer: fine) {
+    .cert-card__footer {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 0.6rem;
+    }
+
+    .cert-issuer,
+    .cert-more {
+        grid-row: 2;
+        grid-column: 1;
+        align-self: center;
+        margin: 0;
+        padding: 0;
+        min-height: 1.75rem;
+    }
+
+    .cert-issuer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: opacity 0.18s ease;
+    }
+
+    .cert-more {
+        display: flex;
+        align-items: center;
+        pointer-events: none;
+    }
+
+    .cert-more a {
+        pointer-events: auto;
+    }
+
+    .cert-card:hover .cert-issuer,
+    .cert-card:has(a:focus-visible) .cert-issuer {
+        opacity: 0;
+    }
+}
+
 /* Dim the other certificates while one is hovered. Kept as its own rule so a
    browser without :has() only loses this dimming. */
 @media (hover: hover) and (pointer: fine) {
@@ -2814,23 +3833,357 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
 .site-footer {
     background-color: var(--surface);
     border-top: 1px solid var(--border);
-    text-align: center;
-    padding: 1rem clamp(1rem, 4vw, 1.25rem);
+    padding: 1.5rem clamp(1rem, 4vw, 1.25rem) 1.25rem;
     color: var(--muted);
+    text-align: left;
 }
 
-.site-footer address {
-    font-style: normal;
-    margin-bottom: 0.5rem;
+.site-footer__inner {
+    max-width: 1040px;
+    margin: 0 auto;
 }
 
-.site-footer address p:last-child,
-.site-footer > p {
-    margin-bottom: 0;
+.site-footer p,
+.site-footer ul {
+    margin: 0;
+}
+
+.site-footer ul {
+    padding: 0;
+    list-style: none;
 }
 
 .site-footer a {
     white-space: normal;
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    text-decoration: none;
+}
+
+/* Info strip: location on the left, availability on the right. */
+.footer-strip {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+/* The line between location and availability sits at the centre of the
+   footer, where the two halves meet. */
+.footer-location,
+.footer-status {
+    min-height: 1.75rem;
+}
+
+.footer-location {
+    padding-right: 1.5rem;
+}
+
+.footer-status {
+    justify-content: flex-end;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--border);
+}
+
+.footer-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.footer-location__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--muted);
+    transition: color 0.2s ease;
+}
+
+.footer-location__link:hover,
+.footer-location__link:focus-visible {
+    color: var(--accent);
+}
+
+.footer-location svg {
+    display: block;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    color: var(--accent);
+}
+
+@keyframes footer-pin-hop {
+    0%, 100% { translate: 0 0; }
+    35% { translate: 0 -0.45rem; }
+    65% { translate: 0 0; }
+    80% { translate: 0 -0.15rem; }
+}
+
+/* The pin hops up once and settles each time the link is hovered or focused. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .footer-location__link:hover svg,
+    .footer-location__link:focus-visible svg {
+        animation: footer-pin-hop 0.6s ease-out;
+    }
+}
+
+.footer-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* The dot is centred in a 1rem slot, so it lines up with the 1rem pin above
+   it when the two lines stack. */
+.footer-status__dot {
+    flex: none;
+    margin: 0 0.25rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* Main row: the name block on the left, the latest projects on the right. */
+/* The name, Latest projects and Social links sit toward the left, each column
+   as wide as its content, with no lines between them. */
+.footer-main {
+    display: grid;
+    grid-template-columns: minmax(0, 28rem) auto auto;
+    column-gap: 4rem;
+    justify-content: start;
+    align-items: start;
+}
+
+.footer-name {
+    color: var(--text-strong);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.footer-tagline {
+    margin-top: 0.2rem;
+    font-size: 0.92rem;
+}
+
+.site-footer address {
+    font-style: normal;
+}
+
+.footer-projects h3,
+.footer-socials h3 {
+    margin: 0 0 0.6rem;
+    color: var(--text-strong);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.footer-projects li + li {
+    margin-top: 0.35rem;
+}
+
+.footer-projects a,
+.footer-top {
+    color: var(--muted);
+    transition: color 0.2s ease;
+}
+
+.footer-projects a:hover,
+.footer-top:hover {
+    color: var(--accent);
+}
+
+/* Social links: a column of icon and website name, with no button boundary.
+   On a pointer device the name slides out and the handle slides in over it,
+   so nothing around it moves. */
+.footer-social {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+}
+
+.footer-social li {
+    position: relative;
+}
+
+.footer-social li:hover,
+.footer-social li:focus-within {
+    z-index: 2;
+}
+
+.footer-social__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.footer-social__link svg {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: none;
+}
+
+.footer-social__link:hover,
+.footer-social__link:focus-visible {
+    color: var(--accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .footer-social__link::after {
+        content: attr(data-handle);
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        width: max-content;
+        box-sizing: border-box;
+        padding-left: calc(1.1rem + 0.5rem);
+        color: var(--accent);
+        opacity: 0;
+        transform: translateX(-0.75rem);
+        pointer-events: none;
+    }
+
+    .footer-social__link:hover::after,
+    .footer-social__link:focus-visible::after {
+        opacity: 1;
+        transform: none;
+    }
+
+    .footer-social__site {
+        display: inline-block;
+    }
+
+    .footer-social__link:hover .footer-social__site,
+    .footer-social__link:focus-visible .footer-social__site {
+        opacity: 0;
+        transform: translateX(0.75rem);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .footer-social__link::after {
+        transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .footer-social__site {
+        transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+}
+
+/* Bottom row: copyright on the left, Back to top on the right. */
+.footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+.footer-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.footer-top svg {
+    display: block;
+    width: 0.95rem;
+    height: 0.95rem;
+}
+
+@keyframes footer-top-bob {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -0.3rem; }
+}
+
+/* On hover the arrow keeps moving up and down until the pointer leaves. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .footer-top:hover svg,
+    .footer-top:focus-visible svg {
+        animation: footer-top-bob 0.8s ease-in-out infinite;
+    }
+}
+
+@media (max-width: 760px) {
+    .footer-main {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        column-gap: 1.5rem;
+        row-gap: 1.5rem;
+    }
+
+    .footer-id {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 620px) {
+    /* Latest projects is left out on narrow screens, the social links sit in
+       a 2 by 2 grid, and the name, title and copyright are centred. */
+    .footer-id {
+        text-align: center;
+    }
+
+    .footer-projects {
+        display: none;
+    }
+
+    .footer-social {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.9rem 1rem;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-main {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .footer-strip {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 0.35rem;
+    }
+
+    .footer-location {
+        padding-right: 0;
+    }
+
+    .footer-status {
+        justify-content: flex-start;
+        padding-left: 0;
+        border-left: 0;
+    }
 }
 
 /* ---------- Table of contents ---------- */
@@ -2976,10 +4329,6 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
         flex-direction: column;
         row-gap: 0.35rem;
         justify-content: center;
-        align-items: center;
-    }
-
-    .footer-links {
         align-items: center;
     }
 
@@ -3260,4 +4609,477 @@ html[data-vt="up"]::view-transition-new(root) {
         display: block;
         margin: 1.25rem 0 0;
     }
+}
+
+/* Internal pages: admin, the approve or reject pages from the owner's email and the
+   "confirm it is you" page from the writer's email. The markup is in
+   api/_lib/pages.js and the shell in api/_lib/html.js. Phone first: most of these
+   are opened from an email. */
+.internal-bar {
+    border-bottom: 1px solid var(--border);
+    background-color: var(--surface);
+}
+
+.internal-bar__inner {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 0.8rem 1rem;
+}
+
+.internal-bar__name {
+    color: var(--text-strong);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.internal-bar__tag {
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.internal-main {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 2rem;
+}
+
+.internal-main--wide {
+    max-width: 60rem;
+}
+
+.internal-card {
+    padding: 1.25rem;
+}
+
+.internal-head {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.internal-head h1 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.internal-head--bar {
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.internal-note {
+    color: var(--muted);
+}
+
+.internal-hint {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.internal-back {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+/* The round status mark: a check, a cross or a warning triangle. */
+.status-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    --tone: var(--accent-strong);
+    background-color: color-mix(in srgb, var(--tone) 16%, transparent);
+    color: var(--tone);
+}
+
+.status-icon svg {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+.status-icon--bad {
+    --tone: #f87171;
+}
+
+.status-icon--warn {
+    --tone: #fbbf24;
+}
+
+html[data-theme="light"] .status-icon--bad {
+    --tone: #b91c1c;
+}
+
+html[data-theme="light"] .status-icon--warn {
+    --tone: #b45309;
+}
+
+/* Buttons: the teal one is the main action, the outlined ones are secondary and
+   the red outline is for anything that discards. */
+.btn.btn--secondary,
+.btn.btn--danger {
+    border: 1px solid currentColor;
+    background-color: transparent;
+}
+
+.btn.btn--secondary {
+    color: var(--accent-strong);
+}
+
+.btn.btn--danger {
+    color: #f87171;
+}
+
+html[data-theme="light"] .btn.btn--danger {
+    color: #b91c1c;
+}
+
+.btn.btn--secondary:hover {
+    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent-strong);
+}
+
+.btn.btn--danger:hover {
+    background-color: color-mix(in srgb, currentColor 14%, transparent);
+    color: #f87171;
+}
+
+html[data-theme="light"] .btn.btn--danger:hover {
+    color: #b91c1c;
+}
+
+.internal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+}
+
+.internal-actions__form {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0;
+}
+
+.internal-actions .btn {
+    min-height: 2.6rem;
+}
+
+@media (max-width: 520px) {
+    .internal-actions__form,
+    .internal-actions > .btn {
+        flex: 1 1 100%;
+    }
+
+    .internal-actions__form .btn {
+        flex: 1 1 0;
+    }
+}
+
+.internal-form label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.internal-form input[type="password"] {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background-color: var(--surface-2);
+    color: var(--text);
+    font: inherit;
+    padding: 0.65rem 0.75rem;
+}
+
+.internal-form input[type="password"]:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* The recommendation shown on the decision page: the same quote card as the
+   public page, on a slightly different surface so it stands out from the card
+   around it. */
+.internal-card .recommendation {
+    margin-top: 1rem;
+    background-color: var(--surface-2);
+}
+
+/* Admin lists: one compact, collapsible card per recommendation. */
+.admin-section {
+    margin-top: 1.75rem;
+}
+
+.admin-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 0.75rem;
+    font-size: 1.1rem;
+}
+
+.admin-count {
+    padding: 0.05rem 0.55rem;
+    border-radius: 999px;
+    background-color: var(--surface-2);
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.admin-empty {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.admin-entry {
+    margin-top: 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background-color: var(--surface-2);
+}
+
+.admin-entry > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.7rem 0.9rem;
+    cursor: pointer;
+}
+
+.admin-entry__who {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.admin-entry__meta {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.admin-entry__body {
+    padding: 0 0.9rem 0.9rem;
+    border-top: 1px solid var(--border);
+}
+
+.admin-facts {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.25rem 0.9rem;
+    margin: 0.9rem 0 0;
+    font-size: 0.9rem;
+}
+
+.admin-facts dt {
+    color: var(--muted);
+}
+
+.admin-facts dd {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.admin-facts--card {
+    margin-top: 1rem;
+}
+
+.admin-entry__message {
+    margin: 0.9rem 0 0;
+    padding: 0 0 0 0.9rem;
+    border-left: 3px solid var(--accent);
+}
+
+.admin-entry__message p {
+    margin: 0;
+}
+
+.chip {
+    flex: none;
+    padding: 0.1rem 0.6rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    --tone: var(--muted);
+    color: var(--tone);
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.chip--awaiting {
+    --tone: #fbbf24;
+}
+
+.chip--published,
+.chip--featured {
+    --tone: var(--accent-strong);
+}
+
+.chip--rejected {
+    --tone: #f87171;
+}
+
+html[data-theme="light"] .chip--awaiting {
+    --tone: #b45309;
+}
+
+html[data-theme="light"] .chip--rejected {
+    --tone: #b91c1c;
+}
+
+@media (max-width: 520px) {
+    .admin-facts {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .admin-facts dd {
+        margin-bottom: 0.4rem;
+    }
+}
+
+/* Admin: a featured entry is marked on the card itself, so it is visible even
+   when the card is closed. */
+.admin-entry--featured {
+    border-left: 3px solid var(--accent);
+}
+
+.admin-entry__chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+}
+
+.chip--featured {
+    background-color: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.chip--public {
+    --tone: var(--accent-strong);
+}
+
+.chip--private {
+    --tone: var(--muted);
+}
+
+.admin-facts .chip {
+    margin-left: 0.3rem;
+    padding: 0 0.5rem;
+    font-size: 0.72rem;
+    vertical-align: 0.1em;
+}
+
+/* A banner for a message the reader should not miss. */
+.internal-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 1.25rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--tone, var(--accent)) 45%, transparent);
+    border-radius: 0.6rem;
+    background-color: color-mix(in srgb, var(--tone, var(--accent)) 10%, transparent);
+}
+
+.internal-alert p {
+    margin: 0;
+}
+
+.internal-alert .status-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+}
+
+.internal-alert .status-icon svg {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.internal-alert--warn {
+    --tone: #fbbf24;
+}
+
+.internal-alert--bad {
+    --tone: #f87171;
+}
+
+html[data-theme="light"] .internal-alert--warn {
+    --tone: #b45309;
+}
+
+html[data-theme="light"] .internal-alert--bad {
+    --tone: #b91c1c;
+}
+
+/* The secret field with its show or hide button. The button is added by script. */
+.password-field {
+    position: relative;
+}
+
+.internal-form .password-field input[type="password"],
+.internal-form .password-field input[type="text"] {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background-color: var(--surface-2);
+    color: var(--text);
+    font: inherit;
+    padding: 0.65rem 2.9rem 0.65rem 0.75rem;
+}
+
+.internal-form .password-field input:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 0.4rem;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.password-toggle:hover,
+.password-toggle.is-showing {
+    color: var(--accent-strong);
+}
+
+.password-toggle .eye-off,
+.password-toggle.is-showing .eye {
+    display: none;
+}
+
+.password-toggle.is-showing .eye-off {
+    display: block;
 }

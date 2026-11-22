@@ -5,6 +5,7 @@
 const config = require('./_lib/config');
 const redis = require('./_lib/redis');
 const { sendMail } = require('./_lib/mail');
+const { buildConfirmEmail } = require('./_lib/writerMail');
 const tokens = require('./_lib/tokens');
 const { esc, respond } = require('./_lib/html');
 const { parseSubmission } = require('./_lib/validate');
@@ -96,17 +97,8 @@ module.exports = async function handler(req, res) {
 
     const link = config.BASE_URL + '/api/confirm?token=' + encodeURIComponent(confirmToken);
     try {
-      await sendMail({
-        to: v.email,
-        subject: 'Please confirm your recommendation for Charles Carreon',
-        text:
-          'Hi ' + v.name + ',\n\n' +
-          'Someone (hopefully you) submitted a recommendation for Charles S. Carreon on charlescarreon.dev.\n\n' +
-          'To confirm that you wrote it, open this link and press the confirm button:\n' +
-          link + '\n\n' +
-          'The link works for 48 hours. Until you confirm, nothing is shared with anyone.\n\n' +
-          'If you did not write this, ignore this email and the submission will be deleted automatically.\n'
-      });
+      const mail = buildConfirmEmail(v.name, link);
+      await sendMail({ to: v.email, subject: mail.subject, text: mail.text, html: mail.html });
     } catch (mailError) {
       // Remove the entry so a failed send leaves nothing behind.
       await redis.pipeline([['DEL', entryKey], ['DEL', confirmKey], ['DEL', emailKey]]).catch(function () {});

@@ -7,6 +7,8 @@ async function sendMail(options) {
   if (!key) throw new Error('Email is not configured');
 
   const payload = { from: FROM, to: [options.to], subject: options.subject, text: options.text };
+  // The plain-text part is always sent. The designed HTML part is added when given.
+  if (options.html) payload.html = options.html;
   if (options.headers) payload.headers = options.headers;
 
   const res = await fetch('https://api.resend.com/emails', {

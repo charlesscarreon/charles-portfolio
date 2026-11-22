@@ -8,7 +8,8 @@ const tokens = require('./_lib/tokens');
 const admin = require('./_lib/admin');
 const entries = require('./_lib/entries');
 const { relationshipLine } = require('./_lib/ownerMail');
-const { esc, respond } = require('./_lib/html');
+const { respond } = require('./_lib/html');
+const pages = require('./_lib/pages');
 const { getFeatured, MAX_FEATURED } = require('./_lib/publicList');
 
 const MAX_FAILED_LOGINS = 10;
@@ -33,57 +34,17 @@ function redirect(res, where) {
 }
 
 function loginPage(res, message, status) {
-  return respond(res, status || 200, 'Admin login',
-    '<h1>Admin login</h1>' +
-    (message ? '<p>' + esc(message) + '</p>' : '') +
-    '<form method="post" action="/admin">' +
-    '<p><label for="admin-secret">Secret</label><br>' +
-    '<input id="admin-secret" name="secret" type="password" autocomplete="current-password" required></p>' +
-    '<input type="hidden" name="action" value="login">' +
-    '<button type="submit" class="btn">Log in</button>' +
-    '</form>');
-}
-
-function day(iso) { return iso ? String(iso).slice(0, 10) : ''; }
-
-function link(url) {
-  return url ? '<a href="' + esc(url) + '" rel="noopener noreferrer">' + esc(url) + '</a>' : '(none)';
-}
-
-function actionForm(id, action, label) {
-  return '<form method="post" action="/admin" style="display:inline">' +
-    '<input type="hidden" name="id" value="' + esc(id) + '">' +
-    '<button type="submit" name="action" value="' + action + '" class="btn">' + esc(label) + '</button></form> ';
-}
-
-function entryBlock(e, buttons, open) {
-  const when = day(e.publishedAt || e.confirmedAt || e.createdAt);
-  return '<details' + (open ? ' open' : '') + '>' +
-    '<summary><strong>' + esc(e.name) + '</strong> · ' + esc(relationshipLine(e)) + ' · ' + esc(when) + '</summary>' +
-    '<ul>' +
-    '<li>Email: ' + esc(e.email) + '</li>' +
-    '<li>Role: ' + (e.role ? esc(e.role) : '(none)') + '</li>' +
-    '<li>Organization: ' + (e.organization ? esc(e.organization) : '(none)') + '</li>' +
-    '<li>LinkedIn: ' + link(e.linkedin) + '</li>' +
-    '<li>Facebook: ' + link(e.facebook) + '</li>' +
-    '<li>Show links publicly: ' + (e.showLinks === '1' ? 'yes' : 'no') + '</li>' +
-    '</ul>' +
-    '<blockquote><p>' + esc(e.message).replace(/\n/g, '<br>') + '</p></blockquote>' +
-    '<p>' + buttons + '</p>' +
-    '</details>';
-}
-
-function section(title, list, buttonsFor, open, emptyText) {
-  return '<h2>' + esc(title) + ' (' + list.length + ')</h2>' +
-    (list.length
-      ? list.map(function (e) { return entryBlock(e, buttonsFor(e), open); }).join('')
-      : '<p>' + esc(emptyText) + '</p>');
+  return respond(res, status || 200, 'Admin login', pages.loginPage(message));
 }
 
 const NOTES = {
   full: 'The top ' + MAX_FEATURED + ' is full. Remove one first, then feature this one.',
   invalid: 'That recommendation could not be changed. It may have been hidden or deleted.'
 };
+
+function withLine(list) {
+  return list.map(function (e) { return Object.assign({}, e, { relationshipLine: relationshipLine(e) }); });
+}
 
 async function dashboard(res, noteKey) {
   const results = await Promise.all([
@@ -95,33 +56,16 @@ async function dashboard(res, noteKey) {
   const featured = featuredIds.map(function (id) {
     return results[1].filter(function (e) { return e.id === id; })[0];
   });
-  const del = function (e) { return actionForm(e.id, 'delete', 'Delete'); };
-  const html =
-    '<h1>Recommendations</h1>' +
-    '<form method="post" action="/admin"><input type="hidden" name="action" value="logout">' +
-    '<button type="submit" class="btn">Log out</button></form>' +
-    (NOTES[noteKey] ? '<p><strong>' + esc(NOTES[noteKey]) + '</strong></p>' : '') +
-    section('Top recommendations on the homepage', featured, function (e) {
-      const at = featuredIds.indexOf(e.id);
-      return (at > 0 ? actionForm(e.id, 'up', 'Move up') : '') +
-        (at < featuredIds.length - 1 ? actionForm(e.id, 'down', 'Move down') : '') +
-        actionForm(e.id, 'unfeature', 'Remove from top');
-    }, false, 'Nothing is chosen. The homepage shows the newest recommendations until you choose up to ' + MAX_FEATURED + '.') +
-    section('Pending', results[0], function (e) {
-      return actionForm(e.id, 'approve', 'Approve') + actionForm(e.id, 'reject', 'Reject') + del(e);
-    }, true, 'Nothing is waiting for a decision.') +
-    section('Published', results[1], function (e) {
-      return (featuredIds.indexOf(e.id) === -1 ? actionForm(e.id, 'feature', 'Feature on homepage') : '(featured) ') +
-        actionForm(e.id, 'hide', 'Hide') + del(e);
-    }, false, 'Nothing is published.') +
-    section('Hidden', results[2], function (e) {
-      return actionForm(e.id, 'unhide', 'Unhide') + del(e);
-    }, false, 'Nothing is hidden.') +
-    section('Rejected', results[3], function (e) {
-      return actionForm(e.id, 'approve', 'Approve instead') + del(e);
-    }, false, 'Nothing is rejected.') +
-    '<p>Changes show on the public page within about 30 seconds.</p>';
-  return respond(res, 200, 'Admin', html);
+  return respond(res, 200, 'Admin', pages.dashboardPage({
+    awaiting: withLine(results[0]),
+    published: withLine(results[1]),
+    hidden: withLine(results[2]),
+    rejected: withLine(results[3]),
+    featured: withLine(featured),
+    featuredIds: featuredIds,
+    maxFeatured: MAX_FEATURED,
+    note: NOTES[noteKey] || ''
+  }), { wide: true });
 }
 
 async function login(req, res) {
@@ -140,12 +84,12 @@ async function login(req, res) {
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     res.setHeader('Allow', 'GET, POST');
-    return respond(res, 405, 'Not allowed', '<h1>Not allowed</h1>');
+    return respond(res, 405, 'Not allowed', pages.messagePage('bad', 'Not allowed'));
   }
 
   try {
     if (!admin.configured()) {
-      return respond(res, 503, 'Admin unavailable', '<h1>Admin is not set up</h1>');
+      return respond(res, 503, 'Admin unavailable', pages.messagePage('warn', 'Admin is not set up'));
     }
 
     if (req.method === 'GET') {
@@ -153,7 +97,7 @@ module.exports = async function handler(req, res) {
       return admin.isAuthed(req) ? dashboard(res, note) : loginPage(res);
     }
 
-    if (!admin.sameOrigin(req)) return respond(res, 403, 'Not allowed', '<h1>Not allowed</h1>');
+    if (!admin.sameOrigin(req)) return respond(res, 403, 'Not allowed', pages.messagePage('bad', 'Not allowed'));
     const b = body(req);
     const action = String(b.action || '');
 
@@ -172,15 +116,7 @@ module.exports = async function handler(req, res) {
     if (action === 'delete' && String(b.confirm) !== 'yes') {
       const e = await entries.get(id);
       if (!e.id) return redirect(res, '/admin');
-      return respond(res, 200, 'Delete this recommendation?',
-        '<h1>Delete this recommendation permanently?</h1>' +
-        '<p>From ' + esc(e.name) + '. This cannot be undone. If you only want it off the page, use Hide instead.</p>' +
-        '<form method="post" action="/admin">' +
-        '<input type="hidden" name="id" value="' + esc(id) + '">' +
-        '<input type="hidden" name="action" value="delete">' +
-        '<input type="hidden" name="confirm" value="yes">' +
-        '<button type="submit" class="btn">Yes, delete permanently</button></form>' +
-        '<p><a href="/admin">No, go back</a></p>');
+      return respond(res, 200, 'Delete this recommendation?', pages.deletePage(e));
     }
 
     if (action === 'feature') {
@@ -197,6 +133,6 @@ module.exports = async function handler(req, res) {
     return redirect(res, '/admin');
   } catch (error) {
     console.error('admin failed:', error && error.message);
-    return respond(res, 500, 'Something went wrong', '<h1>Something went wrong</h1><p>Please try again.</p>');
+    return respond(res, 500, 'Something went wrong', pages.messagePage('warn', 'Something went wrong', 'Please try again.'));
   }
 };
