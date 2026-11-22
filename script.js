@@ -997,6 +997,35 @@
         }
     }
 
+    /* ---------- Recommendation form: a picked choice can be clicked again to clear it ----------
+       Radio buttons cannot be unticked by the browser. The answer stays required,
+       so submitting with none picked is still blocked by the form. */
+    function initChoiceToggle() {
+        var inputs = document.querySelectorAll(".recommendation-form__chip input");
+        if (!inputs.length) {
+            return;
+        }
+        var last = null;
+        var i;
+        for (i = 0; i < inputs.length; i++) {
+            if (inputs[i].checked) {
+                last = inputs[i];
+            }
+        }
+        function onClick(event) {
+            var input = event.currentTarget;
+            if (input === last) {
+                input.checked = false;
+                last = null;
+            } else {
+                last = input;
+            }
+        }
+        for (i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("click", onClick);
+        }
+    }
+
     /* Enable JS-specific UI (theme toggle visibility, etc.) */
     doc.classList.remove("no-js");
     doc.classList.add("js");
@@ -1009,4 +1038,5 @@
     initToc();
     initProjectDialogs();
     initContactDialog();
+    initChoiceToggle();
 })();

@@ -9,7 +9,8 @@ const redis = require('./_lib/redis');
 const tokens = require('./_lib/tokens');
 const { sendMail } = require('./_lib/mail');
 const { buildOwnerEmail } = require('./_lib/ownerMail');
-const { esc, respond } = require('./_lib/html');
+const { respond } = require('./_lib/html');
+const pages = require('./_lib/pages');
 
 const KEEP_CONFIRM_LINK_SECONDS = 30 * 24 * 60 * 60;
 
@@ -25,10 +26,7 @@ function readToken(req) {
 }
 
 function invalidPage(res) {
-  return respond(res, 404, 'Link not valid',
-    '<h1>This link is not valid</h1>' +
-    '<p>It may have expired (links last 48 hours) or been mistyped. ' +
-    'You can submit your recommendation again from the recommendations page.</p>');
+  return respond(res, 404, 'Link not valid', pages.invalidConfirmPage());
 }
 
 // Tells the owner. A failure here must not undo the writer's confirmation, so the entry
@@ -40,7 +38,7 @@ async function notifyOwner(entry, entryKey, decideToken) {
     const mail = buildOwnerEmail(entry, decideToken);
     // The email service replaces any Message-ID we set, so we keep its own email id
     // and look the real Message-ID up from it when the reminder is sent.
-    const result = await sendMail({ to: owner, subject: mail.subject, text: mail.text });
+    const result = await sendMail({ to: owner, subject: mail.subject, text: mail.text, html: mail.html });
     await redis.command('HSET', entryKey,
       'ownerMailAt', new Date().toISOString(),
       'ownerMailId', String(result.id || ''));
@@ -53,7 +51,7 @@ async function notifyOwner(entry, entryKey, decideToken) {
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     res.setHeader('Allow', 'GET, POST');
-    return respond(res, 405, 'Not allowed', '<h1>Not allowed</h1>');
+    return respond(res, 405, 'Not allowed', pages.messagePage('bad', 'Not allowed'));
   }
 
   try {
@@ -69,20 +67,11 @@ module.exports = async function handler(req, res) {
     if (!entry.id) return invalidPage(res);
 
     if (entry.state !== 'unconfirmed') {
-      return respond(res, 200, 'Already confirmed',
-        '<h1>Already confirmed</h1><p>You have already confirmed this recommendation. Thank you! ' +
-        'It will be reviewed before anything is published.</p>');
+      return respond(res, 200, 'Already confirmed', pages.alreadyConfirmedPage());
     }
 
     if (req.method === 'GET') {
-      return respond(res, 200, 'Confirm your recommendation',
-        '<h1>Confirm your recommendation</h1>' +
-        '<p>Hi ' + esc(entry.name) + ', press the button to confirm that you wrote the recommendation you submitted for Charles S. Carreon.</p>' +
-        '<form method="post" action="/api/confirm">' +
-        '<input type="hidden" name="token" value="' + esc(token) + '">' +
-        '<button type="submit" class="btn">Yes, I wrote this</button>' +
-        '</form>' +
-        '<p>If you did not write it, just close this page. It will be deleted automatically.</p>');
+      return respond(res, 200, 'Confirm your recommendation', pages.confirmPage(entry, token));
     }
 
     // POST: mark as awaiting the owner's decision, keep the entry, and create the
@@ -103,13 +92,10 @@ module.exports = async function handler(req, res) {
 
     await notifyOwner(entry, entryKey, decideToken);
 
-    return respond(res, 200, 'Confirmed',
-      '<h1>Thank you, confirmed</h1>' +
-      '<p>Your recommendation has been confirmed and is now waiting for review. ' +
-      'It is not public yet. If it is published, it will appear on the recommendations page.</p>');
+    return respond(res, 200, 'Confirmed', pages.confirmedPage());
   } catch (error) {
     console.error('confirm failed:', error && error.message);
     return respond(res, 500, 'Something went wrong',
-      '<h1>Something went wrong</h1><p>Please try the link again in a few minutes.</p>');
+      pages.messagePage('warn', 'Something went wrong', 'Please try the link again in a few minutes.'));
   }
 };

@@ -9,7 +9,8 @@ const redis = require('./_lib/redis');
 const tokens = require('./_lib/tokens');
 const { relationshipLine } = require('./_lib/ownerMail');
 const entries = require('./_lib/entries');
-const { esc, respond } = require('./_lib/html');
+const { respond } = require('./_lib/html');
+const pages = require('./_lib/pages');
 
 function field(req, name) {
   const body = req.body;
@@ -23,43 +24,13 @@ function field(req, name) {
 }
 
 function invalidPage(res) {
-  return respond(res, 404, 'Link not valid',
-    '<h1>This link is not valid</h1>' +
-    '<p>It may have expired (decision links last 30 days) or been mistyped.</p>');
-}
-
-function multiline(text) {
-  return esc(text).replace(/\n/g, '<br>');
-}
-
-function row(label, value) {
-  return '<li><strong>' + esc(label) + ':</strong> ' + value + '</li>';
-}
-
-function link(url) {
-  if (!url) return '(none given)';
-  return '<a href="' + esc(url) + '" rel="noopener noreferrer">' + esc(url) + '</a>';
-}
-
-function entryDetails(entry) {
-  return '<ul>' +
-    row('Name', esc(entry.name)) +
-    row('Email', esc(entry.email)) +
-    row('How they know you', esc(relationshipLine(entry))) +
-    row('Role', entry.role ? esc(entry.role) : '(none given)') +
-    row('Organization', entry.organization ? esc(entry.organization) : '(none given)') +
-    row('LinkedIn', link(entry.linkedin)) +
-    row('Facebook', link(entry.facebook)) +
-    row('Show profile links publicly', entry.showLinks === '1' ? 'yes' : 'no') +
-    '</ul>' +
-    '<h2>Recommendation</h2>' +
-    '<blockquote><p>' + multiline(entry.message) + '</p></blockquote>';
+  return respond(res, 404, 'Link not valid', pages.invalidDecidePage());
 }
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     res.setHeader('Allow', 'GET, POST');
-    return respond(res, 405, 'Not allowed', '<h1>Not allowed</h1>');
+    return respond(res, 405, 'Not allowed', pages.messagePage('bad', 'Not allowed'));
   }
 
   try {
@@ -74,11 +45,7 @@ module.exports = async function handler(req, res) {
     if (!entry.id) return invalidPage(res);
 
     if (entry.state === 'published' || entry.state === 'rejected' || entry.state === 'hidden') {
-      return respond(res, 200, 'Already decided',
-        '<h1>Already decided</h1><p>This recommendation was ' +
-        (entry.state === 'rejected' ? 'rejected' : 'approved') +
-        ' on ' + esc(entry.decidedAt || 'an earlier date') + '. Nothing was changed. ' +
-        'You can manage it from the admin page.</p>');
+      return respond(res, 200, 'Already decided', pages.alreadyDecidedPage(entry));
     }
     if (entry.state !== 'awaiting') return invalidPage(res);
 
@@ -89,46 +56,24 @@ module.exports = async function handler(req, res) {
     // Step 1: show the entry with both buttons.
     if (req.method === 'GET' || !chosen) {
       return respond(res, 200, 'Approve or reject',
-        '<h1>Approve or reject this recommendation?</h1>' +
-        entryDetails(entry) +
-        '<form method="post" action="/api/decide">' +
-        '<input type="hidden" name="token" value="' + esc(token) + '">' +
-        '<button type="submit" name="action" value="approve" class="btn">Approve</button> ' +
-        '<button type="submit" name="action" value="reject" class="btn">Reject</button>' +
-        '</form>' +
-        '<p>Nothing changes until you press a button and confirm.</p>');
+        pages.decidePage(Object.assign({}, entry, { relationshipLine: relationshipLine(entry) }), token));
     }
 
     const approving = action === 'approve';
 
     // Step 2: ask "are you sure?".
     if (field(req, 'confirm') !== 'yes') {
-      return respond(res, 200, 'Are you sure?',
-        '<h1>Are you sure you want to ' + (approving ? 'approve and publish' : 'reject') + ' this recommendation?</h1>' +
-        '<p>From ' + esc(entry.name) + '. ' +
-        (approving
-          ? 'Approving marks it as published.'
-          : 'Rejecting keeps it private.') + '</p>' +
-        '<form method="post" action="/api/decide">' +
-        '<input type="hidden" name="token" value="' + esc(token) + '">' +
-        '<input type="hidden" name="action" value="' + esc(action) + '">' +
-        '<input type="hidden" name="confirm" value="yes">' +
-        '<button type="submit" class="btn">' + (approving ? 'Yes, approve and publish' : 'Yes, reject') + '</button>' +
-        '</form>' +
-        '<p><a href="' + esc(backLink) + '">No, go back</a></p>');
+      return respond(res, 200, 'Are you sure?', pages.decideSurePage(entry, token, action, backLink));
     }
 
     // Step 3: record the decision (the shared code also refreshes the public list).
     if (approving) await entries.approve(id);
     else await entries.reject(id);
 
-    return respond(res, 200, approving ? 'Approved' : 'Rejected',
-      approving
-        ? '<h1>Approved</h1><p>The recommendation is marked as published. It will appear on the recommendations page within about half a minute.</p>'
-        : '<h1>Rejected</h1><p>The recommendation will stay private.</p>');
+    return respond(res, 200, approving ? 'Approved' : 'Rejected', pages.decideDonePage(approving));
   } catch (error) {
     console.error('decide failed:', error && error.message);
     return respond(res, 500, 'Something went wrong',
-      '<h1>Something went wrong</h1><p>Please try the link again in a few minutes.</p>');
+      pages.messagePage('warn', 'Something went wrong', 'Please try the link again in a few minutes.'));
   }
 };

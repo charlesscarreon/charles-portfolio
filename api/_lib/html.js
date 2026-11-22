@@ -10,7 +10,9 @@ function esc(value) {
     .replace(/'/g, '&#39;');
 }
 
-function page(title, innerHtml) {
+// options.wide: a wider column, for the admin lists.
+function page(title, innerHtml, options) {
+  const wide = options && options.wide;
   return '<!DOCTYPE html>\n' +
     '<html lang="en" data-theme="dark" class="no-js home recommendations">\n' +
     '<head>\n' +
@@ -20,6 +22,9 @@ function page(title, innerHtml) {
     '<meta name="robots" content="noindex, nofollow">\n' +
     '<meta name="theme-color" content="#0f1115">\n' +
     '<link rel="icon" type="image/svg+xml" href="/favicon.svg">\n' +
+    // Same saved theme as the rest of the site, applied before first paint.
+    '<script>try{var t=localStorage.getItem("charles-portfolio-theme");' +
+    'if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}</script>\n' +
     '<style>\n' +
     'main { max-width: 56rem; margin: 0 auto; padding: 0 1rem 1rem; }\n' +
     'h1, h2, h3 { line-height: 1.25; margin: 1.5rem 0 0.5rem; }\n' +
@@ -27,25 +32,26 @@ function page(title, innerHtml) {
     '</style>\n' +
     '<link rel="stylesheet" href="/styles.css">\n' +
     '</head>\n' +
-    '<body>\n' +
-    '<main id="main">\n' +
-    '<section class="section">\n' +
-    '<div class="card">\n' +
+    '<body class="internal">\n' +
+    '<header class="internal-bar"><div class="internal-bar__inner">' +
+    '<a class="internal-bar__name" href="/">Charles S. Carreon</a>' +
+    '<span class="internal-bar__tag">Recommendations</span></div></header>\n' +
+    '<main id="main" class="internal-main' + (wide ? ' internal-main--wide' : '') + '">\n' +
+    '<div class="card internal-card">\n' +
     innerHtml + '\n' +
     '</div>\n' +
-    '</section>\n' +
-    '<p><a href="/recommendations">Back to recommendations</a> · <a href="/">Home</a></p>\n' +
+    '<p class="internal-back"><a href="/recommendations">Back to recommendations</a> · <a href="/">Home</a></p>\n' +
     '</main>\n' +
     '</body>\n' +
     '</html>\n';
 }
 
-function respond(res, status, title, innerHtml) {
+function respond(res, status, title, innerHtml, options) {
   res.status(status);
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('X-Robots-Tag', 'noindex');
-  return res.send(page(title, innerHtml));
+  return res.send(page(title, innerHtml, options));
 }
 
 module.exports = { esc, page, respond };
