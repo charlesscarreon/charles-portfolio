@@ -1572,18 +1572,12 @@ html:not([data-theme="light"]) .tech-tile--nextjs::before {
     list-style: none;
 }
 
-.tech-list li {
-    border-radius: 0.35rem;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
-}
-
 .tech-list li:not(:last-child)::after {
     content: ",";
     content: "," / "";
-    transition: color 0.2s ease;
 }
 
-html.projects .project:has(a:focus-visible),
+:is(html.projects, html.achievements) .project:has(a:focus-visible),
 .featured-card:has(a:focus-visible) {
     transform: translateY(-0.25rem);
     border-color: var(--accent);
@@ -1594,13 +1588,13 @@ html.projects .project:has(a:focus-visible),
 /* Dim the other cards while one is hovered or focused, as on the
    certifications. Separate rules so a browser without :has() only loses this. */
 .featured-grid:has(.featured-card a:focus-visible) .featured-card:not(:has(a:focus-visible)),
-html.projects main:has(.project a:focus-visible) .project:not(:has(a:focus-visible)) {
+:is(html.projects, html.achievements) main:has(.project a:focus-visible) .project:not(:has(a:focus-visible)) {
     opacity: 0.65;
 }
 
 @media (hover: hover) and (pointer: fine) {
     .featured-grid:has(.featured-card:hover) .featured-card:not(:hover),
-    html.projects main:has(.project:hover) .project:not(:hover) {
+    :is(html.projects, html.achievements) main:has(.project:hover) .project:not(:hover) {
         opacity: 0.65;
     }
 }
@@ -1610,18 +1604,8 @@ html.projects .project:has(a:focus-visible) h2,
     color: var(--accent);
 }
 
-html.projects .project:has(a:focus-visible) .tech-list li {
-    background-color: color-mix(in srgb, var(--accent) 16%, transparent);
-    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--accent) 16%, transparent);
-    color: var(--accent-strong);
-}
-
-html.projects .project:has(a:focus-visible) .tech-list li::after {
-    color: transparent;
-}
-
 @media (hover: hover) and (pointer: fine) {
-    html.projects .project:hover,
+    :is(html.projects, html.achievements) .project:hover,
     .featured-card:hover {
         border-color: var(--accent);
         box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
@@ -1638,19 +1622,9 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
         color: var(--accent);
     }
 
-    html.projects .project:hover .tech-list li {
-        background-color: color-mix(in srgb, var(--accent) 16%, transparent);
-        box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--accent) 16%, transparent);
-        color: var(--accent-strong);
-    }
-
-    html.projects .project:hover .tech-list li::after {
-        color: transparent;
-    }
-
     /* The button is hidden at rest and fades in on hover or focus. Its space
        is reserved, so the card does not jump. */
-    html.projects .project .links a.project-detail-open,
+    :is(html.projects, html.achievements) .project .links a.project-detail-open,
     .featured-card__more a {
         opacity: 0;
         transform: translateY(0.35rem);
@@ -1658,9 +1632,9 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
             box-shadow 0.15s ease;
     }
 
-    html.projects .project:hover .links a.project-detail-open,
-    html.projects .project:has(a:focus-visible) .links a.project-detail-open,
-    html.projects .project .links a.project-detail-open:focus-visible,
+    :is(html.projects, html.achievements) .project:hover .links a.project-detail-open,
+    :is(html.projects, html.achievements) .project:has(a:focus-visible) .links a.project-detail-open,
+    :is(html.projects, html.achievements) .project .links a.project-detail-open:focus-visible,
     .featured-card:hover .featured-card__more a,
     .featured-card:has(a:focus-visible) .featured-card__more a,
     .featured-card__more a:focus-visible {
@@ -1700,8 +1674,8 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
     .tech-tile:nth-child(3) { --i: 2; }
     .tech-tile:nth-child(4) { --i: 3; }
 
-    html.projects .project:hover .tech-tile,
-    html.projects .project:has(a:focus-visible) .tech-tile,
+    :is(html.projects, html.achievements) .project:hover .tech-tile,
+    :is(html.projects, html.achievements) .project:has(a:focus-visible) .tech-tile,
     .featured-card:hover .tech-tile,
     .featured-card:has(a:focus-visible) .tech-tile {
         opacity: 1;
@@ -1866,6 +1840,7 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
     gap: 0.25rem 1rem;
 }
 
+.role__head h3,
 .role__head h4 {
     margin: 0;
     font-size: 1rem;
@@ -1877,6 +1852,60 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
     font-size: 0.9rem;
     white-space: nowrap;
 }
+
+/* Education (the /experience page): the schools use the same dot-and-line
+   timeline, one line joining all four, with a muted line under each name. */
+.role__sub {
+    margin: 0.15rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.roles--timeline .role {
+    margin-bottom: 1.4rem;
+    padding-bottom: 0;
+}
+
+.roles--timeline .role:last-child {
+    margin-bottom: 0;
+}
+
+/* The gap between schools is a margin, not padding. The line still runs to
+   the next dot. */
+.roles--timeline .role:not(:last-child)::after {
+    bottom: calc(-1.4rem - 0.675rem);
+}
+
+/* Only the current school (the first) is a filled dot; the earlier ones are
+   empty dashed rings. */
+.roles--timeline .role:not(:first-child)::before {
+    border: 1.5px dashed var(--accent);
+    background-color: var(--surface);
+}
+
+/* Hovering the Education card outlines the whole card in teal, and the current
+   school (the college) turns its name teal. */
+@media (hover: hover) and (pointer: fine) {
+    .education-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent);
+    }
+
+    .education-card:hover .role:first-child h3 {
+        color: var(--accent);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .education-card {
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .education-card .role:first-child h3 {
+        transition: color 0.25s ease;
+    }
+}
+
 
 /* The job description is a bullet list with teal bullets. */
 .role__list {
@@ -2609,6 +2638,15 @@ html.dialog-capable .project-dialog:not([open]) {
     padding-top: 1.25rem;
 }
 
+/* Achievements: the "More about this achievement" button is on its own line
+   above the other links. The two rows are pinned to the bottom of the card
+   together, so the empty space of a shorter card sits above the buttons, and
+   the rows line up from card to card. */
+html.achievements .project .links:not(.links--more) {
+    margin-top: 0;
+    padding-top: 0.5rem;
+}
+
 .links a,
 .btn {
     /* A flex box centres the label vertically. On touch and narrow screens a
@@ -3255,16 +3293,17 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
 }
 
 /* Dim every other card on the homepage while one is hovered or focused:
-   projects, achievements, skills and certificates all count. Separate rules
-   so a browser without :has() only loses the dimming. */
+   projects, achievements, skills and certificates all count. On /skills the
+   skill cards and the certificate cards dim each other the same way. Separate
+   rules so a browser without :has() only loses the dimming. */
 @media (hover: hover) and (pointer: fine) {
-    html.home main:has(:is(.featured-card, .achievements-card, .skills-card, .cert-card):hover)
+    :is(html.home, html.skills) main:has(:is(.featured-card, .achievements-card, .skills-card, .cert-card):hover)
         :is(.featured-card, .achievements-card, .skills-card, .cert-card):not(:hover) {
         opacity: 0.65;
     }
 }
 
-html.home main:has(:is(.featured-card, .cert-card) a:focus-visible)
+:is(html.home, html.skills) main:has(:is(.featured-card, .cert-card) a:focus-visible)
     :is(.featured-card, .achievements-card, .skills-card, .cert-card):not(:has(a:focus-visible)) {
     opacity: 0.65;
 }
@@ -3284,6 +3323,7 @@ html.home main:has(:is(.featured-card, .cert-card) a:focus-visible)
     .skill-chip:nth-child(3) { --n: 2; }
     .skill-chip:nth-child(4) { --n: 3; }
     .skill-chip:nth-child(5) { --n: 4; }
+    .skill-chip:nth-child(6) { --n: 5; }
 }
 
 /* ---------- Certifications ---------- */
