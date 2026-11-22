@@ -79,12 +79,14 @@ All eight features are built, reviewed and committed on `feature/ui-update` (202
 - **Certificate rows aligned (2026-11-22): tried and reverted.** A subgrid version made the certificate cards look worse, so it was removed; the tags in the certificate cards are still not aligned across cards.
 - **Certificate issuer on two lines (2026-11-22):** settled instead of aligning the cards another way. The organisation and the date are separate lines (for example "Wadhwani Foundation" above "2026 May 13"), so the issuer row is always the same height and the tags line up from card to card. The button fades in over the same two-line row.
 
-**Task 5: Experience grouping** (planned 2026-11-22, homepage Experience card, not started).
+**Task 5: Experience grouping** (planned 2026-11-22, homepage Experience card, built 2026-11-22, awaiting review in the browser).
 
 - **Group** the two DEVCON Laguna roles (Operations and Procurement Lead, Student Volunteer) under one DEVCON Laguna entry.
 - **Vertical timeline only on the DEVCON roles:** a thin line and a dot per role inside that group. The Victowin entry has no timeline.
 - **Hover glow per organization**, not per role: hovering DEVCON Laguna lights up the whole group, hovering Victowin lights up its entry.
 - **Kept in reserve:** hover dimming of the other organizations, an organization logo or initials tile, date chips in monospace, a short detail line on hover (needs the no-layout-shift rule).
+- **Built:** the DEVCON Laguna heading (with "Laguna" on the right) holds the two roles as a list, each with a teal dot and a thin line joining the dots, its title and the year on the right. Victowin keeps its single entry with no timeline. Hovering an organization gives it a soft teal tint and glow, and the dots glow too. The entries get room around them through negative margins, so nothing moves at rest. Homepage only; `/experience` is unchanged.
+- **Changed after review (2026-11-22):** the divider between organizations is a straight inset line, not a border (the border curved at the ends because of the hover corners); the line no longer draws over the dots; the first dot is filled teal, the last is an empty dashed ring, and the line is neutral grey, not teal. Victowin uses the same template (organization heading with its city, then the role and year) without a dot or line, indented the same. Each job description is a bullet list with teal bullets.
 
 **Task 6: Recommendations empty state** (planned 2026-11-22, homepage Recommendations section, built 2026-11-22, awaiting review in the browser). Today it is one card with a single line of text and two buttons.
 
