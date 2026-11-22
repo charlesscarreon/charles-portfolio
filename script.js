@@ -795,13 +795,20 @@
             });
         });
 
-        /* A shared link: /projects#outrun-detail opens that panel. */
-        if (window.location.hash) {
-            var linked = document.getElementById(window.location.hash.slice(1));
-            if (linked && linked.classList.contains("project-dialog")) {
-                open(linked);
+        /* A shared link: /projects#outrun-detail opens that panel. It also
+           works when the link is followed on the projects page itself (the
+           footer links), where only the hash changes. */
+        function openFromHash() {
+            if (window.location.hash) {
+                var linked = document.getElementById(window.location.hash.slice(1));
+                if (linked && linked.classList.contains("project-dialog")) {
+                    open(linked);
+                }
             }
         }
+
+        openFromHash();
+        window.addEventListener("hashchange", openFromHash);
     }
 
     /* ---------- Get in touch: mail draft dialog ---------- */
