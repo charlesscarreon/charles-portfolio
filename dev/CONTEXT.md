@@ -39,6 +39,7 @@ The site is deployed on Vercel and uses Vercel's `cleanUrls` feature, so public 
 - The `dev/` folder is excluded from production deploys via `.vercelignore`.
 - Keep accessibility features: skip links, semantic HTML, `aria` attributes, `:focus-visible`, `prefers-reduced-motion`.
 - Dark theme is the default; light theme is applied via a `data-theme` attribute and persisted in `localStorage`.
+- Source files use CRLF line endings; keep them when editing. `git status` lists many files as modified for line endings only (`core.autocrlf` is unset), so check with `git diff --stat --ignore-space-at-eol` and stage only files with real changes.
 - Link styling: no persistent underlines; the underline appears on hover only. Pill/button links (`.links a`, `.btn`) stay underline-free even on hover.
 - Maintain the existing SEO setup: per-page metadata, canonical URLs, Open Graph, Twitter Card, and JSON-LD structured data, plus `sitemap.xml` and `robots.txt`. As a standing maintenance habit, periodically review and refresh content (education, projects, skills, achievements) and update `sitemap.xml` lastmod dates when pages meaningfully change.
 - Content must remain readable even without CSS: if a visitor's browser fails to load or apply the stylesheet, the raw HTML should still present the information in a way human eyes can read. Each page ships a small color-agnostic inline `<style>` fallback in its `<head>` (placed before the `styles.css` link) that applies container width on `main` (56rem), heading/paragraph vertical rhythm, and `img`/`iframe` width limits — it uses no colors and no CSS custom properties (both die with a failed stylesheet). Every fallback selector is also redefined by `styles.css`, which is linked directly after it, so the fallback cannot leak into the fully styled page.
@@ -67,7 +68,7 @@ Contains local development tooling and documentation only. It is never deployed.
 - `test-fallback.js` — Zero-dependency fallback-testing server for verifying the site's no-CSS and no-JS views. Serves on port 8124 (or the `PORT` environment variable), reusing the same static-serving and clean-URL logic as `serve.js`. For HTML responses it strips tags based on query-string flags; JSON-LD structured data is always preserved. Usage: `?css=0` removes the stylesheet, `?js=0` removes the external script, and `?css=0&js=0` removes both (full fallback view). `?redirect=0` strips the automatic redirect mechanisms (any `<meta http-equiv="refresh">` and inline `window.location.replace` scripts) so the manual fallback content of a redirect stub can be viewed in-browser. Set the `ROOT` environment variable to serve a different folder (e.g., the old website repo).
 - `test-fallback.bat` — Windows batch launcher. Changes to the project root, opens http://localhost:8124 in the browser, then runs `node dev/test-fallback.js`.
 - `test-fallback-old.bat` — Windows batch launcher for previewing the old website's redirect stubs. Sets `ROOT` to `C:\Projects\personal\charles-old-portfolio`, opens http://localhost:8124/?redirect=0 in the browser (so the stub renders its manual fallback instead of auto-redirecting), then runs `node dev/test-fallback.js`. `?redirect=0` is needed because a browser always honors `<meta http-equiv="refresh">`. Useful because the fallback state can only be seen this way.
-- `ui-update/UI-UPDATE-FEATURES.md` — Repo copy of the Claude doc "UI Update: Feature Log": every UI feature of the `feature/ui-update` round with its status, decisions and a "Built as changed" section, plus the on-hold list (rejected and later items).
+- `ui-update/UI-UPDATE-FEATURES.md` — Repo copy of the Claude doc "UI Update: Feature Log": the ground rules, a short summary of each built UI feature, the rejected and later items, and the list of new UI tasks. Trimmed on 2026-11-22; the long per-feature notes are in its git history.
 - `seo-audit-260904/` — A three-stage SEO audit with a consolidated report. The documents are:
   - `personal-website-seo-audit-stage-1.md` — Technical SEO foundation audit.
   - `personal-website-seo-audit-stage-2.md` — Name search and identity discoverability audit.
@@ -89,6 +90,7 @@ Work in progress or planned to be done immediately.
 - Recommendations backend: built on `feature/recommendations-page`. Upstash Redis and Resend are connected, `charlescarreon.dev` is verified for sending (SPF, DKIM and DMARC pass), and the flow works on a Vercel preview: submit, writer confirmation, owner decision, public list, admin page with hide and delete, featured top three on the homepage. Still to do: the 24-hour reminder and weekly digest (daily cron), rate limits beyond the basic throttle, the owner-only JSON export with a repo snapshot fallback, and the full no-JS and no-CSS test pass. See the plan under Planned Changes.
 
 - UI update round (`feature/ui-update`): Features 1 to 8 are built (see Completed Changes and `dev/ui-update/UI-UPDATE-FEATURES.md`). Charles reviews each in the browser and commits himself. The achievements and experience cards, the recommendation quote cards and the typography pass are left for later; the hero shrink and the numbered section labels were rejected. The backend work (reminders, digest, export, rate limits, no-JS/no-CSS pass) waits until Charles is satisfied with the UI.
+- UI update, homepage plan (2026-11-22): ten homepage tasks are recorded as plans in `dev/ui-update/UI-UPDATE-FEATURES.md` (hero cleanup, About Me stat badges, achievements and skills card hovers, experience grouping, recommendations empty state, back to top, bare-text "View all" links, footer redesign, dot-grid background). Nothing is built; the UI work is in plan mode. The other pages wait until the homepage is right.
 
 ## Planned Changes
 
@@ -191,7 +193,7 @@ PLAN RECORDED 2026-11-21 in the Claude doc "Recommendations Page: Implementation
 - Throttle (basic): production 5 submissions per IP per hour and one per email per 10 minutes; preview 50 per hour and a 10-second cooldown. The plan's timing check (signed timestamp) is deferred because it needs the form served by a function (now possible, since the page is rendered by one). Daily and site-wide limits are still to do.
 - Preview links in emails point at the preview deployment address; production emails use `https://charlescarreon.dev` (set in `api/_lib/config.js`; change it there if the domain changes).
 - Next: the daily cron job with the 24-hour same-thread reminder and weekly digest; the owner-only JSON export and repo snapshot fallback; remaining rate limits; the full no-JS and no-CSS test pass and the accessibility check.
-- Test endpoint: a temporary `api/setup-test.js` passed its check and was deleted. The `SETUP_TEST_TOKEN` variable must also be removed from Vercel.
+- Test endpoint: a temporary `api/setup-test.js` passed its check and was deleted. Its `SETUP_TEST_TOKEN` variable was removed from Vercel.
 
 ### SEO and identity (from audit)
 
@@ -589,16 +591,15 @@ Do not stage, commit, push, merge, reset, or switch branches on Charles' behalf.
 
 ### UI update (`feature/ui-update`)
 
-IMPLEMENTED 2026-11-21 to 2026-11-22, built one feature per round and reviewed by Charles in the browser. Charles commits himself. The full list, decisions and the changes made after review are in `dev/ui-update/UI-UPDATE-FEATURES.md`.
+IMPLEMENTED 2026-11-21 to 2026-11-22, one feature per round, each reviewed by Charles in the browser and committed by him. A short summary per feature is in `dev/ui-update/UI-UPDATE-FEATURES.md`.
 
-- Hero background (Feature 1): a different set of floating icons on each hero (no labels), faint circuit traces that show only around the pointer and fade out before the bottom of the hero, random "data transfer" pulses along the traces, and a few lines that run past the bottom of the hero. Reduced motion and touch screens turn the pulses and the cursor effect off. Script in `initHeroDecor()`.
-- Page transitions (Feature 2): cross-document view transitions (`@view-transition`) with a slide and fade whose direction follows the page order. `transitions.js` in the head of all six pages, plus the "Page transitions" section of `styles.css`. Reduced motion disables it.
-- Homepage layout (Features 3 and 4) and the hash-target scroll fix in `settleHashTarget` (Feature 6); see the feature log for each.
-- Project cards (Feature 5): logo tiles (Devicon SVGs in `images/tech/`) slide out of the right edge of the card on hover and widen to show the tool name; the card lifts, tints and glows, the other cards dim, and the "More about" button fades in. The Lunas award badge sits on the image's top-left corner and lifts past the card corner on hover with a shine. Applies to the homepage featured cards and to `/projects`.
-- Skills (Feature 7): every skill is a logo chip; on hover a small label above the logo shows the name, three level dots and the level word. On touch screens each chip shows in full. The words Familiar, Proficient and Advanced stay in the markup as text. Applies to `/skills` and the homepage skills card.
-- Certificates (Feature 8): a fixed 16:9 image frame that grows to the card edges on hover, with a lift, glow and dimming of the other certificates.
-- Contact button and panel: the hero button keeps its text "Get in touch"; hovering lifts it and shows a panel-coloured button underneath. The panel grows out of that button, shrinks back on close, and has a redesigned layout. The subject is "Portfolio Inquiry".
-- All of this is plain CSS and ES5 with no dependencies, works without JavaScript or CSS where it matters (the level words and tool names stay as text), keeps the dark theme as default and the light theme, and respects `prefers-reduced-motion`.
-- `git status` also lists many other files as modified because of line endings only. Charles stages just the files that changed in a round.
+- Hero backgrounds: different floating icons per hero, circuit lines near the pointer, random data-transfer pulses (`initHeroDecor()` in `script.js`), and an animated contact button and panel.
+- Page transitions: slide and fade between pages via `@view-transition` and `transitions.js` (in the head of all six pages).
+- Homepage gaps, quieter "View all" buttons, and the "More about" scroll fix (`settleHashTarget`).
+- Project cards: logo tiles (Devicon SVGs in `images/tech/`), hover lift, glow and dimming, and the Lunas award badge on the image corner. On the homepage featured cards and on `/projects`.
+- Skills: a logo-only list with a hover label for the name and level; every chip shows in full on touch screens. The level words stay in the markup as text.
+- Certificates: a fixed 16:9 frame that grows to the card edges on hover.
+- Everything is plain CSS and ES5 with no dependencies, keeps the dark default and the light theme, and respects `prefers-reduced-motion`.
+- `git status` also lists many files as modified because of line endings only; Charles stages just the files that changed in a round.
 
 Do not stage, commit, push, merge, reset, or switch branches on Charles' behalf.

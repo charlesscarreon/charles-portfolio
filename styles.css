@@ -504,20 +504,6 @@ html.home .section:last-child {
     margin-bottom: 1.25rem;
 }
 
-/* The availability line belongs to the tagline as one thought, so it closes the
-   gap the tagline leaves instead of opening a new block. Browsers without
-   :has() simply keep the normal tagline spacing. */
-.hero .tagline:has(+ .hero-availability) {
-    margin-bottom: 0.4rem;
-}
-
-.hero-availability {
-    margin: 0 0 1.25rem;
-    color: var(--accent);
-    font-size: 0.95rem;
-    font-weight: 600;
-}
-
 .hero-cta {
     display: flex;
     flex-wrap: wrap;
@@ -549,6 +535,7 @@ html.home .section:last-child {
 
 .hero .contact a:hover {
     color: var(--hover);
+    text-decoration: none;
 }
 
 @supports (height: 100svh) {
@@ -582,16 +569,7 @@ html.home .section:last-child {
         margin-bottom: calc(1.25rem - 1.05rem * var(--hero-progress));
     }
 
-    html.home.js .hero .tagline:has(+ .hero-availability) {
-        margin-bottom: calc(0.4rem - 0.2rem * var(--hero-progress));
-    }
-
-    html.home.js .hero .hero-availability {
-        margin-bottom: calc(1.25rem - 0.65rem * var(--hero-progress));
-        font-size: calc(0.95rem - 0.1rem * var(--hero-progress));
-    }
-
-    html.home.js .hero > p:not(.tagline):not(.hero-availability):not(.hero-cta):not(.contact) {
+    html.home.js .hero > p:not(.tagline):not(.hero-cta):not(.contact) {
         font-size: calc(1rem - 0.08rem * var(--hero-progress));
     }
 
@@ -2052,16 +2030,79 @@ html.dialog-capable .project-dialog:not([open]) {
     border-top: 1px solid var(--border);
 }
 
+/* "Open email app": a rounded rectangle that matches the panel's fields, with
+   an envelope in a small tile on the left (like the award badge) and the
+   badge's diagonal shine on hover. Plain CSS; the button is a real <button>
+   with a text label, so it reads the same with the stylesheet gone. */
+.contact-dialog__actions .btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.1rem 0.5rem 0.55rem;
+}
+
+.btn__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 1.8rem;
+    height: 1.8rem;
+    flex: none;
+    border-radius: 0.35rem;
+    background-color: var(--accent-contrast);
+    color: var(--accent);
+}
+
+.btn__icon svg {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+}
+
+.contact-dialog__actions .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.45) 50%, transparent 62%);
+    transform: translateX(-130%);
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .contact-dialog__actions .btn:hover::before,
+    .contact-dialog__actions .btn:focus-visible::before {
+        transform: translateX(130%);
+        transition: transform 0.8s ease;
+    }
+}
+
 .contact-dialog__actions .btn::after {
     content: "\2192";
     content: "\2192" / "";
     display: inline-block;
-    margin-left: 0.45em;
+    margin-left: -0.2rem;
     transition: transform 0.15s ease;
 }
 
 .contact-dialog__actions .btn:hover::after {
     transform: translateX(0.15rem);
+}
+
+/* Phones: the button fills the panel width, an easy tap target. */
+@media (max-width: 620px) {
+    .contact-dialog__actions {
+        display: block;
+    }
+
+    .contact-dialog__actions .btn {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* Phones: the panel becomes the screen instead of a card with a scrollbar
