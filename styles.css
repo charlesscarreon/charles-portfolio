@@ -1119,6 +1119,7 @@ html.home.js .hero > .hero-trail {
 .quick-facts {
     display: grid;
     grid-template-columns: max-content 1fr;
+    align-items: baseline;
     gap: 0.35rem 1rem;
     margin: 0 0 1.25rem;
     font-size: 0.92rem;
@@ -1130,7 +1131,6 @@ html.home.js .hero > .hero-trail {
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    padding-top: 0.12rem;
 }
 
 .quick-facts dd {
@@ -1611,10 +1611,9 @@ html:not([data-theme="light"]) .tech-tile--nextjs::before {
 html.projects .project:has(a:focus-visible),
 .featured-card:has(a:focus-visible) {
     transform: translateY(-0.25rem);
-    background-color: color-mix(in srgb, var(--accent) 8%, var(--surface));
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
-        0 8px 28px color-mix(in srgb, var(--accent) 17%, transparent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+        0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 /* Dim the other cards while one is hovered or focused, as on the
@@ -1649,10 +1648,9 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
 @media (hover: hover) and (pointer: fine) {
     html.projects .project:hover,
     .featured-card:hover {
-        background-color: color-mix(in srgb, var(--accent) 8%, var(--surface));
-        border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
-            0 8px 28px color-mix(in srgb, var(--accent) 17%, transparent);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
     }
 
     .featured-card:hover {
@@ -1747,6 +1745,102 @@ html.projects .project:has(a:focus-visible) .tech-list li::after {
         max-width: 14rem;
         padding: 0 0.3rem 0 0.8rem;
         opacity: 1;
+    }
+}
+
+/* The homepage Achievements card is one link to the achievements page. The
+   stretched link is for pointer users; keyboard users have "View all
+   achievements" below the card. At rest the tiles sit in a row under each
+   entry; on a pointer device they slide out of the card's right edge, each
+   set beside its own entry, when the card is hovered. */
+.achievements-card {
+    --card-pad: clamp(1.25rem, 3vw, 1.75rem);
+    position: relative;
+}
+
+.achievements-card__link {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.achievements-card .entry-list > li {
+    position: relative;
+}
+
+.achievements-card .tech-tiles {
+    margin: 0.7rem 0 0;
+}
+
+/* The role and team facts reuse the About Me fact list, tighter here. */
+.achievements-card .quick-facts {
+    grid-template-columns: 5.5rem 1fr;
+    margin: 0.5rem 0 0.9rem;
+}
+
+/* The placing in the first entry's heading stands out in the accent colour. */
+.entry-place {
+    color: var(--accent);
+}
+
+/* The tiles div now follows the last paragraph, so that paragraph is no
+   longer the last child and kept its bottom margin as an empty gap. */
+.achievements-card .entry-list > li > p:last-of-type {
+    margin-bottom: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .achievements-card {
+        transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+    .achievements-card:hover {
+        cursor: pointer;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+
+    .achievements-card:hover .tech-tile {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+
+    /* The line between the two entries lights up teal with a soft glow. */
+    .achievements-card .entry-list > li:first-child {
+        transition: border-color 0.25s ease;
+    }
+
+    .achievements-card .entry-list > li:first-child::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 1px;
+        background-color: var(--accent);
+        box-shadow: 0 0 5px 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 0 12px 2px color-mix(in srgb, var(--accent) 18%, transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .achievements-card:hover .entry-list > li:first-child::after {
+        opacity: 1;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 620px) {
+    .achievements-card .tech-tiles {
+        top: 1.1rem;
+        right: calc(-1 * var(--card-pad) - 0.9rem);
+        margin: 0;
+    }
+
+    .achievements-card .entry-list > li:first-child .tech-tiles {
+        top: 0;
     }
 }
 
@@ -2970,6 +3064,87 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 17 6-6-6-6'/%3E%3Cpath d='M12 19h8'/%3E%3C/svg%3E") center / 80% no-repeat;
 }
 
+/* ---------- Skills card hover ---------- */
+
+/* On a pointer device, hovering the skills card gives it the certificates'
+   teal border and glow (no lift, so nothing below moves), sweeps a diagonal
+   shine across it once, then bobs the logos one by one in the same
+   left-to-right direction. The shine is a background on a pseudo-element, so the chip labels
+   that pop above the logos are never clipped. */
+.skills-card {
+    position: relative;
+}
+
+.skills-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    background: linear-gradient(110deg, transparent 38%,
+        color-mix(in srgb, var(--text-strong) 12%, transparent) 50%, transparent 62%);
+    background-repeat: no-repeat;
+    background-size: 200% 100%;
+    background-position: 130% 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes skills-shine {
+    0% { background-position: 130% 0; opacity: 1; }
+    100% { background-position: -30% 0; opacity: 1; }
+}
+
+@keyframes skills-bob {
+    0%, 100% { translate: 0 0; }
+    40% { translate: 0 -0.35rem; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .skills-card {
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    .skills-card:hover {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+            0 8px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+
+}
+
+/* Dim every other card on the homepage while one is hovered or focused:
+   projects, achievements, skills and certificates all count. Separate rules
+   so a browser without :has() only loses the dimming. */
+@media (hover: hover) and (pointer: fine) {
+    html.home main:has(:is(.featured-card, .achievements-card, .skills-card, .cert-card):hover)
+        :is(.featured-card, .achievements-card, .skills-card, .cert-card):not(:hover) {
+        opacity: 0.65;
+    }
+}
+
+html.home main:has(:is(.featured-card, .cert-card) a:focus-visible)
+    :is(.featured-card, .achievements-card, .skills-card, .cert-card):not(:has(a:focus-visible)) {
+    opacity: 0.65;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .skills-card:hover::after {
+        animation: skills-shine 1.8s linear;
+    }
+
+    .skills-card:hover .skill-box::before {
+        animation: skills-bob 0.7s ease-in-out backwards;
+        animation-delay: calc(0.35s + var(--n, 0) * 90ms + var(--group, 0) * 550ms);
+    }
+
+    .skills-summary__group:nth-child(2) { --group: 1; }
+    .skill-chip:nth-child(2) { --n: 1; }
+    .skill-chip:nth-child(3) { --n: 2; }
+    .skill-chip:nth-child(4) { --n: 3; }
+    .skill-chip:nth-child(5) { --n: 4; }
+}
+
 /* ---------- Certifications ---------- */
 
 .cert-grid {
@@ -3036,9 +3211,15 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
 }
 
 .cert-issuer {
-    margin: 0;
+    margin: 0.6rem 0 0;
     font-size: 0.85rem;
     color: var(--muted);
+}
+
+/* Organisation and date are two separate lines, so the line is always the
+   same height and the tags above it line up from card to card. */
+.cert-issuer span {
+    display: block;
 }
 
 .cert-card__footer {
@@ -3167,6 +3348,49 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
     .cert-more a:focus-visible {
         opacity: 1;
         transform: none;
+    }
+}
+
+/* Pointer devices: the issuer and date line sits in the row where the button
+   will appear. Both share one grid cell, so no space is reserved for the
+   button; on hover or focus the line fades out and the button fades in. */
+@media (hover: hover) and (pointer: fine) {
+    .cert-card__footer {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 0.6rem;
+    }
+
+    .cert-issuer,
+    .cert-more {
+        grid-row: 2;
+        grid-column: 1;
+        align-self: center;
+        margin: 0;
+        padding: 0;
+        min-height: 1.75rem;
+    }
+
+    .cert-issuer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: opacity 0.18s ease;
+    }
+
+    .cert-more {
+        display: flex;
+        align-items: center;
+        pointer-events: none;
+    }
+
+    .cert-more a {
+        pointer-events: auto;
+    }
+
+    .cert-card:hover .cert-issuer,
+    .cert-card:has(a:focus-visible) .cert-issuer {
+        opacity: 0;
     }
 }
 

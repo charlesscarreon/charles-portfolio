@@ -49,11 +49,12 @@ All eight features are built, reviewed and committed on `feature/ui-update` (202
 - **Decided (2026-11-22):** the hover reveal is a small label above the badge, like the skills labels: no layout shift, plain CSS, and the same pattern as the skills logos. On touch screens and anywhere without hover, the details show as a small line under the label. The label is centred on the badge, and the competitions and certifications details are bulleted lists. The flip and the expanding card are not used.
 - **Watch:** the revealed details must stay accurate when the counts change.
 
-**Task 3: Achievements logo tiles** (planned 2026-11-22, homepage Achievements card, not started). The homepage Achievements section is one card holding two entries (SIKAPTala 2026 and iSITE 2025).
+**Task 3: Achievements logo tiles** (planned 2026-11-22, homepage Achievements card, built 2026-11-22, awaiting review in the browser). The homepage Achievements section is one card holding two entries (SIKAPTala 2026 and iSITE 2025).
 
 - **Chosen:** logo tiles that appear on hover, like the project cards. Hovering shows the tiles for both entries, and clicking leads to the actual achievements page.
 - **Decided tiles (tech stacks only):** SIKAPTala: Next.js, Tailwind CSS, TypeScript (the Lunas stack); iSITE: C#.
 - **Decided:** hovering the card shows both sets at once, and the whole card is one link to the achievements page (not to each entry). The "View all achievements" button stays where it is, below the card.
+- **Built:** each entry has a visible fact list like the About Me "Based in" list (SIKAPTala: Role, Team; iSITE: Role, Category), and the SIKAPTala heading ends in "Top 8 National" in the accent colour, and the fact lists keep the small uppercase labels, with each label sharing a baseline with its value, and a fixed label column so both entries line up; a second body paragraph was tried and rejected. Each entry holds its own tile set. On a pointer device the tiles slide out of the card's right edge beside their entry, and the card gets the certificates-style teal border and soft outer glow, with no background tint and no lift. On touch and narrow screens the tiles sit as a row under each entry. The card is a stretched link; keyboard users use "View all achievements" below it.
 
 **Features to visit later** (ideas for the achievements page and card, not chosen yet):
 
@@ -63,13 +64,20 @@ All eight features are built, reviewed and committed on `feature/ui-update` (202
 - A timeline layout with year markers.
 - Meta (date, role, result, team size) as chips with small icons.
 
-**Task 4: Skills card hover** (planned 2026-11-22, homepage skills card, not started). Replaces the earlier idea of group descriptions, which is set aside for now.
+**Task 4: Skills card hover** (planned 2026-11-22, homepage skills card, built 2026-11-22, awaiting review in the browser). Replaces the earlier idea of group descriptions, which is set aside for now.
 
 - **Wanted:** hovering the skills card highlights it, then a shine sweeps across it like the Top 8 National badge, then the tool logos move up and down one by one in the same direction as the shine.
 - **Proposed:** a teal ring and tint like the project cards; the shine is a left-to-right diagonal band; the logos bob in order from left to right, one pass per hover. No layout change, so nothing below the card moves.
 - **Decided:** the skills card and the certificate cards dim each other: hovering the skills card dims the certificates, and hovering a certificate dims the skills card. The shine and the bob play once per hover.
 - **Set aside:** short descriptions on "Front-End Development" and "Game Development" (for example "The tools I use to build websites"), with the no-extra-height rule.
 - **Tidy when touched:** `homepage.template.html` has two tags on one line near line 382 (`<div class="card summary-card">` and `<div class="skills-summary">`), left over from an earlier edit.
+- **Built:** the card (`.skills-card`) gets the certificates-style teal border and glow with no lift and no tint (this replaces the "ring and tint" proposal). A soft diagonal shine sweeps across it once, slowly (1.8s, linear), and each logo bobs as the shine reaches it (delays follow the shine, the second group starts later). The skills card and the certificates dim each other, including on keyboard focus of a certificate. Mouse devices only; with reduced motion only the highlight and dimming remain. The two tags near line 382 are split onto their own lines.
+- **Project cards match (2026-11-22):** the homepage and `/projects` project cards also use the certificates-style hover: teal border and glow, no background tint (the lift stays).
+- **Dimming widened (2026-11-22):** hovering or focusing any homepage card (projects, achievements, skills, certificates) dims all the other cards, not just its own group. One shared rule in `styles.css` replaced the skills-and-certificates pair.
+- **Hover releases while scrolling (2026-11-22): tried and removed.** It showed no visible effect, so it was taken out; the browser keeps the old hover until a scroll settles, and that stays as it is.
+- **Certificate cards, no reserved button space (2026-11-22):** the issuer and date line moved down into the footer, in the row where the button appears. On a pointer device both share one grid cell, so on hover the line fades out and "View certificate" fades in with no empty gap at rest. On touch the order is tags, issuer, button. Applies to the homepage and `/skills` (markup moved in `homepage.template.html` and `skills.html`).
+- **Certificate rows aligned (2026-11-22): tried and reverted.** A subgrid version made the certificate cards look worse, so it was removed; the tags in the certificate cards are still not aligned across cards.
+- **Certificate issuer on two lines (2026-11-22):** settled instead of aligning the cards another way. The organisation and the date are separate lines (for example "Wadhwani Foundation" above "2026 May 13"), so the issuer row is always the same height and the tags line up from card to card. The button fades in over the same two-line row.
 
 **Task 5: Experience grouping** (planned 2026-11-22, homepage Experience card, not started).
 
@@ -87,7 +95,7 @@ All eight features are built, reviewed and committed on `feature/ui-update` (202
 - **Bundled change (from Task 8):** "View all recommendations" leaves the card and sits outside it, below the card, in the same style as the other "View all" links. "Write a recommendation" stays in the card as the main button.
 - **Built:** the ghost card also replaces the empty state on `/recommendations`, with its button jumping to the write form. Once recommendations exist, the homepage shows them with a plain "Write a recommendation" button under them and the bare "View all recommendations" link below that (`api/home.js`).
 
-**Task 7: Back to top in the "On this page" menu** (planned 2026-11-22, homepage, not started).
+**Task 7: Back to top in the "On this page" menu** (dropped 2026-11-22: it was built, then removed; the link moves into the footer, see Task 9).
 
 - A "Back to top" row as the last item of the menu, under Recommendations, set apart by a thin divider and quieter text.
 - It goes to the hero, the true top of the page (not About Me, which is already the first menu row).
@@ -105,11 +113,13 @@ All eight features are built, reviewed and committed on `feature/ui-update` (202
 **Task 9: Footer redesign** (planned 2026-11-22, all pages, not started). Reference: the footer of ctiancrndng.dev (a classmate's portfolio; WebFetch cannot read it because it needs JavaScript and a keypress, so use the browser pane). Ours today is one centered row of four contact links and a copyright line.
 
 - **Name block:** the name "Charles S. Carreon" as a small wordmark with a one-line tagline under it, so the footer has an identity.
-- **Latest projects column:** Lunas, TRIGGR, MUTED and OUTRUN, linking to their project cards. (Added on the edge of a decision.)
+- **Latest projects column:** decided 2026-11-22, "Latest projects" showing the latest four in the order on `/projects` with the Toolkit newest: Toolkit, OUTRUN, TRIGGR, MUTED, linking to their project cards (`#toolkit`, `#outrun`, `#triggr`, `#muted`).
 - **Info strip:** location (Cabuyao, Laguna) and email, on a divider line at the top of the footer.
 - **Availability line:** a small teal status dot with "Open to internships and junior developer roles" (it leaves the hero in Task 1).
 - **Social links as icon buttons**, labelled with the website name (GitHub, LinkedIn, Facebook, Email). On hover the website name slides left and fades out, then the handle or username slides in from the right and fades in.
-- **Not doing:** a navigation column (the "On this page" menu stays visible at the footer, so it would be redundant); a back-to-top arrow in the footer (Task 7 stays menu-only, wide screens).
+- **Not doing:** a navigation column (the "On this page" menu stays visible at the footer, so it would be redundant).
+- **Bundled (from Task 7):** a "Back to top" link in the footer, replacing the menu row that was tried and removed. A plain link to the top of the page, no script, on every page and at every width. It sits on the right of the bottom copyright row, with a small up arrow.
+- **Decided (2026-11-22):** the hover handle for Facebook is `csharlec` (the handle, not the full link); GitHub and LinkedIn show `charlesscarreon`, Email shows the address. The tagline under the wordmark is "Computer Science student and software developer", matching the hero.
 - **Review:** once the footer is built it gets an extensive review before it is considered done.
 - **Bundled:** no underline on the footer links when hovered (underlines currently appear on the contacts).
 
