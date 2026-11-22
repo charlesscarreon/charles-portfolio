@@ -140,9 +140,27 @@
 
         <!-- recommendations:list -->
         <section class="section" aria-label="Published recommendations">
-            <div class="card empty-state">
-                <p class="empty-state__title">No recommendations have been published yet.</p>
-                <p>When recommendations are added, they will appear here.</p>
+            <div class="card recs-ghost">
+                <div class="recs-ghost__preview" aria-hidden="true">
+                    <span class="recs-ghost__mark">&ldquo;</span>
+                    <span class="recs-ghost__line"></span>
+                    <span class="recs-ghost__line"></span>
+                    <span class="recs-ghost__line"></span>
+                    <span class="recs-ghost__author"><span class="recs-ghost__avatar"></span><span class="recs-ghost__name"></span></span>
+                </div>
+                <div class="recs-ghost__invite">
+                    <svg class="recs-ghost__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
+                            fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+                    </svg>
+                    <h3 class="recs-ghost__title">Be the first to recommend me</h3>
+                    <ol class="recs-steps">
+                        <li>Write it</li>
+                        <li>I confirm it</li>
+                        <li>It appears here</li>
+                    </ol>
+                    <p><a class="btn btn--lg" href="#write">Write a recommendation</a></p>
+                </div>
             </div>
         </section>
         <!-- /recommendations:list -->

@@ -267,18 +267,42 @@
                                 <a href="/projects">projects</a>, or review my <a href="/skills">skills and tools</a>.
                             </p>
                         </div>
+                        <!-- Each badge links to its evidence. Keep the detail lines and the link
+                             targets in step with the real counts when a competition or certificate is added. -->
                         <ol class="stat-row" role="list">
                             <li>
-                                <span class="stat-row__num">Top 8</span>
-                                <span class="stat-row__label">SIKAPTala 2026 national finalist</span>
+                                <a class="stat-row__link" href="/projects#lunas">
+                                    <span class="stat-row__num">Top 8</span>
+                                    <span class="stat-row__label">SIKAPTala 2026 national finalist</span>
+                                    <span class="stat-row__detail">Placed with Lunas, built by an eight-person team.</span>
+                                </a>
                             </li>
                             <li>
-                                <span class="stat-row__num">2</span>
-                                <span class="stat-row__label">national competitions</span>
+                                <a class="stat-row__link" href="/achievements#achievements-hero">
+                                    <span class="stat-row__num">2</span>
+                                    <span class="stat-row__label">national competitions</span>
+                                    <div class="stat-row__detail">
+                                        <ul class="stat-row__list">
+                                            <li class="stat-row__item">SIKAPTala 2026</li>
+                                            <li class="stat-row__item">iSITE National IT Skills Competition 2025</li>
+                                        </ul>
+                                    </div>
+                                </a>
                             </li>
                             <li>
-                                <span class="stat-row__num">5</span>
-                                <span class="stat-row__label">certifications</span>
+                                <a class="stat-row__link" href="/skills#certifications">
+                                    <span class="stat-row__num">5</span>
+                                    <span class="stat-row__label">certifications</span>
+                                    <div class="stat-row__detail">
+                                        <ul class="stat-row__list">
+                                            <li class="stat-row__item">Proficiency Certificate</li>
+                                            <li class="stat-row__item">Certificate of Content Completion</li>
+                                            <li class="stat-row__item">EF SET English Certificate (78/100)</li>
+                                            <li class="stat-row__item">Principles of Web Development</li>
+                                            <li class="stat-row__item">Programming for Beginners Using Python</li>
+                                        </ul>
+                                    </div>
+                                </a>
                             </li>
                         </ol>
                     </div>
@@ -343,7 +367,7 @@
                             <p class="featured-card__more"><a href="/projects#lunas-detail">More about Lunas</a></p>
                         </article>
                     </div>
-                    <p class="featured-more"><a class="btn" href="/projects#projects-hero">View all projects</a></p>
+                    <p class="featured-more"><a class="view-all" href="/projects#projects-hero"><span class="view-all__text">View all projects</span><span class="view-all__head" aria-hidden="true"></span></a></p>
                 </section>
 
                 <section id="achievements" class="section">
@@ -374,7 +398,7 @@
                             </li>
                         </ol>
                     </div>
-                    <p class="featured-more"><a class="btn" href="/achievements#achievements-hero">View all achievements</a></p>
+                    <p class="featured-more"><a class="view-all" href="/achievements#achievements-hero"><span class="view-all__text">View all achievements</span><span class="view-all__head" aria-hidden="true"></span></a></p>
                 </section>
 
                 <section id="skills" class="section">
@@ -448,7 +472,7 @@
                             </div>
                         </article>
                     </div>
-                    <p class="featured-more"><a class="btn" href="/skills">View all skills and certifications</a></p>
+                    <p class="featured-more"><a class="view-all" href="/skills"><span class="view-all__text">View all skills and certifications</span><span class="view-all__head" aria-hidden="true"></span></a></p>
                 </section>
 
                 <section id="experience" class="section">
@@ -491,21 +515,35 @@
                             </li>
                         </ol>
                     </div>
-                    <p class="featured-more"><a class="btn" href="/experience#experience-hero">View all experience</a></p>
+                    <p class="featured-more"><a class="view-all" href="/experience#experience-hero"><span class="view-all__text">View all experience</span><span class="view-all__head" aria-hidden="true"></span></a></p>
                 </section>
 
                 <section id="recommendations" class="section">
                     <h2>Recommendations</h2>
                     <!-- recommendations:home -->
-                    <div class="card summary-card">
-                        <p>
-                            Recommendations will appear here as they are added.
-                        </p>
-                        <p class="links featured-more">
-                            <a class="btn" href="/recommendations">View all recommendations</a>
-                            <a class="btn" href="/recommendations#write">Write a recommendation</a>
-                        </p>
+                    <div class="card recs-ghost">
+                        <div class="recs-ghost__preview" aria-hidden="true">
+                            <span class="recs-ghost__mark">&ldquo;</span>
+                            <span class="recs-ghost__line"></span>
+                            <span class="recs-ghost__line"></span>
+                            <span class="recs-ghost__line"></span>
+                            <span class="recs-ghost__author"><span class="recs-ghost__avatar"></span><span class="recs-ghost__name"></span></span>
+                        </div>
+                        <div class="recs-ghost__invite">
+                            <svg class="recs-ghost__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
+                                    fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+                            </svg>
+                            <h3 class="recs-ghost__title">Be the first to recommend me</h3>
+                            <ol class="recs-steps">
+                                <li>Write it</li>
+                                <li>I confirm it</li>
+                                <li>It appears here</li>
+                            </ol>
+                            <p><a class="btn btn--lg" href="/recommendations#write">Write a recommendation</a></p>
+                        </div>
                     </div>
+                    <p class="featured-more"><a class="view-all" href="/recommendations"><span class="view-all__text">View all recommendations</span><span class="view-all__head" aria-hidden="true"></span></a></p>
                     <!-- /recommendations:home -->
                 </section>
             </div>

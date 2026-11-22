@@ -42,11 +42,11 @@ All eight features are built, reviewed and committed on `feature/ui-update` (202
 - **Bundled:** no underline on the hero contact links when hovered (underlines currently appear on them).
 - **Bundled (2026-11-22): "Open email app" button look.** In the Get in touch panel the button becomes a rounded rectangle that matches the panel's input fields, with a small envelope icon in an accent-contrast tile on the left. The label stays "Open email app". On hover the diagonal shine from the Top 8 National badge passes once and the arrow still nudges right; reduced-motion users get neither. It stays right-aligned and fills the panel width on phones. Plain CSS and an inline SVG icon, so it works with no JavaScript or CSS.
 
-**Task 2: About Me stat badges** (planned 2026-11-22, homepage only, not started). The three badges (Top 8, 2 national competitions, 5 certifications) are static.
+**Task 2: About Me stat badges** (planned 2026-11-22, homepage only, built 2026-11-22, awaiting review in the browser). The three badges (Top 8, 2 national competitions, 5 certifications) are static.
 
 - **Chosen:** (1) hover reveals what is behind the number: the competitions by name, the certificates, the SIKAPTala result and project; (2) each badge links to its evidence: Top 8 to the Lunas card, competitions to `/achievements`, certifications to the certifications section, with the same lift and glow as the other cards.
 - **Kept in reserve, in case the two chosen are not satisfying:** (3) count-up of the numbers when the row scrolls into view (final numbers with no JS or reduced motion); (4) a small icon per badge in a teal tile, like the Lunas award badge; (5) the diagonal shine from the Lunas badge on hover.
-- **Decided (2026-11-22):** the hover reveal is a small label above the badge, like the skills labels: no layout shift, plain CSS, and the same pattern as the skills logos. How the details show on touch screens is settled when it is built. The flip and the expanding card are not used.
+- **Decided (2026-11-22):** the hover reveal is a small label above the badge, like the skills labels: no layout shift, plain CSS, and the same pattern as the skills logos. On touch screens and anywhere without hover, the details show as a small line under the label. The label is centred on the badge, and the competitions and certifications details are bulleted lists. The flip and the expanding card are not used.
 - **Watch:** the revealed details must stay accurate when the counts change.
 
 **Task 3: Achievements logo tiles** (planned 2026-11-22, homepage Achievements card, not started). The homepage Achievements section is one card holding two entries (SIKAPTala 2026 and iSITE 2025).
@@ -78,13 +78,14 @@ All eight features are built, reviewed and committed on `feature/ui-update` (202
 - **Hover glow per organization**, not per role: hovering DEVCON Laguna lights up the whole group, hovering Victowin lights up its entry.
 - **Kept in reserve:** hover dimming of the other organizations, an organization logo or initials tile, date chips in monospace, a short detail line on hover (needs the no-layout-shift rule).
 
-**Task 6: Recommendations empty state** (planned 2026-11-22, homepage Recommendations section, not started). Today it is one card with a single line of text and two buttons.
+**Task 6: Recommendations empty state** (planned 2026-11-22, homepage Recommendations section, built 2026-11-22, awaiting review in the browser). Today it is one card with a single line of text and two buttons.
 
 - **Ghost quote card:** a dashed-border card with a large faint teal quote mark and two or three pale skeleton lines where the quote and name will go. On hover the dashed border turns solid teal with a soft glow.
 - **Invite-led content:** a speech-bubble icon, the heading "Be the first to recommend me", and a one-line three-step hint: write it, I confirm it, it appears. "Write a recommendation" is the main teal button; "View all recommendations" moves out of the card (see the bundled change below).
 - **Shown only while the list is empty.** It disappears automatically once real recommendations exist. The `/recommendations` page has its own empty state; reuse the same look there.
 - **Kept in reserve:** three ghost skeleton cards fading down the section as a layout preview.
 - **Bundled change (from Task 8):** "View all recommendations" leaves the card and sits outside it, below the card, in the same style as the other "View all" links. "Write a recommendation" stays in the card as the main button.
+- **Built:** the ghost card also replaces the empty state on `/recommendations`, with its button jumping to the write form. Once recommendations exist, the homepage shows them with a plain "Write a recommendation" button under them and the bare "View all recommendations" link below that (`api/home.js`).
 
 **Task 7: Back to top in the "On this page" menu** (planned 2026-11-22, homepage, not started).
 
@@ -93,12 +94,13 @@ All eight features are built, reviewed and committed on `feature/ui-update` (202
 - It fades in only after the visitor scrolls past the hero; smooth scroll, instant with reduced motion; without JavaScript it is a plain link to the top.
 - Wide screens only, where the menu exists. No button on narrow screens.
 
-**Task 8: "View all" links as bare text** (planned 2026-11-22, all "View all" buttons, not started).
+**Task 8: "View all" links as bare text** (planned 2026-11-22, all "View all" buttons, built 2026-11-22, awaiting review in the browser).
 
 - Remove the outer button rectangle so each "View all" is bare text.
 - On hover, a horizontal line grows from the first letter and another from the last letter, outward, until they fill the width of the content area.
 - Bundled with Task 6: "View all recommendations" moves out of the recommendations card and becomes one of these links.
 - Decided: on desktop no arrow, only the hover lines. On narrow and touch screens (no hover) the link stays bare teal text, with a small arrow and a short static line on each side so it still reads as a link, and a comfortable tap height. The outer buttons do not come back.
+- **Changed after review (2026-11-22):** the links sit on the left, where the buttons used to be, set in by a small gap (about 2 to 4rem) so a line can grow leftward from the first letter. After the text comes a short right-pointing arrow (not a corner arrow). On hover the left line grows and the arrow's shaft extends rightward to the content edge with the arrowhead riding at its end. On touch and narrow screens the arrow stays short and the left line is a short static one. The space between the cards and the link was reduced.
 
 **Task 9: Footer redesign** (planned 2026-11-22, all pages, not started). Reference: the footer of ctiancrndng.dev (a classmate's portfolio; WebFetch cannot read it because it needs JavaScript and a keypress, so use the browser pane). Ours today is one centered row of four contact links and a copyright line.
 

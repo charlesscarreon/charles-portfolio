@@ -462,7 +462,7 @@ html.home .section:last-child {
 }
 
 .featured-more {
-    margin-top: 1.25rem;
+    margin-top: 0.4rem;
 }
 
 .skills-summary {
@@ -1149,11 +1149,23 @@ html.home.js .hero > .hero-trail {
     list-style: none;
 }
 
-.stat-row li {
+.stat-row > li {
+    position: relative;
     background-color: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: 0.6rem;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Each badge is a link to its evidence. The link fills the tile, keeps the
+   tile's text colours, and never underlines. */
+.stat-row__link,
+.stat-row__link:hover {
+    display: block;
     padding: 0.85rem 1rem;
+    border-radius: 0.6rem;
+    color: inherit;
+    text-decoration: none;
 }
 
 .stat-row__num {
@@ -1166,10 +1178,127 @@ html.home.js .hero > .hero-trail {
 
 .stat-row__label {
     display: block;
-    margin-top: 0.1rem;
+    margin-top: 0.3rem;
     color: var(--muted);
     font-size: 0.85rem;
     line-height: 1.35;
+}
+
+/* What is behind the number. Shown in full as a small line under the label by
+   default, so touch screens and the unstyled page lose nothing; on a pointer
+   device it becomes a label above the tile, like the skills labels. */
+.stat-row__detail {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.4;
+}
+
+/* Keyboard focus only (:focus-visible). A mouse click also leaves focus on the
+   link, so :focus-within kept the highlight and label showing after coming
+   back from the linked page. */
+.stat-row > li:has(.stat-row__link:focus-visible) {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    background-color: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+/* The detail lists are real lists (a list inside the link). The block is centred as a unit and the bullets stay
+   aligned to the left. */
+.stat-row__list {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+}
+
+.stat-row__item {
+    display: block;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.stat-row__item::before {
+    content: "";
+    position: absolute;
+    left: 0.15rem;
+    top: 0.55em;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background-color: var(--accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .stat-row > li:hover {
+        border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+        background-color: color-mix(in srgb, var(--accent) 8%, var(--surface-2));
+        box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 16%, transparent);
+    }
+
+    .stat-row__detail {
+        position: absolute;
+        z-index: 5;
+        bottom: calc(100% + 0.55rem);
+        left: 50%;
+        width: max-content;
+        max-width: min(17rem, 80vw);
+        margin: 0;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+        border-radius: 0.5rem;
+        background-color: var(--surface);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+        color: var(--text);
+        font-size: 0.82rem;
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translate(-50%, 0.3rem);
+    }
+
+    .stat-row__detail::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        width: 0.55rem;
+        height: 0.55rem;
+        border: solid color-mix(in srgb, var(--accent) 45%, var(--border));
+        border-width: 0 1px 1px 0;
+        background-color: var(--surface);
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .stat-row > li:hover .stat-row__detail,
+    .stat-row__link:focus-visible .stat-row__detail {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+    }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .stat-row > li:hover {
+        transform: translateY(-3px);
+    }
+
+    .stat-row > li {
+        transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .stat-row__detail {
+        transition: opacity 0.18s ease, transform 0.22s ease, visibility 0s linear 0.22s;
+    }
+
+    .stat-row > li:hover .stat-row__detail,
+    .stat-row__link:focus-visible .stat-row__detail {
+        transition-delay: 0s;
+    }
 }
 
 /* ---------- Alternative: larger card image details ---------- */
@@ -2357,40 +2486,239 @@ html.dialog-capable .project-dialog:not([open]) {
     font-size: 0.95rem;
 }
 
-/* Homepage "View all" buttons: an outlined pill, quieter than the solid
-   primary button. They stay ordinary links, so with no CSS they read as
-   plain links. The arrow is decoration only and is not read aloud. */
-.featured-more .btn {
-    background-color: transparent;
+/* Homepage "View all" links: bare text, set in from the left edge, ending in a
+   right-pointing arrow. With a pointer, hovering or focusing the link grows a
+   line leftward from the first letter across the gap, and extends the arrow's
+   shaft rightward to the edge of the content area, the arrowhead riding at its
+   end. At rest the arrow is short. Without hover (touch) and on narrow screens
+   the arrow stays short and the left line is a short static one, so the link
+   still reads as a link. With no CSS it is an ordinary link. The arrow is
+   decoration only and is not read aloud. */
+.view-all,
+.view-all:hover {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.35rem 0;
     color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
-    padding: 0.3rem 0.95rem;
-    font-size: 0.875rem;
-    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
 }
 
-.featured-more .btn::after {
-    content: "\2192";
-    content: "\2192" / "";
-    display: inline-block;
-    margin-left: 0.4em;
-    transition: transform 0.15s ease;
-}
-
-.featured-more .btn[href$="#write"]::after {
-    content: none;
-}
-
-.featured-more .btn:hover,
-.featured-more .btn:focus-visible {
-    background-color: color-mix(in srgb, var(--accent) 14%, transparent);
-    border-color: var(--accent);
+.view-all:hover,
+.view-all:focus-visible {
     color: var(--hover);
 }
 
-.featured-more .btn:hover::after,
-.featured-more .btn:focus-visible::after {
-    transform: translateX(0.15rem);
+/* The gap on the left, so the line has somewhere to grow. */
+/* The lines and the arrow are centred on the lowercase letters, which sit a
+   little below the middle of the line box, so they are nudged down by top. */
+.view-all::before {
+    content: "";
+    position: relative;
+    top: 0.15em;
+    flex: 0 0 clamp(2rem, 10%, 4rem);
+    min-width: 0;
+    height: 1px;
+    margin-right: 0.6rem;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+}
+
+.view-all__text {
+    flex: none;
+    margin-right: 0.6rem;
+    white-space: nowrap;
+}
+
+/* The arrow: a shaft that can lengthen, and a head at its end. The shaft is a
+   pseudo-element, which is always generated after the head element, so the
+   order values put the shaft first and the head last. */
+.view-all::after {
+    content: "";
+    position: relative;
+    top: 0.15em;
+    order: 1;
+    flex: 0 1 1.1rem;
+    min-width: 0;
+    height: 1px;
+    background-color: currentColor;
+}
+
+.view-all__head {
+    position: relative;
+    top: 0.15em;
+    order: 2;
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-left: -0.54rem;
+    margin-right: 0.1rem;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    transform: rotate(45deg);
+}
+
+.view-all:focus-visible::before {
+    transform: scaleX(1);
+}
+
+.view-all:focus-visible::after {
+    flex-basis: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .view-all:hover::before {
+        transform: scaleX(1);
+    }
+
+    .view-all:hover::after {
+        flex-basis: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .view-all::before {
+        transition: transform 0.35s ease;
+    }
+
+    .view-all::after {
+        transition: flex-basis 0.35s ease;
+    }
+}
+
+@media (hover: none), (max-width: 620px) {
+    .view-all {
+        min-height: 2.75rem;
+    }
+
+    .view-all::before {
+        flex: 0 0 1.25rem;
+        opacity: 0.6;
+        transform: scaleX(1);
+    }
+}
+
+/* Recommendations, nothing published yet: a ghost of a quote card with an
+   invitation, so the section reads as a place waiting for a first voice. It
+   is shown only while the list is empty; the page that renders the list
+   replaces it once there are real recommendations. */
+.recs-ghost {
+    padding: 1.5rem 1.25rem;
+    border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--border));
+    background-color: var(--surface);
+    text-align: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recs-ghost__preview {
+    max-width: 28rem;
+    margin: 0 auto 1.25rem;
+    text-align: left;
+}
+
+.recs-ghost__mark {
+    display: block;
+    height: 2.2rem;
+    color: color-mix(in srgb, var(--accent) 30%, transparent);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 4.5rem;
+    line-height: 1;
+}
+
+.recs-ghost__line,
+.recs-ghost__avatar,
+.recs-ghost__name {
+    display: block;
+    background-color: color-mix(in srgb, var(--muted) 20%, transparent);
+}
+
+.recs-ghost__line {
+    height: 0.6rem;
+    margin: 0.6rem 0 0;
+    border-radius: 999px;
+}
+
+.recs-ghost__line:nth-of-type(3) {
+    width: 92%;
+}
+
+.recs-ghost__line:nth-of-type(4) {
+    width: 58%;
+}
+
+.recs-ghost__author {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.recs-ghost__avatar {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+}
+
+.recs-ghost__name {
+    width: 6rem;
+    height: 0.5rem;
+    border-radius: 999px;
+}
+
+.recs-ghost__icon {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto 0.4rem;
+    color: var(--accent);
+}
+
+.recs-ghost__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+}
+
+.recs-steps {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem 0.5rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.recs-steps li + li::before {
+    content: "\2192";
+    content: "\2192" / "";
+    margin-right: 0.5rem;
+    color: var(--accent);
+}
+
+.recs-ghost .btn {
+    margin: 0;
+}
+
+.recs-ghost p:last-child {
+    margin-bottom: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .recs-ghost:hover {
+        border-style: solid;
+        border-color: var(--accent);
+        box-shadow: 0 6px 22px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+}
+
+/* The button under the published recommendations on the homepage. */
+.recs-write {
+    margin: 1.25rem 0 0;
 }
 
 /* ---------- Scratch embeds ---------- */
