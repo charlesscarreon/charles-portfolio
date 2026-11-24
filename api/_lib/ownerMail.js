@@ -38,7 +38,7 @@ function buildOwnerEmail(entry, decideToken, options) {
     'The link works for 30 days.'
   ];
   const isPublic = entry.showLinks === '1';
-  const none = '<span style="color:#5f6877">(none given)</span>';
+  const none = '<span style="color:#5f5b50">(none given)</span>';
   const profile = function (url) { return url ? linkHtml(url) + visibilityTag(isPublic) : none; };
   const html = renderEmail(Object.assign({
     preheader: entry.name + ' has confirmed a recommendation. It is not public until you approve it.',

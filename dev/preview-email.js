@@ -10,6 +10,7 @@
    Node built-ins only. */
 
 const http = require("http");
+const fs = require("fs");
 const url = require("url");
 const path = require("path");
 
@@ -18,6 +19,7 @@ const PORT = process.env.PORT || 8127;
 const { buildOwnerEmail } = require(path.join(ROOT, "api", "_lib", "ownerMail"));
 const { buildConfirmEmail } = require(path.join(ROOT, "api", "_lib", "writerMail"));
 const esc = require(path.join(ROOT, "api", "_lib", "html")).esc;
+const LIVE_LOGO = "https://charlescarreon.dev/images/email-logo.png";
 
 const FULL = {
     name: "Jordan Sample", email: "jordan@example.com", relationship: "project",
@@ -84,7 +86,16 @@ http.createServer(function (req, res) {
         return send(200, view(parts[1], parsed.query.width === "phone" ? "phone" : "desktop"));
     }
     if (parts[0] === "raw" && EMAILS[parts[1]]) {
-        return send(200, EMAILS[parts[1]][1]().html);
+        // Only in this preview: the logo is read from the local file, since the live
+        // address it uses in the real emails is not there until the site is deployed.
+        return send(200, EMAILS[parts[1]][1]().html.split(LIVE_LOGO).join("/logo.png"));
+    }
+    if (parts[0] === "logo.png") {
+        return fs.readFile(path.join(ROOT, "images", "email-logo.png"), function (err, data) {
+            if (err) { return send(404, "Not found"); }
+            res.writeHead(200, { "Content-Type": "image/png" });
+            res.end(data);
+        });
     }
     return send(404, "Not found");
 }).listen(PORT, function () {

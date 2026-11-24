@@ -995,6 +995,42 @@ html.home.js .hero > .hero-trail {
     transform: translate(0, -50%);
 }
 
+/* Touch screens and narrow windows have no hover, so the button shows its text
+   all the time next to the arrow at the top left (about 44px tall), as plain text
+   with no sway, no underline and no tap flash. Desktop keeps the arrow and the
+   hover reveal. */
+@media (hover: none), (pointer: coarse), (max-width: 619.98px) {
+    .scroll-cue--back {
+        top: 1rem;
+        left: 0.5rem;
+        transform: none;
+        gap: 0.1rem;
+        min-height: 2.75rem;
+        padding: 0 0.6rem 0 0.4rem;
+        color: var(--text);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .scroll-cue--back:hover,
+    .scroll-cue--back:active {
+        color: var(--text);
+        text-decoration: none;
+    }
+
+    .scroll-cue--back .scroll-cue__bob {
+        animation: none;
+    }
+
+    .scroll-cue--back .scroll-cue__label,
+    .scroll-cue--back:hover .scroll-cue__label,
+    .scroll-cue--back:focus-visible .scroll-cue__label {
+        position: static;
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
 @keyframes cue-sway {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(0.35rem); }
@@ -2371,8 +2407,20 @@ html.dialog-capable .project-dialog:not([open]) {
     color: var(--muted);
 }
 
+/* The buttons sit in a wrapping row with a gap both ways. On phones each one
+   takes its own full-width line, which is easier to tap. Without CSS they are
+   plain links in a paragraph. */
 .dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
     margin: 1.25rem 0 0;
+}
+
+@media (max-width: 620px) {
+    .dialog-actions {
+        flex-direction: column;
+    }
 }
 
 /* The trigger sits beside the solid project links, so it is drawn with an
