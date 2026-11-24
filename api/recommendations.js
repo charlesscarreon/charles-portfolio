@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const { renderEntry } = require('./_lib/render');
 const { loadPublic } = require('./_lib/publicList');
+const tokens = require('./_lib/tokens');
 
 const START = '<!-- recommendations:list -->';
 const END = '<!-- /recommendations:list -->';
@@ -69,6 +70,9 @@ module.exports = async function handler(req, res) {
     // An empty, loaded list keeps the template's own empty state.
     if (replacement !== null) html = template.slice(0, from) + replacement + template.slice(to + END.length);
   }
+
+  // The form's signed time stamp (see tokens.js). Without script or styles it still works.
+  html = html.replace('name="ts" value=""', 'name="ts" value="' + tokens.formStamp() + '"');
 
   res.status(200);
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
