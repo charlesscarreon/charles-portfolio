@@ -12,7 +12,7 @@
         doc.setAttribute("data-theme", theme);
         var meta = document.querySelector('meta[name="theme-color"]');
         if (meta) {
-            meta.setAttribute("content", theme === "light" ? "#f7f8fa" : "#0f1115");
+            meta.setAttribute("content", theme === "light" ? "#ebe7de" : "#0f1115");
         }
         var toggle = document.querySelector("[data-theme-toggle]");
         if (toggle) {

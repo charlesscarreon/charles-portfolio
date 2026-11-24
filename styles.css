@@ -19,6 +19,10 @@
     --hover: #5eead4;
     --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
 
+    /* Dimming of the other cards while one is hovered or focused */
+    --dim-opacity: 0.65;
+    --dim-filter: none;
+
     /* Skill proficiency level colors (dark theme) */
     --familiar-bg: rgba(138, 180, 248, 0.14);
     --familiar-border: rgba(138, 180, 248, 0.5);
@@ -32,19 +36,23 @@
 }
 
 [data-theme="light"] {
-    --bg: #f7f8fa;
-    --surface: #ffffff;
-    --surface-2: #f0f2f5;
-    --text: #1a1d21;
+    --bg: #ebe7de;
+    --surface: #f8f6f1;
+    --surface-2: #e0dbd0;
+    --text: #22211d;
     --text-strong: #000000;
-    --muted: #5b6470;
-    --border: #dde1e7;
-    --accent: #0e7a70;
-    --accent-strong: #0f766e;
+    --muted: #5f5b50;
+    --border: #cdc7ba;
+    --accent: #17665f;
+    --accent-strong: #135a54;
     --accent-contrast: #ffffff;
-    --link: #0e7a70;
-    --hover: #0f766e;
-    --shadow: 0 4px 20px rgba(20, 30, 40, 0.08);
+    --link: #135a54;
+    --hover: #0e4640;
+    --shadow: 0 4px 20px rgba(20, 30, 40, 0.11);
+
+    /* Dimming: a mild fade plus a slight grey tint */
+    --dim-opacity: 0.75;
+    --dim-filter: brightness(0.9) saturate(0.8);
 
     /* Skill proficiency level colors (light theme) */
     --familiar-bg: rgba(10, 88, 202, 0.22);
@@ -538,6 +546,11 @@ html.home .section:last-child {
     text-decoration: none;
 }
 
+/* Light theme: the hero contact links turn a very dark teal on hover. */
+html[data-theme="light"] .hero .contact a:hover {
+    color: #0c7268;
+}
+
 @supports (height: 100svh) {
     html.home {
         --hero-viewport: 100svh;
@@ -846,6 +859,52 @@ html.js .hero-decor.is-ready .deco svg {
 
 .hero-decor.is-lit .hero-circuit {
     opacity: calc(0.68 * var(--lit, 1));
+}
+
+/* Light theme: the hero decoration on a bright page. The floating objects get
+   a thicker stroke and a higher opacity, and the circuit traces turn into
+   darker "ink" lines under the pointer. The dark theme is not changed. */
+html[data-theme="light"] .deco svg {
+    stroke-width: 2px;
+}
+
+html:not(.js)[data-theme="light"] .deco svg {
+    opacity: calc(var(--o, 0.16) * 2.2);
+}
+
+html.js[data-theme="light"] .hero-decor.is-ready .deco svg {
+    opacity: calc(var(--o, 0.16) * 2.2);
+}
+
+html[data-theme="light"] .hero-circuit__base {
+    opacity: 0.6;
+}
+
+html[data-theme="light"] .hero-circuit__pulse {
+    stroke: var(--accent-strong);
+}
+
+html[data-theme="light"] .hero-decor.is-lit .hero-circuit {
+    opacity: calc(0.95 * var(--lit, 1));
+}
+
+html[data-theme="light"] .hero-flow__line {
+    animation-name: flow-line-light;
+}
+
+@keyframes flow-line-light {
+    0% {
+        opacity: 0;
+    }
+
+    20%,
+    80% {
+        opacity: 0.45;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
 /* The home hero shrinks as the page scrolls; the objects fade out with it. */
@@ -1316,7 +1375,7 @@ html.home.js .hero > .hero-trail {
     padding: 1.1rem;
     border-radius: 0.75rem;
     transition: transform 180ms ease, background-color 0.2s ease, border-color 0.2s ease,
-        box-shadow 0.2s ease, opacity 0.2s ease;
+        box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
 }
 
 html.dialog-capable .project {
@@ -1486,7 +1545,7 @@ html.dialog-capable .project {
 
 .featured-card {
     transition: transform 180ms ease, background-color 0.2s ease, border-color 0.2s ease,
-        box-shadow 0.2s ease, opacity 0.2s ease;
+        box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
 }
 
 /* The whole homepage card opens the project: the link is stretched over it. */
@@ -1589,13 +1648,15 @@ html:not([data-theme="light"]) .tech-tile--nextjs::before {
    certifications. Separate rules so a browser without :has() only loses this. */
 .featured-grid:has(.featured-card a:focus-visible) .featured-card:not(:has(a:focus-visible)),
 :is(html.projects, html.achievements) main:has(.project a:focus-visible) .project:not(:has(a:focus-visible)) {
-    opacity: 0.65;
+    opacity: var(--dim-opacity);
+    filter: var(--dim-filter);
 }
 
 @media (hover: hover) and (pointer: fine) {
     .featured-grid:has(.featured-card:hover) .featured-card:not(:hover),
     :is(html.projects, html.achievements) main:has(.project:hover) .project:not(:hover) {
-        opacity: 0.65;
+        opacity: var(--dim-opacity);
+        filter: var(--dim-filter);
     }
 }
 
@@ -1893,6 +1954,13 @@ html.projects .project:has(a:focus-visible) h2,
 
     .education-card:hover .role:first-child h3 {
         color: var(--accent);
+    }
+}
+
+/* Light theme: the current school turns a brighter teal when the card is hovered. */
+@media (hover: hover) and (pointer: fine) {
+    html[data-theme="light"] .education-card:hover .role:first-child h3 {
+        color: #0c7268;
     }
 }
 
@@ -2619,7 +2687,7 @@ html.dialog-capable .project-dialog:not([open]) {
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
     .recommendation {
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
     }
 }
 
@@ -2919,6 +2987,18 @@ html.achievements .project .links:not(.links--more) {
     background-color: var(--accent-strong);
     color: var(--accent-contrast);
     text-decoration: none;
+}
+
+/* Light theme: buttons turn a brighter, more saturated shade of the resting colour on hover. */
+html[data-theme="light"] .links a:not(.project-detail-open):hover,
+html[data-theme="light"] .btn:hover {
+    background-color: #128178;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    html[data-theme="light"] .btn-reveal:hover .btn-reveal__front {
+        background-color: #128178;
+    }
 }
 
 .btn {
@@ -3526,7 +3606,7 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
 
 @media (hover: hover) and (pointer: fine) {
     .skills-card {
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
     }
 
     .skills-card:hover {
@@ -3544,13 +3624,15 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
 @media (hover: hover) and (pointer: fine) {
     :is(html.home, html.skills) main:has(:is(.featured-card, .achievements-card, .skills-card, .cert-card, .recommendation):hover)
         :is(.featured-card, .achievements-card, .skills-card, .cert-card, .recommendation):not(:hover) {
-        opacity: 0.65;
+        opacity: var(--dim-opacity);
+        filter: var(--dim-filter);
     }
 }
 
 :is(html.home, html.skills) main:has(:is(.featured-card, .cert-card, .recommendation) a:focus-visible)
     :is(.featured-card, .achievements-card, .skills-card, .cert-card, .recommendation):not(:has(a:focus-visible)) {
-    opacity: 0.65;
+    opacity: var(--dim-opacity);
+    filter: var(--dim-filter);
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -3605,6 +3687,11 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
     border-radius: 0.75rem;
     background-color: var(--surface-2);
     border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+}
+
+/* Light theme: the certificate cards use the same background as the project cards. */
+[data-theme="light"] .cert-card {
+    background-color: var(--surface);
 }
 
 .cert-thumb-wrap {
@@ -3705,7 +3792,7 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
    button is simply an ordinary visible link. */
 .cert-card {
     position: relative;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
 }
 
 .cert-more a::after {
@@ -3737,7 +3824,8 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
 }
 
 .cert-grid:has(.cert-card a:focus-visible) .cert-card:not(:has(a:focus-visible)) {
-    opacity: 0.65;
+    opacity: var(--dim-opacity);
+    filter: var(--dim-filter);
 }
 
 /* Pointer devices: the button stays out of sight until the card is hovered
@@ -3824,7 +3912,8 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
    browser without :has() only loses this dimming. */
 @media (hover: hover) and (pointer: fine) {
     .cert-grid:has(.cert-card:hover) .cert-card:not(:hover) {
-        opacity: 0.65;
+        opacity: var(--dim-opacity);
+        filter: var(--dim-filter);
     }
 }
 
@@ -4000,6 +4089,14 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
 .footer-projects a:hover,
 .footer-top:hover {
     color: var(--accent);
+}
+
+/* Light theme: the footer project links and Back to top turn a very dark teal on hover. */
+html[data-theme="light"] .footer-projects a:hover,
+html[data-theme="light"] .footer-projects a:focus-visible,
+html[data-theme="light"] .footer-top:hover,
+html[data-theme="light"] .footer-top:focus-visible {
+    color: #022e29;
 }
 
 /* Social links: a column of icon and website name, with no button boundary.
