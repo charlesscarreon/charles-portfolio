@@ -995,6 +995,42 @@ html.home.js .hero > .hero-trail {
     transform: translate(0, -50%);
 }
 
+/* Touch screens and narrow windows have no hover, so the button shows its text
+   all the time next to the arrow at the top left (about 44px tall), as plain text
+   with no sway, no underline and no tap flash. Desktop keeps the arrow and the
+   hover reveal. */
+@media (hover: none), (pointer: coarse), (max-width: 619.98px) {
+    .scroll-cue--back {
+        top: 1rem;
+        left: 0.5rem;
+        transform: none;
+        gap: 0.1rem;
+        min-height: 2.75rem;
+        padding: 0 0.6rem 0 0.4rem;
+        color: var(--text);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .scroll-cue--back:hover,
+    .scroll-cue--back:active {
+        color: var(--text);
+        text-decoration: none;
+    }
+
+    .scroll-cue--back .scroll-cue__bob {
+        animation: none;
+    }
+
+    .scroll-cue--back .scroll-cue__label,
+    .scroll-cue--back:hover .scroll-cue__label,
+    .scroll-cue--back:focus-visible .scroll-cue__label {
+        position: static;
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
 @keyframes cue-sway {
     0%, 100% { transform: translateX(0); }
     50% { transform: translateX(0.35rem); }
@@ -1332,6 +1368,45 @@ html.home.js .hero > .hero-trail {
     .stat-row > li:hover .stat-row__detail,
     .stat-row__link:focus-visible .stat-row__detail {
         transition-delay: 0s;
+    }
+}
+
+/* Phones: the three badges become a slim strip, number and label only, all in one
+   row. The lists behind them are on the Achievements and Skills pages, which the
+   badges link to. Pointer devices keep their hover labels at any width. */
+@media (max-width: 620px) {
+    .stat-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.5rem;
+    }
+
+    /* The link fills the tile, and the label takes the space under the number and
+       centres its text in it, so one-line and two-line labels sit on the same
+       middle line. */
+    .stat-row__link {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0.7rem 0.4rem;
+    }
+
+    .stat-row__num {
+        font-size: 1.4rem;
+    }
+
+    .stat-row__label {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0.2rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 620px) and (hover: none), (max-width: 620px) and (pointer: coarse) {
+    .stat-row__detail {
+        display: none;
     }
 }
 
@@ -1755,6 +1830,33 @@ html.projects .project:has(a:focus-visible) h2,
         max-width: 14rem;
         padding: 0 0.3rem 0 0.8rem;
         opacity: 1;
+    }
+}
+
+/* Everywhere the tiles do not slide out on hover (phones, tablets and touch
+   screens of any size, and narrow windows) the tool's name is shown beside its
+   logo, since there is no hover to reveal it. The tiles wrap onto more lines when
+   they do not fit. */
+@media (hover: none), (pointer: coarse), (max-width: 619.98px) {
+    .tech-tiles {
+        flex-wrap: wrap;
+    }
+
+    /* On /projects the image sits directly above the row, so give it the same
+       space above as below. Cards without an image keep their current spacing. */
+    .project > .project-thumb + .tech-tiles {
+        margin-top: 0.7rem;
+    }
+
+    .tech-tile {
+        flex-direction: row;
+    }
+
+    .tech-tile::after {
+        max-width: none;
+        padding: 0 0.6rem 0 0.15rem;
+        opacity: 1;
+        transition: none;
     }
 }
 
@@ -2305,8 +2407,20 @@ html.dialog-capable .project-dialog:not([open]) {
     color: var(--muted);
 }
 
+/* The buttons sit in a wrapping row with a gap both ways. On phones each one
+   takes its own full-width line, which is easier to tap. Without CSS they are
+   plain links in a paragraph. */
 .dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
     margin: 1.25rem 0 0;
+}
+
+@media (max-width: 620px) {
+    .dialog-actions {
+        flex-direction: column;
+    }
 }
 
 /* The trigger sits beside the solid project links, so it is drawn with an
@@ -4379,6 +4493,32 @@ html[data-theme="light"] .footer-top:focus-visible {
     }
 }
 
+/* Phones: lay the six links out as an even two-column grid, aligned left, with
+   the title on the left and the theme switch on the right, and comfortable tap targets. The sidebar is unchanged. */
+@media (max-width: 620px) {
+    .toc-head {
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .toc ul {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 1rem;
+        justify-items: start;
+        text-align: left;
+    }
+
+    .toc li:nth-child(even) {
+        justify-self: end;
+        text-align: right;
+    }
+
+    .toc a {
+        padding: 0.4rem 0;
+    }
+}
+
 /* ---------- Responsive tweaks ---------- */
 
 /* Tablet portrait / small tablets: collapse two-column data grids when space is tight */
@@ -4422,19 +4562,31 @@ html[data-theme="light"] .footer-top:focus-visible {
         transform: none;
     }
 
+    /* The email sits on its own line and the three icons share one centred row
+       below it. The links have padding so each one is a comfortable tap target. */
     .contact {
-        flex-direction: column;
-        row-gap: 0.35rem;
+        display: grid;
+        grid-template-columns: repeat(3, auto);
         justify-content: center;
+        justify-items: center;
         align-items: center;
+        column-gap: 0.5rem;
+        row-gap: 0;
     }
 
     .contact a {
         white-space: normal;
+        padding: 0.85rem;
+    }
+
+    .contact a:first-child {
+        grid-column: 1 / -1;
+        padding: 0.5rem 0;
+        text-align: center;
     }
 
     html.home.js .hero {
-        margin-bottom: 2rem;
+        margin-bottom: 0.5rem;
     }
 
     .project-grid {
@@ -4493,17 +4645,11 @@ html[data-theme="light"] .footer-top:focus-visible {
     }
 
     html.home.js .hero {
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
     }
 
     .hero .tagline {
         font-size: 1.05rem;
-    }
-
-    /* Keep the three tiles two-up instead of stacking all three. */
-    .stat-row {
-        grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
-        gap: 0.5rem;
     }
 }
 
