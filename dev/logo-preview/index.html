@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo candidates</title>
+<link rel="stylesheet" href="style.css"></head><body>
+<header>
+<h1>Logo candidates</h1>
+<button class="btn" id="v-all" type="button">All candidates</button>
+<button class="btn" id="v-key" type="button">Keycap C</button>
+<button class="btn" id="v-ring" type="button">Ring editor</button>
+<button class="btn copy" id="copy" type="button">Copy values</button>
+<span class="hint" id="selname"></span>
+<span class="hint">Click a card to select it.</span>
+</header>
+
+<div id="layout"><div id="left">
+<div class="panel" id="allctl"><div class="ctl">
+<div class="field"><label for="mode">Logo colours (same on every background)</label>
+<select id="mode">
+<option value="pine">Pine tile, cream mark</option>
+<option value="teal">Teal tile, dark mark</option>
+<option value="dark">Dark tile, teal mark</option>
+<option value="cream">Cream tile, pine mark</option>
+<option value="tealmark">Teal mark, no tile</option>
+<option value="pinemark">Pine mark, no tile</option>
+</select></div></div></div>
+
+<div class="panel" id="ringctl"><div class="ctl"><div class="hint">Both squares are always centred horizontally. Colours, shadow strength, outline and the tile are set in the panel below.</div><div class="grid" id="ringsliders"></div></div></div>
+
+<div class="panel" id="keyctl"><div class="ctl">
+<div class="field"><label for="preset">Colour preset</label><select id="preset"></select>
+<button class="btn" id="reset" type="button">Reset</button></div>
+<div class="grid" id="pickers"></div>
+<div class="grid">
+<div class="field"><label for="shAlpha">Shadow strength</label><input type="range" id="shAlpha" min="0" max="100" step="5"><output id="shAlphaO"></output></div>
+<div class="field"><label for="shPos">Shadow on the key</label><select id="shPos">
+<option value="lip">Under the top lip</option><option value="bottom">Bottom edge</option>
+<option value="left">Left side</option><option value="right">Right side</option></select></div>
+<div class="field"><label for="olW">Outline width</label><input type="range" id="olW" min="0" max="4" step="0.5"><output id="olWO"></output></div>
+<div class="field"><label for="radius">Tile corner radius</label><input type="range" id="radius" min="0" max="32" step="1"><output id="radiusO"></output></div>
+<div class="field"><label for="showTile">Show the tile</label><input type="checkbox" id="showTile"></div>
+</div></div></div>
+
+<details><summary class="hint">Values to share (also copied by the button)</summary><textarea id="out" rows="10" readonly></textarea></details>
+<main id="cards"></main>
+</div>
+<aside id="side"><div id="bigcard"><div class="hint">Large preview</div><div id="big"></div>
+<div class="field"><label for="bigbg">Preview background</label><select id="bigbg"></select></div>
+<div class="field"><label for="bigsize">Size</label><input type="range" id="bigsize" min="200" max="560" step="20"><output id="bigsizeO"></output></div></div>
+<div id="brcard"><div class="hint">In the browser (the ring logo, current settings; it is also this page's tab icon)</div><div id="browser"></div></div></aside></div>
+<div id="toast">Copied</div>
+
+<script src="app.js"></script></body></html>
