@@ -28,11 +28,11 @@ const LIMITS = {
 // Spam limits. Production values; preview and local are relaxed so testing is easy.
 const RATE = {
   perIpPerHour: IS_PROD ? 5 : 50,
-  perIpPerDay: IS_PROD ? 10 : 200,
+  perIpPerDay: IS_PROD ? 10 : 7, // TEMPORARY TEST VALUE: restore to 200
   // New submissions across everyone in 24 hours. Every one sends an email, and the email
   // plan has a daily cap that the owner emails, reminders and digest share.
   siteWidePerDay: IS_PROD ? 30 : 500,
-  emailCooldownSeconds: IS_PROD ? 600 : 10,
+  emailCooldownSeconds: IS_PROD ? 600 : 3600, // TEMPORARY TEST VALUE: restore to 10
   // The form carries a signed time stamp from when the page was built. A submission is
   // refused when it arrives sooner than the minimum or later than the maximum.
   formMinSeconds: IS_PROD ? 8 : 1,
