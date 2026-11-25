@@ -7,6 +7,7 @@ const redis = require('./_lib/redis');
 const tokens = require('./_lib/tokens');
 const admin = require('./_lib/admin');
 const entries = require('./_lib/entries');
+const backup = require('./_lib/backup');
 const { relationshipLine } = require('./_lib/ownerMail');
 const { respond } = require('./_lib/html');
 const pages = require('./_lib/pages');
@@ -34,7 +35,7 @@ function redirect(res, where) {
 }
 
 function loginPage(res, message, status) {
-  return respond(res, status || 200, 'Admin login', pages.loginPage(message));
+  return respond(res, status || 200, 'Admin Login', pages.loginPage(message));
 }
 
 const NOTES = {
@@ -108,6 +109,16 @@ module.exports = async function handler(req, res) {
     if (action === 'logout') {
       res.setHeader('Set-Cookie', admin.clearCookie());
       return redirect(res, '/admin');
+    }
+
+    if (action === 'export') {
+      const data = await backup.build();
+      res.status(200);
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="' + backup.filename(data) + '"');
+      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('X-Robots-Tag', 'noindex');
+      return res.send(JSON.stringify(data, null, 2));
     }
 
     const id = String(b.id || '');

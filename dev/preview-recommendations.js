@@ -16,7 +16,7 @@ const url = require("url");
 
 const ROOT = path.resolve(__dirname, "..");
 const PORT = process.env.PORT || 8125;
-const { renderEntry } = require(path.join(ROOT, "api", "_lib", "render"));
+const { renderPageList, renderHomeSection } = require(path.join(ROOT, "api", "_lib", "render"));
 
 const MIME = {
     ".html": "text/html; charset=utf-8",
@@ -76,9 +76,9 @@ function page(theme) {
         "<p class=\"preview-note\">Preview with invented sample entries, never published. " +
         "<a href=\"/?theme=" + toggle[0] + "\">" + toggle[1] + "</a></p>\n" +
         "<section class=\"section\" aria-label=\"Recommendations page\">\n<h2>On the recommendations page</h2>\n" +
-        SAMPLES.map(function (e) { return renderEntry(e); }).join("\n") + "\n</section>\n" +
-        "<section class=\"section\" aria-label=\"Homepage\">\n<h2>On the homepage (shortened)</h2>\n" +
-        SAMPLES.map(function (e) { return renderEntry(e, { max: 160 }); }).join("\n") + "\n</section>\n" +
+        renderPageList(SAMPLES) + "\n</section>\n" +
+        "<section class=\"section\" aria-label=\"Homepage\">\n<h2>On the homepage (the top three, as the homepage builds them)</h2>\n" +
+        renderHomeSection(SAMPLES.slice(0, 3)) + "\n</section>\n" +
         "</main>\n</body>\n</html>\n";
 }
 

@@ -57,4 +57,37 @@ function renderEntry(e, options) {
     '</article>';
 }
 
-module.exports = { renderEntry, initials };
+// The picks on the homepage sit three across on a wide screen, so each excerpt is short.
+const HOME_MAX_CHARS = 280;
+
+// Above the cards: an invitation to write one, with the button.
+const INVITE =
+  '<div class="card recs-invite">' +
+  '<svg class="recs-invite__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+  '<path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" ' +
+  'fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></svg>' +
+  '<div class="recs-invite__text">' +
+  '<p class="recs-invite__title">Worked with me? Say a few words.</p>' +
+  '<p class="recs-invite__sub">Confirm by email, and it appears once I&rsquo;ve approved it.</p></div>' +
+  '<a class="btn" href="/recommendations#write">Write a recommendation</a></div>';
+
+// Below the cards: the link to the full list.
+const VIEW_ALL =
+  '<p class="featured-more"><a class="view-all" href="/recommendations">' +
+  '<span class="view-all__text">View all recommendations</span>' +
+  '<span class="view-all__head" aria-hidden="true"></span></a></p>';
+
+// The homepage's recommendations block for up to three picks. Shared by api/home.js and
+// the preview tool (dev/preview-recommendations.js), so the preview shows the real thing.
+function renderHomeSection(picks) {
+  const cards = picks.map(function (e) { return renderEntry(e, { max: HOME_MAX_CHARS }); }).join('\n');
+  return INVITE + '\n<div class="recs-grid">\n' + cards + '\n</div>\n' + VIEW_ALL;
+}
+
+// The full list on /recommendations: two columns on a wide screen, each card its own height.
+// Shared by api/recommendations.js and the preview tool.
+function renderPageList(list) {
+  return '<div class="recs-list">\n' + list.map(function (e) { return renderEntry(e); }).join('\n') + '\n</div>';
+}
+
+module.exports = { renderEntry, renderHomeSection, renderPageList, initials };

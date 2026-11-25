@@ -27,7 +27,10 @@ function thanksPage(res) {
     '<h1>Check your email</h1>' +
     '<p>If the address you entered is valid, a message with a confirmation link is on its way. ' +
     'Open it and confirm that you wrote this recommendation. Until you do, nothing is shared.</p>' +
-    '<p>The link works for 48 hours. If nothing arrives, check your spam folder.</p>');
+    '<p>The link works for 48 hours. If nothing arrives, check your spam folder.</p>' +
+    // Leaves a note in this browser tab so the form page empties itself if the back button
+    // brings it back with the old text (see script.js, initFormClear).
+    '<script>try{sessionStorage.setItem("recs-sent","1")}catch(e){}</script>');
 }
 
 module.exports = async function handler(req, res) {
@@ -42,6 +45,19 @@ module.exports = async function handler(req, res) {
     // Hidden "website" field: real people leave it empty. Pretend success for bots.
     if (String(body.website || '').trim() !== '') return thanksPage(res);
 
+    // The signed time stamp the page put in the form: refuses posts that never loaded the
+    // page, that came back instantly, or that are more than a day old. Skipped only when
+    // running locally from the plain template, which has no stamp.
+    if (config.ENV !== 'local') {
+      const age = tokens.formStampAge(body.ts);
+      if (age === null || age < config.RATE.formMinSeconds || age > config.RATE.formMaxSeconds) {
+        return respond(res, 400, 'Please reload the form',
+          '<h1>Please reload the form</h1>' +
+          '<p>This form could not be checked, or it was sent too quickly or too long after it was opened. ' +
+          'Reload the page, fill it in again and submit. Nothing was sent.</p>');
+      }
+    }
+
     const parsed = parseSubmission(body);
     if (parsed.errors.length) {
       const items = parsed.errors.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('');
@@ -51,20 +67,36 @@ module.exports = async function handler(req, res) {
     }
     const v = parsed.value;
 
-    // Light throttling: per-IP per hour, and one submission per email per cooldown.
-    const ipKey = config.PREFIX + 'rl:ip:' + tokens.hmac(clientIp(req));
+    // Throttling: per IP per hour and per day, one submission per email per cooldown, and a
+    // site-wide daily total. The site-wide count only grows for submissions that passed
+    // the other checks, so one noisy visitor cannot use up everyone's allowance.
+    const ipHash = tokens.hmac(clientIp(req));
+    const ipKey = config.PREFIX + 'rl:ip:' + ipHash;
+    const ipDayKey = config.PREFIX + 'rl:ipday:' + ipHash;
+    const siteKey = config.PREFIX + 'rl:site:day';
     const emailKey = config.PREFIX + 'rl:email:' + tokens.hmac(v.email);
     const limits = await redis.pipeline([
       ['INCR', ipKey],
       ['EXPIRE', ipKey, '3600', 'NX'],
+      ['INCR', ipDayKey],
+      ['EXPIRE', ipDayKey, '86400', 'NX'],
       ['SET', emailKey, '1', 'NX', 'EX', String(config.RATE.emailCooldownSeconds)]
     ]);
-    if (limits[0] > config.RATE.perIpPerHour) {
+    if (limits[0] > config.RATE.perIpPerHour || limits[2] > config.RATE.perIpPerDay) {
       return respond(res, 429, 'Too many attempts', '<h1>Too many attempts</h1><p>Please try again later.</p>');
     }
-    if (limits[2] === null) {
+    if (limits[4] === null) {
       // Same email submitted very recently. Same generic page, no new email.
       return thanksPage(res);
+    }
+    const site = await redis.pipeline([
+      ['INCR', siteKey],
+      ['EXPIRE', siteKey, '86400', 'NX']
+    ]);
+    if (site[0] > config.RATE.siteWidePerDay) {
+      // Over the daily total: free the email's cooldown so they can try again later.
+      await redis.pipeline([['DEL', emailKey]]).catch(function () {});
+      return respond(res, 429, 'Too many attempts', '<h1>Too many attempts</h1><p>Please try again later.</p>');
     }
 
     const id = tokens.newId();
@@ -89,7 +121,7 @@ module.exports = async function handler(req, res) {
         'showLinks', v.showLinks ? '1' : '0',
         'consent', '1',
         'consentAt', new Date().toISOString(),
-        'ipHash', tokens.hmac(clientIp(req)),
+        'ipHash', ipHash,
         'confirmHash', tokens.hashToken(confirmToken)],
       ['EXPIRE', entryKey, ttl],
       ['SET', confirmKey, id, 'EX', ttl]
@@ -101,7 +133,7 @@ module.exports = async function handler(req, res) {
       await sendMail({ to: v.email, subject: mail.subject, text: mail.text, html: mail.html });
     } catch (mailError) {
       // Remove the entry so a failed send leaves nothing behind.
-      await redis.pipeline([['DEL', entryKey], ['DEL', confirmKey], ['DEL', emailKey]]).catch(function () {});
+      await redis.pipeline([['DEL', entryKey], ['DEL', confirmKey], ['DEL', emailKey], ['DECR', siteKey]]).catch(function () {});
       throw mailError;
     }
 

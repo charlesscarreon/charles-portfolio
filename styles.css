@@ -366,6 +366,16 @@ html.home {
     overflow-anchor: none;
 }
 
+/* The rule above is not enough on its own: the browser still picks an element inside
+   the page as its anchor, and on a long page (the recommendations list) it keeps
+   nudging the scroll position while the cover changes height, so the page jitters.
+   Opting every element out stops it (measured on /recommendations). */
+html.home *,
+html.home *::before,
+html.home *::after {
+    overflow-anchor: none;
+}
+
 html.home main {
     padding-top: 0;
 }
@@ -3428,9 +3438,157 @@ html[data-theme="light"] .btn:hover {
     }
 }
 
-/* The button under the published recommendations on the homepage. */
-.recs-write {
-    margin: 1.25rem 0 0;
+/* The invitation above the published recommendations on the homepage: the same dashed
+   border and chat-bubble icon as the empty-state card, in one slim row with the button. */
+.recs-invite {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 0 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px dashed color-mix(in srgb, var(--accent) 45%, var(--border));
+    background-color: var(--surface);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recs-invite__icon {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    color: var(--accent);
+}
+
+.recs-invite__text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.recs-invite__text p {
+    margin: 0;
+}
+
+.recs-invite__title {
+    color: var(--text-strong);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.recs-invite__sub {
+    margin-top: 0.2rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.recs-invite .btn {
+    flex: none;
+    margin: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .recs-invite:hover {
+        border-style: solid;
+        border-color: var(--accent);
+        box-shadow: 0 6px 22px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+}
+
+@media (max-width: 620px) {
+    .recs-invite {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .recs-invite__text {
+        flex-basis: calc(100% - 3rem);
+    }
+
+    .recs-invite .btn {
+        margin-left: calc(2rem + 1rem);
+    }
+}
+
+/* The homepage picks: up to three cards in a row. One or two keep the same width and
+   sit in the middle of the row. Narrow screens stack them, as the featured projects do. */
+.recs-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.recs-grid > .recommendation {
+    flex: 0 1 calc((100% - 2rem) / 3);
+}
+
+/* The full list on /recommendations: two columns, each card its own height, a lone last
+   card on the left. */
+.recs-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 1rem;
+}
+
+/* Shared by both: cards are narrow, so smaller type than a full-width card. */
+:is(.recs-grid, .recs-list) > .recommendation {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+:is(.recs-grid, .recs-list) > .recommendation + .recommendation {
+    margin-top: 0;
+}
+
+:is(.recs-grid, .recs-list) .recommendation__text p {
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+:is(.recs-grid, .recs-list) .recommendation__author {
+    margin-top: auto;
+    font-size: 0.85rem;
+}
+
+:is(.recs-grid, .recs-list) .recommendation__text {
+    margin-bottom: 1.1rem;
+}
+
+:is(.recs-grid, .recs-list) .recommendation__who strong {
+    font-size: 0.95rem;
+}
+
+:is(.recs-grid, .recs-list) .recommendation__date {
+    flex-basis: 100%;
+    margin-left: calc(2.6rem + 0.85rem);
+    font-size: 0.8rem;
+}
+
+:is(.recs-grid, .recs-list) .recommendation__links {
+    font-size: 0.85rem;
+}
+
+@media (max-width: 760px) {
+    .recs-grid > .recommendation {
+        flex-basis: 100%;
+    }
+
+    .recs-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* Dim the other cards while one is hovered or focused, as on the featured projects. */
+:is(.recs-grid, .recs-list):has(.recommendation a:focus-visible) .recommendation:not(:has(a:focus-visible)) {
+    opacity: var(--dim-opacity);
+    filter: var(--dim-filter);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    :is(.recs-grid, .recs-list):has(.recommendation:hover) .recommendation:not(:hover) {
+        opacity: var(--dim-opacity);
+        filter: var(--dim-filter);
+    }
 }
 
 /* ---------- Scratch embeds ---------- */
@@ -5277,6 +5435,7 @@ html[data-theme="light"] .internal-alert--bad {
 /* The secret field with its show or hide button. The button is added by script. */
 .password-field {
     position: relative;
+    margin-bottom: 1rem;
 }
 
 .internal-form .password-field input[type="password"],

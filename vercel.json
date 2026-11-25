@@ -69,6 +69,12 @@
       "destination": "/api/admin"
     }
   ],
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 23 * * *"
+    }
+  ],
   "functions": {
     "api/recommendations.js": {
       "includeFiles": "recommendations.template.html"

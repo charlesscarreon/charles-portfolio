@@ -1024,6 +1024,44 @@
         for (i = 0; i < inputs.length; i++) {
             inputs[i].addEventListener("click", onClick);
         }
+        /* A form reset (see initFormClear) unticks everything, so forget the last pick. */
+        if (inputs[0].form) {
+            inputs[0].form.addEventListener("reset", function () {
+                last = null;
+            });
+        }
+    }
+
+    /* ---------- Recommendation form: empty again after a successful send ----------
+       The "Check your email" page leaves a note in this tab. When the form page is shown
+       again (the back button restores what was typed), the form is cleared once and the
+       note removed, so a second press of Submit cannot send the same recommendation twice.
+       A failed attempt leaves no note, so people keep their text after a mistake.
+       Without JavaScript the server's own cooldown is the only protection. */
+    function initFormClear() {
+        var form = document.querySelector(".recommendation-form");
+        if (!form) {
+            return;
+        }
+        function clearIfSent() {
+            var sent = false;
+            try {
+                sent = window.sessionStorage.getItem("recs-sent") === "1";
+                if (sent) {
+                    window.sessionStorage.removeItem("recs-sent");
+                }
+            } catch (e) {
+                return;
+            }
+            if (!sent) {
+                return;
+            }
+            /* Some browsers put the typed text back a moment after the page is shown. */
+            form.reset();
+            window.setTimeout(function () { form.reset(); }, 0);
+            window.setTimeout(function () { form.reset(); }, 200);
+        }
+        window.addEventListener("pageshow", clearIfSent);
     }
 
     /* Enable JS-specific UI (theme toggle visibility, etc.) */
@@ -1039,4 +1077,5 @@
     initProjectDialogs();
     initContactDialog();
     initChoiceToggle();
+    initFormClear();
 })();
