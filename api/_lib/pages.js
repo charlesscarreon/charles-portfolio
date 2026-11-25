@@ -183,6 +183,9 @@ function dashboardPage(data) {
     section('Rejected', 'rejected', data.rejected, function (e) {
       return actionForm(e.id, 'approve', 'Approve instead', 'secondary') + del(e);
     }, false, 'Nothing is rejected.') +
+    '<section class="admin-section"><h2>Backup</h2>' +
+    '<p class="admin-empty">Download every recommendation, in all four states, as one JSON file. It includes email addresses and private profile links, so keep it private.</p>' +
+    '<div class="internal-actions">' + tokenForm('/admin', { action: 'export' }, [['Download backup', '', '', 'secondary']]) + '</div></section>' +
     '<p class="internal-hint">Changes show on the public page within about 30 seconds.</p>';
 }
 

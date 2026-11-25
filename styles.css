@@ -5277,6 +5277,7 @@ html[data-theme="light"] .internal-alert--bad {
 /* The secret field with its show or hide button. The button is added by script. */
 .password-field {
     position: relative;
+    margin-bottom: 1rem;
 }
 
 .internal-form .password-field input[type="password"],
