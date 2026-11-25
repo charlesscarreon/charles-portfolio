@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const { loadPublic, homeSelection } = require('./_lib/publicList');
+const { loadSnapshot } = require('./_lib/snapshot');
 const { renderEntry } = require('./_lib/render');
 const config = require('./_lib/config');
 
@@ -49,12 +50,23 @@ module.exports = async function handler(req, res) {
   // only included outside production.
   let outcome = 'none';
   try {
-    const data = await loadPublic();
+    let data;
+    let fromSnapshot = false;
+    try {
+      data = await loadPublic();
+    } catch (error) {
+      // The database is down: use the saved copy from the repo if there is one.
+      data = loadSnapshot();
+      if (!data) throw error;
+      fromSnapshot = true;
+      cache = 'public, s-maxage=10';
+      console.error('homepage: showing the repo snapshot after:', error && error.message);
+    }
     const picks = homeSelection(data);
     const from = template.indexOf(START);
     const to = template.indexOf(END);
     outcome = 'entries=' + data.entries.length + ' featured=' + data.featured.length + ' picks=' + picks.length +
-      (from === -1 || to <= from ? ' markers=missing' : '');
+      (from === -1 || to <= from ? ' markers=missing' : '') + (fromSnapshot ? ' snapshot=1' : '');
     if (picks.length && from !== -1 && to > from) {
       const cards = picks.map(function (e) { return renderEntry(e, { max: MAX_CHARS }); }).join('\n');
       html = template.slice(0, from) + cards + '\n' + BUTTONS + template.slice(to + END.length);
