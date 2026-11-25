@@ -7,12 +7,11 @@ const fs = require('fs');
 const path = require('path');
 const { loadPublic, homeSelection } = require('./_lib/publicList');
 const { loadSnapshot } = require('./_lib/snapshot');
-const { renderEntry } = require('./_lib/render');
+const { renderHomeSection } = require('./_lib/render');
 const config = require('./_lib/config');
 
 const START = '<!-- recommendations:home -->';
 const END = '<!-- /recommendations:home -->';
-const MAX_CHARS = 450;
 
 function readTemplate() {
   const candidates = [
@@ -24,12 +23,6 @@ function readTemplate() {
   }
   return null;
 }
-
-const BUTTONS =
-  '<p class="recs-write"><a class="btn" href="/recommendations#write">Write a recommendation</a></p>' +
-  '<p class="featured-more"><a class="view-all" href="/recommendations">' +
-  '<span class="view-all__text">View all recommendations</span>' +
-  '<span class="view-all__head" aria-hidden="true"></span></a></p>';
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -68,8 +61,7 @@ module.exports = async function handler(req, res) {
     outcome = 'entries=' + data.entries.length + ' featured=' + data.featured.length + ' picks=' + picks.length +
       (from === -1 || to <= from ? ' markers=missing' : '') + (fromSnapshot ? ' snapshot=1' : '');
     if (picks.length && from !== -1 && to > from) {
-      const cards = picks.map(function (e) { return renderEntry(e, { max: MAX_CHARS }); }).join('\n');
-      html = template.slice(0, from) + cards + '\n' + BUTTONS + template.slice(to + END.length);
+      html = template.slice(0, from) + renderHomeSection(picks) + template.slice(to + END.length);
     }
   } catch (error) {
     console.error('homepage recommendations failed:', error && error.message);

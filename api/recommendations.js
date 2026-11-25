@@ -5,7 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { renderEntry } = require('./_lib/render');
+const { renderPageList } = require('./_lib/render');
 const { loadPublic } = require('./_lib/publicList');
 const { loadSnapshot } = require('./_lib/snapshot');
 const tokens = require('./_lib/tokens');
@@ -27,7 +27,7 @@ function readTemplate() {
 function renderList(list) {
   return '<section class="section" aria-label="Published recommendations">' +
     '<h2 class="visually-hidden">Published recommendations</h2>' +
-    list.map(function (e) { return renderEntry(e); }).join('\n') +
+    renderPageList(list) +
     '</section>';
 }
 
