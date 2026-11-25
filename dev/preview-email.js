@@ -18,7 +18,7 @@ const ROOT = path.resolve(__dirname, "..");
 const PORT = process.env.PORT || 8127;
 const { buildOwnerEmail } = require(path.join(ROOT, "api", "_lib", "ownerMail"));
 const { buildConfirmEmail } = require(path.join(ROOT, "api", "_lib", "writerMail"));
-const { buildReminderEmail } = require(path.join(ROOT, "api", "_lib", "ownerMail"));
+const { buildReminderEmail, buildDigestEmail } = require(path.join(ROOT, "api", "_lib", "ownerMail"));
 const esc = require(path.join(ROOT, "api", "_lib", "html")).esc;
 const LIVE_LOGO = "https://charlescarreon.dev/images/email-logo.png";
 
@@ -42,6 +42,19 @@ const EMAILS = {
     }, "you@example.com"],
     "reminder": ["Reminder, one day later (to Charles)", function (o) {
         return buildReminderEmail(FULL, "sample-decision-token-abcdef0123456789", o);
+    }, "you@example.com"],
+    "digest": ["Weekly digest, Monday morning (to Charles)", function (o) {
+        const H = 3600000;
+        const rows = [
+            { entry: FULL, token: "sample-decision-token-aaaaaaaaaaaa", waitedMs: 130 * H },
+            { entry: Object.assign({}, FULL, { name: "Ana Placeholder", relationship: "classmate", message: "Reliable, calm under deadlines, and always willing to explain how something works." }), token: "sample-decision-token-bbbbbbbbbbbb", waitedMs: 52 * H },
+            { entry: Object.assign({}, FULL, { name: "Sam Example", relationship: "mentor", message: "Charles asks careful questions and follows through." }), token: "sample-decision-token-cccccccccccc", waitedMs: 5 * H }
+        ];
+        return buildDigestEmail(rows, { awaiting: 3, published: 4, hidden: 1 }, o);
+    }, "you@example.com"],
+    "digest-overflow": ["Weekly digest, more than listed", function (o) {
+        const rows = [{ entry: FULL, token: "sample-decision-token-aaaaaaaaaaaa", waitedMs: 26 * 3600000 }];
+        return buildDigestEmail(rows, { awaiting: 18, published: 4, hidden: 1 }, o);
     }, "you@example.com"],
     "owner-minimal": ["Decision, no role, organization or links", function (o) {
         return buildOwnerEmail(Object.assign({}, FULL, { name: "Ana Placeholder", role: "", organization: "", linkedin: "", facebook: "", relationship: "classmate", message: "Reliable, calm under deadlines, and always willing to explain how something works." }), "sample-decision-token-abcdef0123456789", o);

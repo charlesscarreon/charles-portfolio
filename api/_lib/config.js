@@ -44,6 +44,12 @@ const RATE = {
 const REMINDER_AFTER_HOURS = 24;
 const MAX_REMINDERS_PER_RUN = 20;
 
+// The weekly digest goes out on the daily job's run that falls on this UTC weekday
+// (0 = Sunday). The job runs at 23:00 UTC, which is 7 AM Monday in Manila. The digest
+// lists at most this many entries; the rest are counted and left for the admin page.
+const DIGEST_UTC_DAY = 0;
+const MAX_DIGEST_ENTRIES = 15;
+
 // Approve and Reject links in the owner's email work for 30 days.
 const DECISION_LINK_TTL_SECONDS = 30 * 24 * 60 * 60;
 
@@ -62,4 +68,4 @@ const RELATIONSHIPS = {
   other: { label: 'Other', line: 'Knows Charles' }
 };
 
-module.exports = { ENV, IS_PROD, PREFIX, BASE_URL, FROM, LIMITS, RATE, REMINDER_AFTER_HOURS, MAX_REMINDERS_PER_RUN, UNCONFIRMED_TTL_SECONDS, DECISION_LINK_TTL_SECONDS, RELATIONSHIPS };
+module.exports = { ENV, IS_PROD, PREFIX, BASE_URL, FROM, LIMITS, RATE, REMINDER_AFTER_HOURS, MAX_REMINDERS_PER_RUN, DIGEST_UTC_DAY, MAX_DIGEST_ENTRIES, UNCONFIRMED_TTL_SECONDS, DECISION_LINK_TTL_SECONDS, RELATIONSHIPS };

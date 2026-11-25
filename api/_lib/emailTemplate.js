@@ -58,10 +58,25 @@ function detailsTable(rows) {
     '</table>';
 }
 
+// A list of entries: [{ title, meta, excerpt, url, label }], each with its own link.
+function itemsTable(items) {
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:6px;border-top:1px solid ' + LINE + ';table-layout:fixed">' +
+    items.map(function (it) {
+      return '<tr><td style="padding:14px 0;border-bottom:1px solid ' + LINE + ';word-wrap:break-word;overflow-wrap:break-word">' +
+        '<p style="margin:0;font-family:' + SANS + ';font-size:15px;line-height:22px;font-weight:bold;color:' + INK + '">' + esc(it.title) + '</p>' +
+        (it.meta ? '<p style="margin:2px 0 0;font-family:' + SANS + ';font-size:12px;line-height:19px;color:' + MUTED + '">' + esc(it.meta) + '</p>' : '') +
+        (it.excerpt ? '<p style="margin:8px 0 0;font-family:' + SANS + ';font-size:14px;line-height:22px;color:' + TEXT + '">' + esc(it.excerpt) + '</p>' : '') +
+        '<p style="margin:8px 0 0;font-family:' + SANS + ';font-size:14px;line-height:20px"><a href="' + esc(it.url) + '" style="color:' + ACCENT + ';font-weight:bold;text-decoration:underline">' + esc(it.label || 'Review this recommendation') + '</a></p>' +
+        '</td></tr>';
+    }).join('') +
+    '</table>';
+}
+
 // options:
 //   preheader  short line some apps show beside the subject
 //   heading    the title line
 //   intro      paragraphs of plain text (array of strings)
+//   items      [{ title, meta, excerpt, url, label }] a list of entries, each with a link
 //   quote      { text, by } the recommendation, set apart in a panel
 //   details    [[label, htmlValue]] rows
 //   button     { label, url }
@@ -137,6 +152,7 @@ function renderEmail(options) {
     '<tr><td class="pad" bgcolor="#ffffff" style="background-color:#ffffff;padding:22px 28px 26px;border-left:1px solid ' + LINE + ';border-right:1px solid ' + LINE + '">' +
     '<h1 style="margin:0 0 18px;font-family:' + SANS + ';font-size:24px;line-height:32px;font-weight:bold;color:' + INK + '">' + esc(o.heading || '') + '</h1>' +
     (o.intro || []).map(para).join('') +
+    (o.items && o.items.length ? itemsTable(o.items) : '') +
     quote +
     (o.details ? detailsTable(o.details) : '') +
     button +
