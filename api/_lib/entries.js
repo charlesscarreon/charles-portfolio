@@ -98,6 +98,7 @@ async function remove(id) {
   Object.keys(SETS).forEach(function (name) { commands.push(['ZREM', SETS[name], id]); });
   if (e.confirmHash) commands.push(['DEL', P + 'confirm:' + e.confirmHash]);
   if (e.decideHash) commands.push(['DEL', P + 'decide:' + e.decideHash]);
+  if (e.reminderDecideHash) commands.push(['DEL', P + 'decide:' + e.reminderDecideHash]);
   await redis.pipeline(commands);
   await refresh();
   return true;

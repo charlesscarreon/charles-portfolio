@@ -18,6 +18,7 @@ const ROOT = path.resolve(__dirname, "..");
 const PORT = process.env.PORT || 8127;
 const { buildOwnerEmail } = require(path.join(ROOT, "api", "_lib", "ownerMail"));
 const { buildConfirmEmail } = require(path.join(ROOT, "api", "_lib", "writerMail"));
+const { buildReminderEmail } = require(path.join(ROOT, "api", "_lib", "ownerMail"));
 const esc = require(path.join(ROOT, "api", "_lib", "html")).esc;
 const LIVE_LOGO = "https://charlescarreon.dev/images/email-logo.png";
 
@@ -38,6 +39,9 @@ const EMAILS = {
     }, "you@example.com"],
     "owner-private": ["Decision, links private", function (o) {
         return buildOwnerEmail(Object.assign({}, FULL, { showLinks: "0" }), "sample-decision-token-abcdef0123456789", o);
+    }, "you@example.com"],
+    "reminder": ["Reminder, one day later (to Charles)", function (o) {
+        return buildReminderEmail(FULL, "sample-decision-token-abcdef0123456789", o);
     }, "you@example.com"],
     "owner-minimal": ["Decision, no role, organization or links", function (o) {
         return buildOwnerEmail(Object.assign({}, FULL, { name: "Ana Placeholder", role: "", organization: "", linkedin: "", facebook: "", relationship: "classmate", message: "Reliable, calm under deadlines, and always willing to explain how something works." }), "sample-decision-token-abcdef0123456789", o);

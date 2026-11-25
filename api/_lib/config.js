@@ -28,16 +28,21 @@ const LIMITS = {
 // Spam limits. Production values; preview and local are relaxed so testing is easy.
 const RATE = {
   perIpPerHour: IS_PROD ? 5 : 50,
-  perIpPerDay: IS_PROD ? 10 : 7, // TEMPORARY TEST VALUE: restore to 200
+  perIpPerDay: IS_PROD ? 10 : 200,
   // New submissions across everyone in 24 hours. Every one sends an email, and the email
   // plan has a daily cap that the owner emails, reminders and digest share.
   siteWidePerDay: IS_PROD ? 30 : 500,
-  emailCooldownSeconds: IS_PROD ? 600 : 3600, // TEMPORARY TEST VALUE: restore to 10
+  emailCooldownSeconds: IS_PROD ? 600 : 10,
   // The form carries a signed time stamp from when the page was built. A submission is
   // refused when it arrives sooner than the minimum or later than the maximum.
   formMinSeconds: IS_PROD ? 8 : 1,
   formMaxSeconds: 24 * 60 * 60
 };
+
+// The owner gets one reminder per undecided recommendation, this many hours after the
+// first email, from the daily job. At most this many reminders go out in one run.
+const REMINDER_AFTER_HOURS = 24;
+const MAX_REMINDERS_PER_RUN = 20;
 
 // Approve and Reject links in the owner's email work for 30 days.
 const DECISION_LINK_TTL_SECONDS = 30 * 24 * 60 * 60;
@@ -57,4 +62,4 @@ const RELATIONSHIPS = {
   other: { label: 'Other', line: 'Knows Charles' }
 };
 
-module.exports = { ENV, IS_PROD, PREFIX, BASE_URL, FROM, LIMITS, RATE, UNCONFIRMED_TTL_SECONDS, DECISION_LINK_TTL_SECONDS, RELATIONSHIPS };
+module.exports = { ENV, IS_PROD, PREFIX, BASE_URL, FROM, LIMITS, RATE, REMINDER_AFTER_HOURS, MAX_REMINDERS_PER_RUN, UNCONFIRMED_TTL_SECONDS, DECISION_LINK_TTL_SECONDS, RELATIONSHIPS };

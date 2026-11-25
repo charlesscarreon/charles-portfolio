@@ -62,4 +62,36 @@ function buildOwnerEmail(entry, decideToken, options) {
   return { subject: 'Recommendation: ' + entry.name, text: lines.join('\n'), html: html };
 }
 
-module.exports = { buildOwnerEmail, relationshipLine };
+// The reminder: the same entry again, with a fresh decision link, sent once if the owner
+// has not decided after a day.
+function buildReminderEmail(entry, decideToken, options) {
+  const base = buildOwnerEmail(entry, decideToken, Object.assign({
+    preheader: 'Reminder: ' + entry.name + '\'s recommendation is still waiting for your decision.',
+    heading: 'Reminder: recommendation awaiting your review',
+    intro: ['This is a reminder. ' + entry.name + '\'s recommendation below is still waiting for your decision. It will not be published until you approve it.'],
+    notes: [
+      'The link opens a page with Approve and Reject buttons. Nothing changes until you press one and confirm.',
+      'The link works for 30 days. This is the only reminder for this recommendation.'
+    ]
+  }, options || {}));
+  const lines = [
+    'Reminder: this recommendation is still waiting for your decision. It is not public until you approve it.',
+    '',
+    'Name: ' + entry.name,
+    'Email: ' + entry.email,
+    'How they know you: ' + relationshipLine(entry),
+    '',
+    'Recommendation:',
+    '',
+    entry.message,
+    '',
+    'Approve or reject it here:',
+    decisionLink(decideToken),
+    '',
+    'The link opens a page with Approve and Reject buttons. Nothing changes until you press one and confirm.',
+    'The link works for 30 days. This is the only reminder for this recommendation.'
+  ];
+  return { subject: base.subject, text: lines.join('\n'), html: base.html };
+}
+
+module.exports = { buildOwnerEmail, buildReminderEmail, relationshipLine };
