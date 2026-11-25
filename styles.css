@@ -366,6 +366,16 @@ html.home {
     overflow-anchor: none;
 }
 
+/* The rule above is not enough on its own: the browser still picks an element inside
+   the page as its anchor, and on a long page (the recommendations list) it keeps
+   nudging the scroll position while the cover changes height, so the page jitters.
+   Opting every element out stops it (measured on /recommendations). */
+html.home *,
+html.home *::before,
+html.home *::after {
+    overflow-anchor: none;
+}
+
 html.home main {
     padding-top: 0;
 }
