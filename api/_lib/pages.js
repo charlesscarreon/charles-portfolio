@@ -98,7 +98,7 @@ const PASSWORD_TOGGLE = '<script>(function(){var i=document.getElementById("admi
   'b.className="password-toggle"+(show?" is-showing":"");});i.parentNode.appendChild(b);})();</script>';
 
 function loginPage(message) {
-  return heading('', 'Admin login') +
+  return heading('', 'Admin Login') +
     (message ? alert('bad', message) : '') +
     '<form class="internal-form" method="post" action="/admin">' +
     '<p><label for="admin-secret">Secret</label></p>' +
@@ -162,7 +162,7 @@ function dashboardPage(data) {
   };
   const del = function (e) { return actionForm(e.id, 'delete', 'Delete', 'danger'); };
   return '<div class="internal-head internal-head--bar"><h1>Recommendations</h1>' +
-    tokenForm('/admin', { action: 'logout' }, [['Log out', '', '', 'secondary']]) + '</div>' +
+    tokenForm('/admin', { action: 'logout' }, [['Log Out', '', '', 'secondary']]) + '</div>' +
     (data.note ? alert('warn', data.note) : '') +
     section('Awaiting your decision', 'awaiting', data.awaiting, function (e) {
       return actionForm(e.id, 'approve', 'Approve') + actionForm(e.id, 'reject', 'Reject', 'secondary') + del(e);
@@ -184,7 +184,7 @@ function dashboardPage(data) {
       return actionForm(e.id, 'approve', 'Approve instead', 'secondary') + del(e);
     }, false, 'Nothing is rejected.') +
     '<section class="admin-section"><h2>Backup</h2>' +
-    '<p class="admin-empty">Download every recommendation, in all four states, as one JSON file. It includes email addresses and private profile links, so keep it private.</p>' +
+    '<p class="admin-empty">Download every recommendation as one JSON file. It includes email addresses and private profile links, so keep it private.</p>' +
     '<div class="internal-actions">' + tokenForm('/admin', { action: 'export' }, [['Download backup', '', '', 'secondary']]) + '</div></section>' +
     '<p class="internal-hint">Changes show on the public page within about 30 seconds.</p>';
 }

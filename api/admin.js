@@ -35,7 +35,7 @@ function redirect(res, where) {
 }
 
 function loginPage(res, message, status) {
-  return respond(res, status || 200, 'Admin login', pages.loginPage(message));
+  return respond(res, status || 200, 'Admin Login', pages.loginPage(message));
 }
 
 const NOTES = {
