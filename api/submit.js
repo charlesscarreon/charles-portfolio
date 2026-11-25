@@ -27,7 +27,10 @@ function thanksPage(res) {
     '<h1>Check your email</h1>' +
     '<p>If the address you entered is valid, a message with a confirmation link is on its way. ' +
     'Open it and confirm that you wrote this recommendation. Until you do, nothing is shared.</p>' +
-    '<p>The link works for 48 hours. If nothing arrives, check your spam folder.</p>');
+    '<p>The link works for 48 hours. If nothing arrives, check your spam folder.</p>' +
+    // Leaves a note in this browser tab so the form page empties itself if the back button
+    // brings it back with the old text (see script.js, initFormClear).
+    '<script>try{sessionStorage.setItem("recs-sent","1")}catch(e){}</script>');
 }
 
 module.exports = async function handler(req, res) {
