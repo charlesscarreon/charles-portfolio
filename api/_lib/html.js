@@ -21,7 +21,9 @@ function page(title, innerHtml, options) {
     '<title>' + esc(title) + ' | Charles S. Carreon</title>\n' +
     '<meta name="robots" content="noindex, nofollow">\n' +
     '<meta name="theme-color" content="#0f1115">\n' +
-    '<link rel="icon" type="image/svg+xml" href="/favicon.svg">\n' +
+    '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">\n' +
+    '<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg">\n' +
+    '<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n' +
     // Same saved theme as the rest of the site, applied before first paint.
     '<script>try{var t=localStorage.getItem("charles-portfolio-theme");' +
     'if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}</script>\n' +
