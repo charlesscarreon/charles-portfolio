@@ -61,6 +61,7 @@
     {
         "@context": "https://schema.org",
         "@type": "Person",
+        "@id": "https://charlescarreon.dev/#person",
         "name": "Charles Serrano Carreon",
         "givenName": "Charles",
         "familyName": "Carreon",
@@ -164,6 +165,32 @@
             "https://www.linkedin.com/in/charlesscarreon/",
             "https://github.com/charlesscarreon",
             "https://g.dev/CharlesCarreon"
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebSite",
+                "@id": "https://charlescarreon.dev/#website",
+                "url": "https://charlescarreon.dev/",
+                "name": "Charles S. Carreon",
+                "description": "Portfolio of Charles Serrano Carreon, a Computer Science student and software developer building games, developer tools and web apps.",
+                "inLanguage": "en",
+                "author": { "@id": "https://charlescarreon.dev/#person" },
+                "publisher": { "@id": "https://charlescarreon.dev/#person" }
+            },
+            {
+                "@type": "ProfilePage",
+                "@id": "https://charlescarreon.dev/#profilepage",
+                "url": "https://charlescarreon.dev/",
+                "name": "Charles S. Carreon",
+                "inLanguage": "en",
+                "isPartOf": { "@id": "https://charlescarreon.dev/#website" },
+                "mainEntity": { "@id": "https://charlescarreon.dev/#person" }
+            }
         ]
     }
     </script>

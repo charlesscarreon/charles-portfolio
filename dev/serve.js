@@ -107,6 +107,14 @@ const server = http.createServer((req, res) => {
         }
     }
 
+    /* Like Vercel: an unknown address gets the root 404.html with a 404 status. */
+    const notFound = resolvePath("/404.html");
+    if (notFound && isFile(notFound)) {
+        res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(fs.readFileSync(notFound));
+        return;
+    }
+
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     res.end("404 Not Found");
 });

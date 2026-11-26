@@ -5058,6 +5058,79 @@ html[data-vt="up"]::view-transition-new(root) {
     padding: 1.25rem;
 }
 
+/* 404 page: a large status code and a page list in the style of the homepage
+   "On this page" menu, but larger, teal, and with no current-page highlight. */
+.internal-bar__inner .theme-switch {
+    flex: 0 0 auto;
+    margin-left: 0;
+    align-self: center;
+}
+
+.notfound {
+    text-align: center;
+    padding: 1.5rem 1.25rem 1.75rem;
+}
+
+.notfound__code {
+    margin: 0;
+    color: var(--accent);
+    font-size: clamp(4.5rem, 22vw, 8rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    opacity: 0.85;
+}
+
+.notfound h1 {
+    margin: 0.5rem 0 0;
+}
+
+.notfound p {
+    margin: 0.5rem 0 0;
+}
+
+.notfound__title {
+    margin: 1.25rem 0 0.6rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.notfound__nav ul {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.25rem 1.5rem;
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+}
+
+.notfound__nav a {
+    display: block;
+    padding: 0.35rem 0 0.35rem 0.9rem;
+    border-left: 2px solid var(--border);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.notfound__nav a:hover,
+.notfound__nav a:focus-visible {
+    border-left-color: var(--accent);
+    color: var(--accent-strong);
+}
+
+@media (max-width: 620px) {
+    .notfound__nav ul {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 .internal-head {
     display: flex;
     align-items: center;
