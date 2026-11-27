@@ -72,6 +72,9 @@ module.exports = async function handler(req, res) {
   res.status(200);
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', cache);
-  res.setHeader('X-Recommendations-Home', outcome.replace(/[^\x20-\x7E]/g, ' '));
+  /* A debugging aid for previews only; production does not publish the counts. */
+  if (!config.IS_PROD) {
+    res.setHeader('X-Recommendations-Home', outcome.replace(/[^\x20-\x7E]/g, ' '));
+  }
   return res.send(html);
 };

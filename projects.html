@@ -15,14 +15,7 @@
     <!-- Apply a saved theme before first paint so light-theme visitors don't
          see a dark flash. Mirrors the storage key in script.js; without JS the
          page keeps the dark default set on the html element above. -->
-    <script>
-        try {
-            var savedTheme = localStorage.getItem("charles-portfolio-theme");
-            if (savedTheme === "light" || savedTheme === "dark") {
-                document.documentElement.setAttribute("data-theme", savedTheme);
-            }
-        } catch (error) { /* storage blocked: keep the dark default */ }
-    </script>
+    <script src="theme-init.js"></script>
     <!-- Tells the stylesheet which way the page transition moves; see transitions.js. -->
     <script src="transitions.js"></script>
     <!-- Color-agnostic no-CSS fallback (only matters when styles.css fails to
