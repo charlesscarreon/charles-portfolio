@@ -112,8 +112,6 @@ a {
 
 a:hover {
     color: var(--hover);
-    text-decoration: underline;
-    text-underline-offset: 2px;
 }
 
 strong { color: var(--text-strong); }
@@ -1059,6 +1057,76 @@ html.home.js .hero > .hero-trail {
     white-space: nowrap;
 }
 
+/* ---------- Copy-email button ---------- */
+/* Only shown when JavaScript is available (like the theme switch); the address is
+   always visible as text and the mailto link still works without it. */
+.copy-btn {
+    display: none;
+}
+
+html.js .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 1.9rem;
+    height: 1.9rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.4rem;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+html.js .copy-btn:hover {
+    color: var(--hover);
+}
+
+html.js[data-theme="light"] .copy-btn:hover {
+    color: #0c7268;
+}
+
+html.js .copy-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.copy-btn__icon {
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+.copy-btn .copy-btn__icon--done {
+    display: none;
+}
+
+html.js .copy-btn.is-copied {
+    color: var(--accent);
+}
+
+html .copy-btn.is-copied .copy-btn__icon--copy {
+    display: none;
+}
+
+html .copy-btn.is-copied .copy-btn__icon--done {
+    display: block;
+}
+
+.contact-dialog__to {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+}
+
+.contact-dialog__to .copy-btn {
+    margin-left: auto;
+}
+
 /* Footer link groups: icons with visible labels, no literal separators */
 /* ---------- Cards ---------- */
 
@@ -1598,6 +1666,12 @@ html.dialog-capable .project {
     border: 1px solid var(--border);
     border-radius: 0.6rem;
     background-color: var(--surface-2);
+}
+
+/* A bare still (no award badge wrapper) gets the same space below it as a
+   wrapped one, so the title never sits tight against the image. */
+.project > .project-thumb {
+    margin-bottom: 0.9rem;
 }
 
 /* Homepage featured cards use a thinner inset frame. The wrapper carries the
@@ -4334,6 +4408,38 @@ html:not([data-theme="light"]) .skill-chip--vercel .skill-box::before {
     font-size: 0.92rem;
 }
 
+/* Résumé link under the name and title in the footer. */
+.site-footer .footer-cv {
+    margin: 1.1rem 0 0;
+}
+
+.footer-cv__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.footer-cv__link svg {
+    display: block;
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: none;
+}
+
+.footer-cv__link:hover,
+.footer-cv__link:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+    text-decoration: none;
+}
+
 .site-footer address {
     font-style: normal;
 }
@@ -4743,6 +4849,11 @@ html[data-theme="light"] .footer-top:focus-visible {
         text-align: center;
     }
 
+    html.js .copy-btn {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
     html.home.js .hero {
         margin-bottom: 0.5rem;
     }
@@ -5056,6 +5167,79 @@ html[data-vt="up"]::view-transition-new(root) {
 
 .internal-card {
     padding: 1.25rem;
+}
+
+/* 404 page: a large status code and a page list in the style of the homepage
+   "On this page" menu, but larger, teal, and with no current-page highlight. */
+.internal-bar__inner .theme-switch {
+    flex: 0 0 auto;
+    margin-left: 0;
+    align-self: center;
+}
+
+.notfound {
+    text-align: center;
+    padding: 1.5rem 1.25rem 1.75rem;
+}
+
+.notfound__code {
+    margin: 0;
+    color: var(--accent);
+    font-size: clamp(4.5rem, 22vw, 8rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    opacity: 0.85;
+}
+
+.notfound h1 {
+    margin: 0.5rem 0 0;
+}
+
+.notfound p {
+    margin: 0.5rem 0 0;
+}
+
+.notfound__title {
+    margin: 1.25rem 0 0.6rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.notfound__nav ul {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.25rem 1.5rem;
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+}
+
+.notfound__nav a {
+    display: block;
+    padding: 0.35rem 0 0.35rem 0.9rem;
+    border-left: 2px solid var(--border);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.notfound__nav a:hover,
+.notfound__nav a:focus-visible {
+    border-left-color: var(--accent);
+    color: var(--accent-strong);
+}
+
+@media (max-width: 620px) {
+    .notfound__nav ul {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 .internal-head {

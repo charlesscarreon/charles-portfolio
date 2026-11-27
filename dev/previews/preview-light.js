@@ -2,11 +2,11 @@
 "use strict";
 
 /* Throwaway tool: compare light-theme colour options on the real pages.
-   Serves the site like dev/serve.js and injects a small bar at the bottom of
+   Serves the site like dev/tools/serve.js and injects a small bar at the bottom of
    every page. The bar swaps the light theme's background and accent colour variables
    live (chosen separately, with contrast figures) and switches between the dark and the light theme, so a colour (and later the
    logo) can be judged on both backgrounds. It changes no site file.
-       node dev/preview-light.js      then open http://localhost:8128
+       node dev/previews/preview-light.js      then open http://localhost:8128
    Uses only Node built-ins (no npm). Restart it after editing this file. */
 
 const http = require("http");
@@ -14,7 +14,7 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 
-const ROOT = path.resolve(__dirname, "..");
+const ROOT = path.resolve(__dirname, "..", "..");
 const PORT = process.env.PORT || 8128;
 
 const MIME = {

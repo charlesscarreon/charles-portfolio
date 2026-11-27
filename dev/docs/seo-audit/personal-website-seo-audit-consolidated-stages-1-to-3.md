@@ -14,6 +14,8 @@ This consolidated document is based on:
 2. `personal-website-seo-audit-stage-2.md`
 3. `personal-website-seo-audit-stage-3.md`
 
+_Note (2026-11-27): the three stage files were deleted from the repository once this consolidated report existed. They are in the git history._
+
 Each stage has a different scope:
 
 - **Stage 1:** Technical SEO foundation.

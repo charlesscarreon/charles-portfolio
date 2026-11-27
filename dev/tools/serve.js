@@ -6,7 +6,7 @@
    maps to index.html, clean paths like /projects serve
    projects.html, and .html paths redirect to their clean
    equivalent. Run from the project root via:
-       node dev/serve.js
+       node dev/tools/serve.js
    Uses only Node built-ins (no npm). */
 
 const http = require("http");
@@ -14,7 +14,7 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 
-const ROOT = path.resolve(__dirname, "..");
+const ROOT = path.resolve(__dirname, "..", "..");
 const PORT = process.env.PORT || 8123;
 
 const MIME = {
@@ -26,6 +26,7 @@ const MIME = {
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
     ".ico": "image/x-icon",
+    ".pdf": "application/pdf",
     ".txt": "text/plain; charset=utf-8",
     ".xml": "application/xml; charset=utf-8",
     ".webmanifest": "application/manifest+json",
@@ -105,6 +106,14 @@ const server = http.createServer((req, res) => {
             sendFile(res, template);
             return;
         }
+    }
+
+    /* Like Vercel: an unknown address gets the root 404.html with a 404 status. */
+    const notFound = resolvePath("/404.html");
+    if (notFound && isFile(notFound)) {
+        res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" });
+        res.end(fs.readFileSync(notFound));
+        return;
     }
 
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });

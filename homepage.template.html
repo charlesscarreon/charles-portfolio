@@ -10,19 +10,14 @@
     <meta name="author" content="Charles S. Carreon">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#0f1115">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/svg+xml" sizes="any" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="canonical" href="https://charlescarreon.dev/">
     <!-- Apply a saved theme before first paint so light-theme visitors don't
          see a dark flash. Mirrors the storage key in script.js; without JS the
          page keeps the dark default set on the html element above. -->
-    <script>
-        try {
-            var savedTheme = localStorage.getItem("charles-portfolio-theme");
-            if (savedTheme === "light" || savedTheme === "dark") {
-                document.documentElement.setAttribute("data-theme", savedTheme);
-            }
-        } catch (error) { /* storage blocked: keep the dark default */ }
-    </script>
+    <script src="theme-init.js"></script>
     <!-- Tells the stylesheet which way the page transition moves; see transitions.js. -->
     <script src="transitions.js"></script>
     <!-- Color-agnostic no-CSS fallback (only matters when styles.css fails to
@@ -43,24 +38,30 @@
     <meta property="og:description"
         content="Portfolio of Charles Serrano Carreon: 4th year BS Computer Science student at Pamantasan ng Cabuyao, Philippines. Projects, achievements, skills, and experience.">
     <meta property="og:url" content="https://charlescarreon.dev/">
-    <meta property="og:image" content="https://charlescarreon.dev/images/charles-portrait.png">
+    <meta property="og:image" content="https://charlescarreon.dev/images/social-preview.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Charles S. Carreon, Computer Science Student and Software Developer, next to the portfolio logo: a teal keyboard key with the letter C.">
     <meta property="og:locale" content="en_PH">
     <meta property="profile:first_name" content="Charles">
     <meta property="profile:last_name" content="Carreon">
     <meta property="profile:username" content="charlesscarreon">
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Charles S. Carreon | Computer Science Student &amp; Software Developer">
     <meta name="twitter:description"
         content="4th year BS Computer Science student at Pamantasan ng Cabuyao, Philippines. Projects, achievements, skills, and experience.">
-    <meta name="twitter:image" content="https://charlescarreon.dev/images/charles-portrait.png">
+    <meta name="twitter:image" content="https://charlescarreon.dev/images/social-preview.png">
+    <meta name="twitter:image:alt" content="Charles S. Carreon, Computer Science Student and Software Developer, next to the portfolio logo: a teal keyboard key with the letter C.">
 
     <!-- Structured data for search engines and AI assistants -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "Person",
+        "@id": "https://charlescarreon.dev/#person",
         "name": "Charles Serrano Carreon",
         "givenName": "Charles",
         "familyName": "Carreon",
@@ -164,6 +165,32 @@
             "https://www.linkedin.com/in/charlesscarreon/",
             "https://github.com/charlesscarreon",
             "https://g.dev/CharlesCarreon"
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebSite",
+                "@id": "https://charlescarreon.dev/#website",
+                "url": "https://charlescarreon.dev/",
+                "name": "Charles S. Carreon",
+                "description": "Portfolio of Charles Serrano Carreon, a Computer Science student and software developer building games, developer tools and web apps.",
+                "inLanguage": "en",
+                "author": { "@id": "https://charlescarreon.dev/#person" },
+                "publisher": { "@id": "https://charlescarreon.dev/#person" }
+            },
+            {
+                "@type": "ProfilePage",
+                "@id": "https://charlescarreon.dev/#profilepage",
+                "url": "https://charlescarreon.dev/",
+                "name": "Charles S. Carreon",
+                "inLanguage": "en",
+                "isPartOf": { "@id": "https://charlescarreon.dev/#website" },
+                "mainEntity": { "@id": "https://charlescarreon.dev/#person" }
+            }
         ]
     }
     </script>
@@ -447,7 +474,7 @@
                     <div class="cert-grid cert-grid--home">
                         <article class="card cert-card">
                             <div class="cert-thumb-wrap">
-                                <img class="cert-thumb" src="images/certificates/cert-wadhwani-proficiency.png"
+                                <img class="cert-thumb" src="images/certificates/cert-wadhwani-proficiency.png" width="1088" height="762"
                                     alt="Preview of the Proficiency Certificate" loading="lazy" decoding="async">
                             </div>
                             <h3>Proficiency Certificate</h3>
@@ -462,7 +489,7 @@
                         </article>
                         <article class="card cert-card">
                             <div class="cert-thumb-wrap">
-                                <img class="cert-thumb" src="images/certificates/cert-wadhwani-content_completion.png"
+                                <img class="cert-thumb" src="images/certificates/cert-wadhwani-content_completion.png" width="1097" height="775"
                                     alt="Preview of the Certificate of Content Completion" loading="lazy" decoding="async">
                             </div>
                             <h3>Certificate of Content Completion</h3>
@@ -477,7 +504,7 @@
                         </article>
                         <article class="card cert-card">
                             <div class="cert-thumb-wrap">
-                                <img class="cert-thumb" src="images/certificates/cert-efset-2025.png"
+                                <img class="cert-thumb" src="images/certificates/cert-efset-2025.png" width="982" height="675"
                                     alt="Preview of the EF SET English Certificate" loading="lazy" decoding="async">
                             </div>
                             <h3>EF SET English Certificate, 78/100</h3>
@@ -625,6 +652,15 @@
                 <div class="footer-id">
                     <p class="footer-name">Charles S. Carreon</p>
                     <p class="footer-tagline">Computer Science Student and Software Developer</p>
+                    <p class="footer-cv">
+                        <a class="footer-cv__link" href="/carreon-charles-cv.pdf" target="_blank" rel="noreferrer" aria-label="Download CV (PDF, opens in a new tab)">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M7 3h7l5 5v13H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M14 3v5h5M10 13h6M10 17h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Download CV</span>
+                        </a>
+                    </p>
                 </div>
                 <nav class="footer-projects" aria-label="Latest projects">
                     <h3>Latest projects</h3>
@@ -696,7 +732,18 @@
             <div class="contact-dialog__form">
                 <div class="contact-dialog__field">
                     <span class="contact-dialog__label">To</span>
-                    <p class="contact-dialog__value" id="contact-dialog-to">charlesserranocarreon+portfolio@gmail.com</p>
+                    <p class="contact-dialog__value contact-dialog__to" id="contact-dialog-to">
+                        <span>charlesserranocarreon+portfolio@gmail.com</span>
+                        <button type="button" class="copy-btn" data-copy="charlesserranocarreon+portfolio@gmail.com" aria-label="Copy email address">
+                            <svg class="copy-btn__icon copy-btn__icon--copy" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <path d="M5 15V6a2 2 0 0 1 2-2h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <svg class="copy-btn__icon copy-btn__icon--done" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </p>
                 </div>
                 <div class="contact-dialog__field">
                     <label class="contact-dialog__label" for="contact-subject">Subject</label>
@@ -704,9 +751,7 @@
                 </div>
                 <div class="contact-dialog__field">
                     <label class="contact-dialog__label" for="contact-message">Message</label>
-                    <textarea class="contact-dialog__textarea" id="contact-message" rows="4">Hi Charles,
-
-</textarea>
+                    <textarea class="contact-dialog__textarea" id="contact-message" rows="4">Hi Charles,&#32;</textarea>
                 </div>
             </div>
             <p class="contact-dialog__actions">

@@ -16,9 +16,9 @@
                         redirect stubs)
    Set ROOT to serve a different folder, e.g.:
        set ROOT=C:\Projects\personal\charles-old-portfolio
-       node dev/test-fallback.js
+       node dev/tools/test-fallback.js
    Run from the project root via:
-       node dev/test-fallback.js
+       node dev/tools/test-fallback.js
    Uses only Node built-ins (no npm). */
 
 const http = require("http");
@@ -26,7 +26,7 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 
-const ROOT = process.env.ROOT ? path.resolve(process.env.ROOT) : path.resolve(__dirname, "..");
+const ROOT = process.env.ROOT ? path.resolve(process.env.ROOT) : path.resolve(__dirname, "..", "..");
 const PORT = process.env.PORT || 8124;
 
 const MIME = {
