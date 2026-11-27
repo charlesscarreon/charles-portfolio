@@ -5,7 +5,7 @@
    It renders the real renderEntry() from api/_lib/render.js on the real
    stylesheet, so what you see is what the site will show. The samples exist
    only here: they are never part of the site, the API or the stored entries.
-   Run from the project root via dev\preview-recommendations.bat, then open
+   Run from the project root via dev\previews\preview-recommendations.bat, then open
    http://localhost:8125 (add ?theme=light for the light theme).
    Uses only Node built-ins. */
 
@@ -14,7 +14,7 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 
-const ROOT = path.resolve(__dirname, "..");
+const ROOT = path.resolve(__dirname, "..", "..");
 const PORT = process.env.PORT || 8125;
 const { renderPageList, renderHomeSection } = require(path.join(ROOT, "api", "_lib", "render"));
 

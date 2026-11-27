@@ -23,7 +23,7 @@ The pages are plain **HTML, CSS, and JavaScript**, with no frameworks, build ste
 - **Pages:** Vercel serves the static files with clean URLs. The homepage and `/recommendations` are rendered by functions in `api/` from `homepage.template.html` and `recommendations.template.html`, so published recommendations can be inserted. If the database is unavailable, they fall back to a saved copy of the recommendations kept in the repo.
 - **Recommendations:** a visitor submits the form and confirms by email, then the owner approves or rejects it from an email link or an owner-only admin page. Approved ones appear on the site. Data is kept in Upstash Redis and email is sent with Resend.
 - **Daily job:** a Vercel cron job sends the owner reminders and a weekly digest.
-- **Backup:** the admin page can download a JSON backup. `dev\make-snapshot.bat` turns it into the saved copy in the repo.
+- **Backup:** the admin page can download a JSON backup. `dev\tools\make-snapshot.bat` turns it into the saved copy in the repo.
 
 ## Configuration
 
@@ -34,14 +34,14 @@ Set in the Vercel project settings, never committed: `KV_REST_API_URL`, `KV_REST
 Requires only [Node.js](https://nodejs.org/) (no npm).
 
 ```bash
-node dev/serve.js
+node dev/tools/serve.js
 ```
 
-Or double-click `dev/serve.bat`. Open `http://localhost:8123`.
+Or double-click `dev/tools/serve.bat`. Open `http://localhost:8123`.
 
 The server mirrors production's clean URLs: `/` and `/projects` resolve directly, `.html` paths redirect to their clean equivalents, and unknown paths show `404.html`. The recommendations parts show their empty state locally.
 
-Other tools in `dev/` (each has a `.bat` launcher on Windows):
+Other tools in `dev/tools/` and `dev/previews/` (each has a `.bat` launcher on Windows):
 
 - `preview-recommendations` · the recommendation cards
 - `preview-internal` · the admin and confirmation pages, with invented data
@@ -56,5 +56,4 @@ Hosted on Vercel, auto-deploying on push to `main`. `vercel.json` sets the clean
 
 ## More
 
-- [`dev/ROADMAP.md`](dev/ROADMAP.md) · the reworks, their tasks, and the decisions behind them
-- [`dev/CONTEXT.md`](dev/CONTEXT.md) · project notes and a record of finished work
+- [`dev/docs/CONTEXT.md`](dev/docs/CONTEXT.md) · project notes: constraints, conventions, gotchas and open items

@@ -6,7 +6,7 @@
    maps to index.html, clean paths like /projects serve
    projects.html, and .html paths redirect to their clean
    equivalent. Run from the project root via:
-       node dev/serve.js
+       node dev/tools/serve.js
    Uses only Node built-ins (no npm). */
 
 const http = require("http");
@@ -14,7 +14,7 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 
-const ROOT = path.resolve(__dirname, "..");
+const ROOT = path.resolve(__dirname, "..", "..");
 const PORT = process.env.PORT || 8123;
 
 const MIME = {

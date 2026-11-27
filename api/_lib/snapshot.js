@@ -1,6 +1,6 @@
 // The repo snapshot: a saved copy of the public recommendations, shown when the database
 // cannot be reached. It holds only what the website shows publicly (never an email, a
-// private link or a token). dev\make-snapshot.bat rewrites it from a backup downloaded
+// private link or a token). dev\tools\make-snapshot.bat rewrites it from a backup downloaded
 // from /admin. The JSON file sits beside this one so Vercel bundles it with the functions.
 
 const FORMAT = 'portfolio-recommendations-snapshot';

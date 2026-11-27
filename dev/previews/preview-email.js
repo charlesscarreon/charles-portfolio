@@ -4,7 +4,7 @@
 /* Preview of the emails the site sends, with invented details. Nothing is sent.
    It uses the real builders from api/_lib, so what you see is what is sent: the
    designed HTML version, the plain-text version and the subject line.
-   Run via dev\preview-email.bat, then open http://localhost:8127.
+   Run via dev\previews\preview-email.bat, then open http://localhost:8127.
    Pick an email, then switch between a desktop and a phone width. The email has no
    dark-mode code: each mail app shows it in its own default light or dark way.
    Node built-ins only. */
@@ -14,7 +14,7 @@ const fs = require("fs");
 const url = require("url");
 const path = require("path");
 
-const ROOT = path.resolve(__dirname, "..");
+const ROOT = path.resolve(__dirname, "..", "..");
 const PORT = process.env.PORT || 8127;
 const { buildOwnerEmail } = require(path.join(ROOT, "api", "_lib", "ownerMail"));
 const { buildConfirmEmail } = require(path.join(ROOT, "api", "_lib", "writerMail"));

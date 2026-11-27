@@ -4,7 +4,7 @@
 /* Preview of the internal pages (admin, approve or reject, confirm) with invented
    data. It renders the real page shell and markup from api/_lib on the real
    stylesheet, so what you see is what the site shows. Nothing is sent or stored.
-   Run via dev\preview-internal.bat, then open http://localhost:8126.
+   Run via dev\previews\preview-internal.bat, then open http://localhost:8126.
    Add ?theme=light for the light theme. Node built-ins only. */
 
 const http = require("http");
@@ -12,7 +12,7 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 
-const ROOT = path.resolve(__dirname, "..");
+const ROOT = path.resolve(__dirname, "..", "..");
 const PORT = process.env.PORT || 8126;
 const html = require(path.join(ROOT, "api", "_lib", "html"));
 const pages = require(path.join(ROOT, "api", "_lib", "pages"));

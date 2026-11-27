@@ -78,7 +78,7 @@ const VIEW_ALL =
   '<span class="view-all__head" aria-hidden="true"></span></a></p>';
 
 // The homepage's recommendations block for up to three picks. Shared by api/home.js and
-// the preview tool (dev/preview-recommendations.js), so the preview shows the real thing.
+// the preview tool (dev/previews/preview-recommendations.js), so the preview shows the real thing.
 function renderHomeSection(picks) {
   const cards = picks.map(function (e) { return renderEntry(e, { max: HOME_MAX_CHARS }); }).join('\n');
   return INVITE + '\n<div class="recs-grid">\n' + cards + '\n</div>\n' + VIEW_ALL;
