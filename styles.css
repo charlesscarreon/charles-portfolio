@@ -112,8 +112,6 @@ a {
 
 a:hover {
     color: var(--hover);
-    text-decoration: underline;
-    text-underline-offset: 2px;
 }
 
 strong { color: var(--text-strong); }
@@ -1668,6 +1666,12 @@ html.dialog-capable .project {
     border: 1px solid var(--border);
     border-radius: 0.6rem;
     background-color: var(--surface-2);
+}
+
+/* A bare still (no award badge wrapper) gets the same space below it as a
+   wrapped one, so the title never sits tight against the image. */
+.project > .project-thumb {
+    margin-bottom: 0.9rem;
 }
 
 /* Homepage featured cards use a thinner inset frame. The wrapper carries the
