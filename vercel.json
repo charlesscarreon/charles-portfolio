@@ -54,6 +54,15 @@
       ]
     },
     {
+      "source": "/carreon-charles-cv.pdf",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    },
+    {
       "source": "/homepage.template.html",
       "headers": [
         {
