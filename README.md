@@ -43,7 +43,7 @@ The server mirrors production's clean URLs: `/` and `/projects` resolve directly
 
 Other tools in `dev/tools/` and `dev/previews/` (each has a `.bat` launcher on Windows):
 
-- `preview-recommendations` · the recommendation cards
+- `preview-recommendations` · the recommendation cards and the form
 - `preview-internal` · the admin and confirmation pages, with invented data
 - `preview-email` · the emails the site sends
 - `preview-social` · the social share image

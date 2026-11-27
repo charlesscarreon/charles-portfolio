@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 
-/* Preview of the published-recommendation cards with invented sample entries.
+/* Preview of the published-recommendation cards, and of the form, with invented sample entries.
    It renders the real renderEntry() from api/_lib/render.js on the real
    stylesheet, so what you see is what the site will show. The samples exist
    only here: they are never part of the site, the API or the stored entries.
@@ -61,8 +61,32 @@ const SAMPLES = [
             { label: "LinkedIn", url: "https://example.com/in/riley-example" },
             { label: "Facebook", url: "https://example.com/riley.example" }
         ]
+    },
+    {
+        id: "sample-4",
+        name: "Charles S. Carreon",
+        role: "Software Developer",
+        organization: "Kamote Studios",
+        line: "Used something Charles built",
+        message: "A short sample with a long role and company name, to check how the footer wraps in a narrow card.",
+        publishedAt: "2026-11-27T08:00:00Z",
+        links: [
+            { label: "LinkedIn", url: "https://example.com/in/charles-sample" },
+            { label: "Facebook", url: "https://example.com/charles.sample" }
+        ]
     }
 ];
+
+/* The real form from the page template, so the profile-field icons can be checked here.
+   Submitting does nothing in this preview. */
+function formSection() {
+    const file = path.join(ROOT, "recommendations.template.html");
+    const html = fs.readFileSync(file, "utf8");
+    const match = html.match(/<form class="recommendation-form"[\s\S]*?<\/form>/);
+    if (!match) return "<p class=\"preview-note\">The form was not found in recommendations.template.html.</p>";
+    const form = match[0].replace("method=\"post\" action=\"/api/submit\"", "method=\"get\" action=\"#\" onsubmit=\"return false\"");
+    return "<p id=\"write-note\" class=\"recommendation-form__note\">Preview only: nothing is sent.</p>\n" + form;
+}
 
 function page(theme) {
     const toggle = theme === "light" ? ["dark", "Switch to dark"] : ["light", "Switch to light"];
@@ -79,6 +103,8 @@ function page(theme) {
         renderPageList(SAMPLES) + "\n</section>\n" +
         "<section class=\"section\" aria-label=\"Homepage\">\n<h2>On the homepage (the top three, as the homepage builds them)</h2>\n" +
         renderHomeSection(SAMPLES.slice(0, 3)) + "\n</section>\n" +
+        "<section class=\"section\" aria-label=\"Form\">\n<h2>The form (profile links)</h2>\n" +
+        formSection() + "\n</section>\n" +
         "</main>\n</body>\n</html>\n";
 }
 

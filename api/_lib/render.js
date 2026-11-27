@@ -33,6 +33,13 @@ function initials(name) {
   return (first + last).toUpperCase();
 }
 
+// Small inline icons for the profile links (the same shapes as the footer's), drawn in the
+// link's own colour. Decorative: the link text still names the site.
+const LINK_ICONS = {
+  LinkedIn: '<svg class="recommendation__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11v6M8 7.5v.01M12 17v-6M12 13.5a2 2 0 0 1 4 0V17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  Facebook: '<svg class="recommendation__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10H7v3h2.1v8h4.4z"/></svg>'
+};
+
 // options.max: shorten the message to this many characters and link to the full page.
 function renderEntry(e, options) {
   const opts = options || {};
@@ -40,20 +47,25 @@ function renderEntry(e, options) {
   const who = [e.role, e.organization].filter(Boolean).map(esc).join(', ');
   const date = formatDate(e.publishedAt);
   const links = (e.links || []).map(function (l) {
-    return '<a href="' + esc(l.url) + '" rel="noopener noreferrer">' + esc(l.label) + '</a>';
+    return '<a class="recommendation__link" href="' + esc(l.url) + '" rel="noopener noreferrer">' +
+      (LINK_ICONS[l.label] || '') + '<span>' + esc(l.label) + '</span></a>';
   });
-  if (short.cut) links.push('<a href="/recommendations#r-' + esc(e.id) + '">Read the full recommendation</a>');
+  if (short.cut) links.push('<a class="recommendation__link" href="/recommendations#r-' + esc(e.id) + '"><span>Read the full recommendation</span></a>');
   const orgLine = who ? '<span class="recommendation__role">' + who + '</span><br>' : '';
   return '<article class="card recommendation" id="r-' + esc(e.id) + '">' +
     '<blockquote class="recommendation__text">' + paragraphs(short.text) + '</blockquote>' +
     '<div class="recommendation__author">' +
     '<span class="recommendation__avatar" aria-hidden="true">' + esc(initials(e.name)) + '</span>' +
+    '<div class="recommendation__body">' +
     '<p class="recommendation__who"><strong>' + esc(e.name) + '</strong><br>' +
     orgLine +
     '<span class="recommendation__line">' + esc(e.line) + '</span></p>' +
-    (date ? '<time class="recommendation__date" datetime="' + esc(String(e.publishedAt).slice(0, 10)) + '">' + date + '</time>' : '') +
+    (date || links.length ? '<div class="recommendation__meta">' +
+      (date ? '<time class="recommendation__date" datetime="' + esc(String(e.publishedAt).slice(0, 10)) + '">' + date + '</time>' : '') +
+      (links.length ? '<p class="recommendation__links">' + links.join('') + '</p>' : '') +
+      '</div>' : '') +
     '</div>' +
-    (links.length ? '<p class="recommendation__links">' + links.join(' · ') + '</p>' : '') +
+    '</div>' +
     '</article>';
 }
 
