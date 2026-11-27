@@ -723,7 +723,18 @@
             <div class="contact-dialog__form">
                 <div class="contact-dialog__field">
                     <span class="contact-dialog__label">To</span>
-                    <p class="contact-dialog__value" id="contact-dialog-to">charlesserranocarreon+portfolio@gmail.com</p>
+                    <p class="contact-dialog__value contact-dialog__to" id="contact-dialog-to">
+                        <span>charlesserranocarreon+portfolio@gmail.com</span>
+                        <button type="button" class="copy-btn" data-copy="charlesserranocarreon+portfolio@gmail.com" aria-label="Copy email address">
+                            <svg class="copy-btn__icon copy-btn__icon--copy" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <path d="M5 15V6a2 2 0 0 1 2-2h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <svg class="copy-btn__icon copy-btn__icon--done" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </p>
                 </div>
                 <div class="contact-dialog__field">
                     <label class="contact-dialog__label" for="contact-subject">Subject</label>
@@ -731,9 +742,7 @@
                 </div>
                 <div class="contact-dialog__field">
                     <label class="contact-dialog__label" for="contact-message">Message</label>
-                    <textarea class="contact-dialog__textarea" id="contact-message" rows="4">Hi Charles,
-
-</textarea>
+                    <textarea class="contact-dialog__textarea" id="contact-message" rows="4">Hi Charles,&#32;</textarea>
                 </div>
             </div>
             <p class="contact-dialog__actions">

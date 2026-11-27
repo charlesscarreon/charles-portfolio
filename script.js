@@ -853,6 +853,30 @@
                 + Math.max(0, from.left - box.left) + "px round " + (from.height / 2) + "px)";
         }
 
+        /* Where the cursor was when the panel was last closed. The first time, and
+           whenever nothing was saved, it goes to the end of the message so a visitor can
+           type straight away. */
+        var savedCaret = null;
+
+        function rememberCaret() {
+            if (message && typeof message.selectionStart === "number") {
+                savedCaret = { start: message.selectionStart, end: message.selectionEnd };
+            }
+        }
+
+        function placeCaret() {
+            if (!message || !message.setSelectionRange) {
+                return;
+            }
+            var length = message.value.length;
+            var start = savedCaret ? Math.min(savedCaret.start, length) : length;
+            var end = savedCaret ? Math.min(savedCaret.end, length) : length;
+            try { message.setSelectionRange(start, end); } catch (error) { return; }
+            if (end >= length) {
+                message.scrollTop = message.scrollHeight;
+            }
+        }
+
         function open(from) {
             if (!dialog.open) {
                 dialog.showModal();
@@ -860,6 +884,7 @@
             if (message && message.focus) {
                 try { message.focus({ preventScroll: true }); } catch (error) { message.focus(); }
             }
+            placeCaret();
 
             if (!from || reduceMotion || !dialog.animate) {
                 return;
@@ -921,6 +946,7 @@
             if (!dialog.open || closing) {
                 return;
             }
+            rememberCaret();
             if (reduceMotion || !dialog.animate) {
                 dialog.close();
                 return;
@@ -1064,6 +1090,94 @@
         window.addEventListener("pageshow", clearIfSent);
     }
 
+    /* ---------- Copy the email address ---------- */
+    /* Buttons with data-copy copy that text and confirm it for a moment. They are
+       hidden by CSS without JavaScript, so the address is always still plain text. */
+    function initCopyEmail() {
+        var buttons = document.querySelectorAll("[data-copy]");
+        if (!buttons.length) {
+            return;
+        }
+
+        /* Fallback for browsers without the async clipboard: a temporary field kept
+           next to the button (inside the dialog when it is open, since the rest of
+           the page cannot take focus then). */
+        function legacyCopy(button, text) {
+            var field = document.createElement("textarea");
+            field.value = text;
+            field.setAttribute("readonly", "");
+            field.setAttribute("aria-hidden", "true");
+            field.className = "visually-hidden";
+            button.parentNode.appendChild(field);
+            var ok = false;
+            try {
+                field.select();
+                ok = document.execCommand("copy");
+            } catch (error) {
+                ok = false;
+            }
+            button.parentNode.removeChild(field);
+            try { button.focus({ preventScroll: true }); } catch (error) { button.focus(); }
+            return ok;
+        }
+
+        function copyText(button, text) {
+            if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+                return navigator.clipboard.writeText(text).then(function () {
+                    return true;
+                }, function () {
+                    return legacyCopy(button, text);
+                });
+            }
+            return Promise.resolve(legacyCopy(button, text));
+        }
+
+        /* Last resort: select the visible address so it can be copied by hand. */
+        function selectShown(button) {
+            var shown = button.previousElementSibling;
+            if (!shown || !window.getSelection || !document.createRange) {
+                return;
+            }
+            var range = document.createRange();
+            range.selectNodeContents(shown);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        function wire(button) {
+            var status = document.createElement("span");
+            status.className = "visually-hidden";
+            status.setAttribute("role", "status");
+            status.setAttribute("aria-live", "polite");
+            button.parentNode.insertBefore(status, button.nextSibling);
+            var timer = null;
+
+            button.addEventListener("click", function () {
+                var text = button.getAttribute("data-copy");
+                copyText(button, text).then(function (ok) {
+                    window.clearTimeout(timer);
+                    if (ok) {
+                        button.classList.add("is-copied");
+                        status.textContent = "Email address copied";
+                        timer = window.setTimeout(function () {
+                            button.classList.remove("is-copied");
+                            status.textContent = "";
+                        }, 2000);
+                    } else {
+                        button.classList.remove("is-copied");
+                        selectShown(button);
+                        status.textContent = "Could not copy. The address is selected, so you can copy it yourself.";
+                    }
+                });
+            });
+        }
+
+        for (var i = 0; i < buttons.length; i++) {
+            wire(buttons[i]);
+        }
+    }
+
     /* Enable JS-specific UI (theme toggle visibility, etc.) */
     doc.classList.remove("no-js");
     doc.classList.add("js");
@@ -1076,6 +1190,7 @@
     initToc();
     initProjectDialogs();
     initContactDialog();
+    initCopyEmail();
     initChoiceToggle();
     initFormClear();
 })();
